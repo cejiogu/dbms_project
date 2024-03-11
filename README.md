@@ -3,6 +3,7 @@
 
 ## Introduction
 Names: Ori Wachman (ow34)
+       Anmol Singh (as3252)
 
 ## Features and Functionality
 
