@@ -3,10 +3,10 @@
 
 ## Introduction
 
-## Description
+## Features and Functionality
 
 ## Development
 
-## Instructions for Use
+## Installation and Use
 
 ## Feedback
