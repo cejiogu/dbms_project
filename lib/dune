@@ -1,0 +1,5 @@
+(library
+ (inline_tests)
+ (name final_project)
+ (preprocess
+  (pps ppx_inline_test)))
