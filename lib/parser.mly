@@ -1,4 +1,4 @@
-%toke <Table> CREATE
+%token <Table> CREATE
 %token EOF
 
 %start <Ast.expr> prog
