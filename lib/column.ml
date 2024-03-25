@@ -25,9 +25,13 @@ let is_valid_month_or_day (month_or_day : string) : bool =
   then true
   else false
 
-let is_valid_date (date : Date) =
+let is_valid_date (date : elem) =
   match date with
-  | year, month, day ->
+  | Int _ -> false
+  | Bool _ -> false
+  | Float _ -> false
+  | String _ -> false
+  | Date (year, month, day) ->
       if
         is_valid_year year
         && is_valid_month_or_day month
