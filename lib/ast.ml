@@ -19,3 +19,5 @@ type sql_type =
 type command =
   | CREATE_TABLE
   | INSERT
+(* important SQL commands to add later --> | SELECT | DELETE | UPDATE |
+   ALTER_TABLE | DROP_TABLE *)
