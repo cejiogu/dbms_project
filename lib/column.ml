@@ -1,4 +1,4 @@
-type dta =
+type elem =
   | Int of int
   | Bool of bool
   | Float of float
@@ -6,8 +6,8 @@ type dta =
 
 type t = {
   label : string;
-  data : dta list;
+  data : elem list;
 }
 
-let label c = c.label
-let data c = c.data
+let label t = t.label
+let data t = t.data
