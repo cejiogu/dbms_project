@@ -2,4 +2,5 @@
  (inline_tests)
  (name final_project)
  (preprocess
-  (pps ppx_inline_test)))
+  (pps ppx_inline_test))
+  (libraries str))
