@@ -33,9 +33,9 @@ let is_valid_date (date : elem) =
   | String _ -> false
   | Date (year, month, day) ->
       if
-        is_valid_year string_of_int year
-        && is_valid_month_or_day string_of_int month
-        && is_valid_month_or_day string_of_int day
+        (is_valid_year @@ string_of_int year)
+        && (is_valid_month_or_day @@ string_of_int month)
+        && (is_valid_month_or_day @@ string_of_int day)
       then true
       else false
 
