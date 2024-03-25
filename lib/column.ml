@@ -3,6 +3,7 @@ type elem =
   | Bool of bool
   | Float of float
   | String of string
+  | Date of int * int * int
 
 type t = {
   label : string;
