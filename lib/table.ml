@@ -38,14 +38,6 @@ module type Table = sig
   val empty_table : string -> table
   (**[empty_table] is an empty table of title [string] *)
 
-  val create_table : string -> string list -> table
-  (**[create_table] is a [table] titled [string] and with columns titled after
-     each string in [string list]*)
-
-  val select_from : string -> string -> table
-  (**[select_from] is a [table] representing the column of title [string],
-     selected from the table of title [string]*)
-
   val insert_into : string -> string array -> string array -> table
   (**[insert_into] is a [table] containing a new row of values [string] that
      holds the string values in [string array] *)
@@ -53,6 +45,7 @@ end
 
 module Database = struct
   open Table
+  open Column
 
   exception InvalidQuery of string
 
@@ -69,4 +62,24 @@ module Database = struct
     else
       let database = { db_name = name; tables = [] } in
       database
+
+  let select_from (_ : string list) (_ : string) : table = failwith "TODO"
+end
+
+module type Database = sig
+  exception InvalidQuery of string
+
+  type table
+  type database
+
+  val empty_database : string -> database
+  (**[empty_database] is an empty database of title [string] *)
+
+  val select_from : string -> string -> table
+  (**[select_from] is a [table] representing the column of title [string],
+     selected from the table of title [string]*)
+
+  val create_table : string -> string list -> table
+  (**[create_table] is a [table] titled [string] and with columns titled after
+     each string in [string list]*)
 end
