@@ -50,3 +50,23 @@ module type Table = sig
   (**[insert_into] is a [table] containing a new row of values [string] that
      holds the string values in [string array] *)
 end
+
+module Database = struct
+  open Table
+
+  exception InvalidQuery of string
+
+  type table = Table.table
+
+  type database = {
+    db_name : string;
+    tables : table list;
+  }
+
+  let empty_database (name : string) : database =
+    if name = "" then
+      raise (InvalidQuery "You must enter the name of your table!")
+    else
+      let database = { db_name = name; tables = [] } in
+      database
+end
