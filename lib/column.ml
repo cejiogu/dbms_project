@@ -26,11 +26,6 @@ let is_valid_month_or_day (month_or_day : string) : bool =
 
 let is_valid_date (date : elem) =
   match date with
-  | NULL -> false
-  | Int _ -> false
-  | Bool _ -> false
-  | Float _ -> false
-  | String _ -> false
   | Date (year, month, day) ->
       if
         (is_valid_year @@ string_of_int year)
@@ -38,6 +33,7 @@ let is_valid_date (date : elem) =
         && (is_valid_month_or_day @@ string_of_int day)
       then true
       else false
+  | _ -> false
 
 let date_of_string (s : string) : elem =
   (* Regular expression to match a date in the format YYYY-MM-DD *)
@@ -92,59 +88,36 @@ let rec valid_data (data : elem list) (h_data : elem) : bool =
   | [] -> true
   | h :: t -> begin
       match h_data with
-      | NULL -> begin
-          match h with
-          | NULL -> valid_data t h_data
-          | Int _ -> valid_data t h_data
-          | Bool _ -> valid_data t h_data
-          | Float _ -> valid_data t h_data
-          | String _ -> valid_data t h_data
-          | Date _ -> valid_data t h_data
-        end
+      | NULL -> valid_data t h_data
       | Int _ -> begin
           match h with
           | NULL -> valid_data t h_data
           | Int _ -> valid_data t h_data
-          | Bool _ -> false
-          | Float _ -> false
-          | String _ -> false
-          | Date _ -> false
+          | _ -> false
         end
       | Bool _ -> begin
           match h with
           | NULL -> valid_data t h_data
-          | Int _ -> false
           | Bool _ -> valid_data t h_data
-          | Float _ -> false
-          | String _ -> false
-          | Date _ -> false
+          | _ -> false
         end
       | Float _ -> begin
           match h with
           | NULL -> valid_data t h_data
-          | Int _ -> false
-          | Bool _ -> false
           | Float _ -> valid_data t h_data
-          | String _ -> false
-          | Date _ -> false
+          | _ -> false
         end
       | String _ -> begin
           match h with
           | NULL -> valid_data t h_data
-          | Int _ -> false
-          | Bool _ -> false
-          | Float _ -> false
           | String _ -> valid_data t h_data
-          | Date _ -> false
+          | _ -> false
         end
       | Date _ -> begin
           match h with
           | NULL -> valid_data t h_data
-          | Int _ -> false
-          | Bool _ -> false
-          | Float _ -> false
-          | String _ -> false
           | Date _ -> valid_data t h_data
+          | _ -> false
         end
     end
 
