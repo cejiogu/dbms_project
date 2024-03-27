@@ -3,7 +3,7 @@ module Table = struct
 
   exception InvalidQuery of string
 
-  type column = Column.t
+  type column = {column_name : string }
 
   type table = {
     table_name : string;
@@ -27,8 +27,25 @@ module Table = struct
   let create_table (_ : string) (_ : (string * string) list) : table =
     failwith "TODO: Requires function that creates a column from Column module"
 
-  let rec insert_into (_ : string) (_ : string array) (_ : string array) =
-    failwith "TODO"
+  let insert_into (table_name: string) (column_names : string array) (values : string array) (table : table) =
+    if Array.length column_names <> Array.length values then
+      raise (InvalidQuery "Column names and values must have the same length")
+    else
+      failwith "TODO: Requires function that creates a column from Column module"
+      (* let updated_columns = 
+        List.map 
+          (fun column ->
+            if Array.mem column.column_name column_names then
+              let value_index = Array.index_of column.column_name column_names in
+              let value = values.(value_index) in
+              (* Assuming you have a function to add a value to a column *)
+              Column.add_value column value
+            else
+              column
+          ) 
+          table.columns
+      in
+      { table with columns = updated_columns } *)
 
   (* let alter_add (_ : string) (_ : string) (_ : string) = failwith "TODO" *)
   (* let alter_drop (_ : string) (_ : string) = failwith "TODO" *)
@@ -82,9 +99,16 @@ module Database = struct
       let database = { db_name = name; tables = [] } in
       database
 
-  let insert_table (name : string) (columns : (string * string) list) : database
+  let table_exists (name : string) (db : database) : bool =
+      List.exists (fun t -> t.table_name = name) db.tables
+
+  let insert_table (db : database) (name : string) (columns : (string * string) list) : database
       =
-    failwith "TODO"
+      if table_exists name db then
+        db
+      else
+        let new_table = Table.create_table name columns in
+        { db with tables = new_table :: db.tables }
 end
 
 module type Database = sig
@@ -100,7 +124,7 @@ module type Database = sig
      [InvalidQuery] if [string] is empty*)
 
   val insert_table : database -> string -> (string * string) list -> database
-  (**[add_table] is a [database] that now includes a new table titled [string]
+  (**[insert_table] is a [database] that now includes a new table titled [string]
      and with columns titled after each string in [string list] into [database].
      Does not change [database] if a table titled [string] already exists in
      [database]. This function corresponds to the SQL CREATE TABLE statement*)
