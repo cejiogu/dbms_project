@@ -64,6 +64,22 @@ let string_to_elem (s : string) : elem =
         try String s
         with Failure _ -> ( try date_of_string s with Failure _ -> NULL))))
 
+let string_of_data date =
+  match date with
+  | year, month, day ->
+      "(" ^ string_of_int year ^ ", " ^ string_of_int month ^ ", "
+      ^ string_of_int day ^ ")"
+  | _ -> failwith "Not a date"
+
+let elem_to_string (e : elem) : string =
+  match e with
+  | NULL -> "NULL"
+  | Int i -> string_of_int i
+  | Bool b -> string_of_bool b
+  | Float f -> string_of_float f
+  | String s -> s
+  | Date (y, m, d) -> string_of_data (y, m, d)
+
 let rec stringlist_to_elemlist_aux (s : string list) (acc : elem list) :
     elem list =
   match s with
@@ -71,7 +87,6 @@ let rec stringlist_to_elemlist_aux (s : string list) (acc : elem list) :
   | h :: t -> stringlist_to_elemlist_aux t @@ (string_to_elem h :: acc)
 
 let stringlist_to_elemlist (s : string list) = stringlist_to_elemlist_aux s []
-let make_column s d = { label = s; data = d }
 
 let rec valid_data (data : elem list) (h_data : elem) : bool =
   match data with
@@ -146,5 +161,15 @@ let rec valid_column col =
       | String s -> valid_data t (String s)
       | Date (y, m, d) -> valid_data t (Date (y, m, d)))
 
+let make_column s d = { label = s; data = d }
 let label t = t.label
 let data t = t.data
+
+let rec print_data data =
+  match data with
+  | [] -> ()
+  | h :: _ -> print_endline @@ elem_to_string h
+
+let print col =
+  print_endline col.label;
+  print_data col.data

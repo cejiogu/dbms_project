@@ -51,3 +51,15 @@ val stringlist_to_elemlist_aux : string list -> elem list -> elem list
 
 val stringlist_to_elemlist : string list -> elem list
 (** [stringlist_to_elemlist s] returns the string [s] as an [elem list]. *)
+
+val string_of_data : (int * int * int) -> string
+(** [string_of_data d] takes in a tuple of three ints known as [d] and returns a string. [d] represents a [Date]. *)
+
+val print_data : elem list -> unit
+(** [print_data d] prints the contents of the elem list [d]. *)
+
+val print : t -> unit
+(** [print col] prints the contents of the column [col]. *)
+
+val elem_to_string : elem -> string
+(** [elem_to_string elem] returns [elem] as a string. *)
