@@ -34,6 +34,7 @@ val is_valid_date : elem -> bool
 (** [is_valid_date d] returns whether or not the Date [d] is a valid Date. *)
 
 (* val empty : unit -> column *)
+val empty : column
 (** [empty ()] returns an empty [t] *)
 
 val string_to_elem : string -> elem
