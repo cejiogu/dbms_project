@@ -1,6 +1,4 @@
-type expr = unit
-
-(*Defined using reference: https://www.w3schools.com/sql/sql_datatypes.asp*)
+(* Defined using reference: https://www.w3schools.com/sql/sql_datatypes.asp*)
 type sql_type =
   | Int of int
     (*SQL INT(size) where size is the display width, should we consider just
@@ -16,8 +14,12 @@ type sql_type =
       string)*)
   | Date (*SQL DATE, format YYYY-MM-DD*)
 
-type command =
-  | CREATE_TABLE
-  | INSERT
+type obj =
+  | TABLE
+  | DATABASE
+
+type command = CREATE
 (* important SQL commands to add later --> | SELECT | DELETE | UPDATE |
    ALTER_TABLE | DROP_TABLE *)
+
+type expr = Command of command * obj * string
