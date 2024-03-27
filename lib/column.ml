@@ -55,7 +55,7 @@ let date_of_string (s : string) : elem =
     Date (year, month, day)
   else NULL
 
-let empty () = { label = ""; data = [] }
+let empty_column (name : string) = { label = name; data = [] }
 
 let string_to_elem (s : string) : elem =
   try Int (int_of_string s)
