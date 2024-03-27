@@ -135,8 +135,8 @@ let rec valid_column col =
 
 let make_column s d = { title = s; data = d }
 let add_elem_to_column elem col = { title = col.title; data = elem :: col.data }
-let title t = t.title
-let data t = t.data
+
+(* let title t = t.title let data t = t.data*)
 
 let string_of_date date =
   match date with
