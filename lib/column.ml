@@ -6,13 +6,15 @@ type elem =
   | String of string
   | Date of int * int * int
 
-type t = {
-  label : string;
+type column = {
+  title : string;
   data : elem list;
 }
 
-let label t = t.label
-let data t = t.data
+(* let title t = t.title *)
+(* let data t = t.data *)
+
+let empty_column (name : string) : column = { title = name; data = [] }
 
 let all_numbers (s : string) : bool =
   if Str.string_match (Str.regexp "[0-9]+$") s 0 then true else false
@@ -54,8 +56,6 @@ let date_of_string (s : string) : elem =
     let day = Str.matched_group 3 s |> int_of_string in
     Date (year, month, day)
   else NULL
-
-let empty_column (name : string) = { label = name; data = [] }
 
 let string_to_elem (s : string) : elem =
   try Int (int_of_string s)
@@ -156,16 +156,16 @@ let rec valid_column col =
   | [] -> true
   | h :: t -> (
       match h with
-      | NULL -> valid_column { label = col.label; data = t }
+      | NULL -> valid_column { title = col.title; data = t }
       | Int i -> valid_data t (Int i)
       | Bool b -> valid_data t (Bool b)
       | Float f -> valid_data t (Float f)
       | String s -> valid_data t (String s)
       | Date (y, m, d) -> valid_data t (Date (y, m, d)))
 
-let make_column s d = { label = s; data = d }
-let label t = t.label
-let data t = t.data
+let make_column s d = { title = s; data = d }
+(* let title t = t.title *)
+(* let data t = t.data *)
 
 let rec print_data data =
   match data with
@@ -175,5 +175,5 @@ let rec print_data data =
       print_data t
 
 let print col =
-  print_endline col.label;
+  print_endline col.title;
   print_data col.data
