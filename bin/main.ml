@@ -1,10 +1,13 @@
-let rec prompt_and_print ()=
+let rec prompt_and_print () =
   print_endline "Enter SQL command:";
-  let c= read_line () in
+  let c = read_line () in
   match c with
-  | exit-> print_endline "Exited"; ()
-  | _-> (*insert parser call*)
+  | "exit" ->
+      print_endline "Exited";
+      ()
+  | _ ->
+      (*insert parser call*)
+      prompt_and_print ();
+      ()
 
-  ;prompt_and_print ()
-
-let ()=promt_and_print ()
+let () = prompt_and_print ()

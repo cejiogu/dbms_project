@@ -23,3 +23,13 @@ val is_valid_month_or_day : string -> bool
 
 val is_valid_date : elem -> bool
 (** [is_valid_date d] returns whether or not the Date [d] is a valid Date. *)
+
+val empty : unit -> t
+(** [empty ()] returns an empty [t] *)
+
+val string_to_elem : string -> elem
+(** [string_to_elem s] takes in a string [s] and returns [s] as an [elem]. *)
+
+val date_of_string : string -> elem
+(** [string_to_elem s] takes in a string [s] and returns [s] as an elem of type [Date].
+    If [s] cannot be returned as a [Date] then [NULL] is returned. *)

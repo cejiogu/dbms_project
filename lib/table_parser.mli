@@ -1,4 +1,4 @@
-open Ast
+(* open Ast
 
 val parse : string -> expr
 (** [parse s] parses [s] into an AST *)
@@ -18,4 +18,4 @@ val eval : expr -> expr
 
 val interp : string -> string
 (** [interp s] interpres [s] by lexing and parsing it, evaluating it, and
-    converting the result to a string. *)
+    converting the result to a string. *) *)
