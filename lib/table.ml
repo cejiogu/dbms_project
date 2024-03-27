@@ -46,7 +46,7 @@ module Table: Table = struct
       let table = { table_name = name; columns = [] } in
       table
 
-  let rec create_table_aux (acc : column list) (data : string list) =
+  let create_table_aux (acc : column list) (data : string list) =
     match data with
     | [] -> List.rev acc
     | (head : string) :: (tail : string  list) -> let col : column = empty_column head in create_table_aux (col :: acc) tail

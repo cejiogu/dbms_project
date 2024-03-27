@@ -4,6 +4,12 @@ type elem
 type column
 (** [column] represents the record which holds [label] - the label of the column
     \- and [data] - the data of the column which is of type elem list. *)
+val elem_to_string : elem -> string
+(** [elem_to_string elem] returns [elem] as a string. *)
+
+val string_of_data : int * int * int -> string
+(** [string_of_data d] takes in a tuple of three ints known as [d] and returns a
+    string. [d] represents a [Date]. *)
 
 (* val label : t -> string *)
 (** [label t] takes in a type t [t] and returns the label of [t] *)
@@ -66,5 +72,6 @@ val print_data : elem list -> unit
 val print : column -> unit
 (** [print col] prints the contents of the column [col]. *)
 
-val elem_to_string : elem -> string
-(** [elem_to_string elem] returns [elem] as a string. *)
+val add_elem_to_column : elem -> column -> column
+(** [add_elem_to_column elem col] returns a column with [elem] added to the
+    beginning of [col.data]. *)
