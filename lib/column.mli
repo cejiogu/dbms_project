@@ -17,9 +17,6 @@ val elem_to_string : elem -> string
 (* val data : t -> elem list *)
 (** [data t] takes in a type t [t] and returns the data of [t] *)
 
-val empty_column : string -> t
-(**[empty_column] is an empty column of title [string]*)
-
 val all_numbers : string -> bool
 (** [all_numbers s] returns whether or not the string [s] contains only numbers. *)
 
@@ -33,9 +30,8 @@ val is_valid_month_or_day : string -> bool
 val is_valid_date : elem -> bool
 (** [is_valid_date d] returns whether or not the Date [d] is a valid Date. *)
 
-(* val empty : unit -> column *)
 val empty : t
-(** [empty ()] returns an empty [t] *)
+(** [empty] returns an empty [t] *)
 
 val string_to_elem : string -> elem
 (** [string_to_elem s] takes in a string [s] and returns [s] as an [elem]. *)

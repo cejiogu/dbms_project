@@ -11,7 +11,7 @@ module Table = struct
   let rec create_table_aux (acc: column list) (column_names: string list) = 
     match column_names with 
     | [] -> acc 
-    | h :: t -> let col = Column.empty_column h in 
+    | _ :: t -> let col = Column.empty in 
         let columns = col :: acc in 
       create_table_aux columns t 
 

@@ -11,16 +11,6 @@ type t = {
   data : elem list;
 }
 
-(* let title t = t.title *)
-(* let data t = t.data *)
-
-let empty_column (name : string) : t = { title = name; data = [] }
-
-(* let title t = t.title *)
-(* let data t = t.data *)
-
-let empty_column (name : string) : t = { title = name; data = [] }
-
 (* [all_numbers s] returns whether or not the string [s] contains only
    numbers. *)
 let all_numbers (s : string) : bool =
