@@ -56,7 +56,7 @@ let date_of_string (s : string) : elem =
     Date (year, month, day)
   else NULL
 
-let empty () = { label = ""; data = [] }
+let empty = { label = ""; data = [] }
 
 (* [string_to_elem s] takes in a string [s] and returns [s] as an [elem]. *)
 let string_to_elem (s : string) : elem =

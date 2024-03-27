@@ -18,7 +18,7 @@ val label : t -> string
 val data : t -> elem list
 (** [data t] takes in a type t [t] and returns the data of [t] *)
 
-val empty : unit -> t
+val empty : t
 (** [empty ()] returns an empty [t] *)
 
 val make_column : string -> elem list -> t
