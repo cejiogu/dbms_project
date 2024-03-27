@@ -52,7 +52,6 @@ let date_of_string (s : string) : elem =
     let year = Str.matched_group 1 s |> int_of_string in
     let month = Str.matched_group 2 s |> int_of_string in
     let day = Str.matched_group 3 s |> int_of_string in
-    (* Now we can validate year, month, and day if needed *)
     Date (year, month, day)
   else NULL
 
@@ -68,26 +67,47 @@ let string_to_elem (s : string) : elem =
         try String s
         with Failure _ -> ( try date_of_string s with Failure _ -> NULL))))
 
-let make_column s d = { label = s; data = d }
+let string_of_data date =
+  match date with
+  | year, month, day ->
+      "(" ^ string_of_int year ^ ", " ^ string_of_int month ^ ", "
+      ^ string_of_int day ^ ")"
 
-let rec valid_column_aux (data : elem list) (h_data : elem) : bool =
+let elem_to_string (e : elem) : string =
+  match e with
+  | NULL -> "NULL"
+  | Int i -> string_of_int i
+  | Bool b -> string_of_bool b
+  | Float f -> string_of_float f
+  | String s -> s
+  | Date (y, m, d) -> string_of_data (y, m, d)
+
+let rec stringlist_to_elemlist_aux (s : string list) (acc : elem list) :
+    elem list =
+  match s with
+  | [] -> List.rev acc
+  | h :: t -> stringlist_to_elemlist_aux t @@ (string_to_elem h :: acc)
+
+let stringlist_to_elemlist (s : string list) = stringlist_to_elemlist_aux s []
+
+let rec valid_data (data : elem list) (h_data : elem) : bool =
   match data with
   | [] -> true
   | h :: t -> begin
       match h_data with
       | NULL -> begin
           match h with
-          | NULL -> valid_column_aux t h_data
-          | Int _ -> valid_column_aux t h_data
-          | Bool _ -> valid_column_aux t h_data
-          | Float _ -> valid_column_aux t h_data
-          | String _ -> valid_column_aux t h_data
-          | Date _ -> valid_column_aux t h_data
+          | NULL -> valid_data t h_data
+          | Int _ -> valid_data t h_data
+          | Bool _ -> valid_data t h_data
+          | Float _ -> valid_data t h_data
+          | String _ -> valid_data t h_data
+          | Date _ -> valid_data t h_data
         end
       | Int _ -> begin
           match h with
-          | NULL -> valid_column_aux t h_data
-          | Int _ -> valid_column_aux t h_data
+          | NULL -> valid_data t h_data
+          | Int _ -> valid_data t h_data
           | Bool _ -> false
           | Float _ -> false
           | String _ -> false
@@ -95,43 +115,65 @@ let rec valid_column_aux (data : elem list) (h_data : elem) : bool =
         end
       | Bool _ -> begin
           match h with
-          | NULL -> valid_column_aux t h_data
+          | NULL -> valid_data t h_data
           | Int _ -> false
-          | Bool _ -> valid_column_aux t h_data
+          | Bool _ -> valid_data t h_data
           | Float _ -> false
           | String _ -> false
           | Date _ -> false
         end
       | Float _ -> begin
           match h with
-          | NULL -> valid_column_aux t h_data
+          | NULL -> valid_data t h_data
           | Int _ -> false
           | Bool _ -> false
-          | Float _ -> valid_column_aux t h_data
+          | Float _ -> valid_data t h_data
           | String _ -> false
           | Date _ -> false
         end
       | String _ -> begin
           match h with
-          | NULL -> valid_column_aux t h_data
+          | NULL -> valid_data t h_data
           | Int _ -> false
           | Bool _ -> false
           | Float _ -> false
-          | String _ -> valid_column_aux t h_data
+          | String _ -> valid_data t h_data
           | Date _ -> false
         end
       | Date _ -> begin
           match h with
-          | NULL -> valid_column_aux t h_data
+          | NULL -> valid_data t h_data
           | Int _ -> false
           | Bool _ -> false
           | Float _ -> false
           | String _ -> false
-          | Date _ -> valid_column_aux t h_data
+          | Date _ -> valid_data t h_data
         end
     end
 
 let rec valid_column col =
   match col.data with
   | [] -> true
-  | h :: _ -> valid_column_aux col.data h
+  | h :: t -> (
+      match h with
+      | NULL -> valid_column { label = col.label; data = t }
+      | Int i -> valid_data t (Int i)
+      | Bool b -> valid_data t (Bool b)
+      | Float f -> valid_data t (Float f)
+      | String s -> valid_data t (String s)
+      | Date (y, m, d) -> valid_data t (Date (y, m, d)))
+
+let make_column s d = { label = s; data = d }
+let label t = t.label
+let data t = t.data
+
+let rec print_data data =
+  match data with
+  | [] -> ()
+  | h :: t ->
+      print_endline @@ elem_to_string h;
+      print_data t
+
+let print col =
+  print_endline col.label;
+  print_data col.data
