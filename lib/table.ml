@@ -1,44 +1,16 @@
-module type Table = sig
+module Table = struct
   exception InvalidQuery of string
 
-  type column
-  (**[column] is the type of table columns*)
+  type column = Column.t
+
   type table = {
     table_name : string;
     columns : column list;
   }
-  (**[table] is an alias for the type of a table*)
 
-  val empty_table : string -> table
-  (**[empty_table] is an empty table, titled [string]. Raises [InvalidQuery] if
-  [string] is empty*)
+  let rec create_table_aux (acc: column list) (column_names: string list) = match column_names with | [] -> acc | (h: string) :: (tail: string list) -> let col = Column.empty_column h in let columns = col :: acc in create_table_aux columns tail 
 
-  val create_table : string -> string list -> table
-  (**[create_table] is a [table], titled [string] and containing columns titled 
-  after each string in [string list]. The columns created in this table are all empty, and only contain their titles.
-  This function is a auxiliary function that helps to implement the function
-  that would correspond to the SQL CREATE TABLE statement *)
-
-  val insert_into : string -> string array -> string array -> table
-  (**[insert_into] is a [table] containing a new row of values [string] that
-     holds the string values in [string array]*)
-
-  val print_table : table -> unit
-  (**[print_table] represents the table as a string in the terminal*)
-end
-
-module Table: Table = struct
-  open Column
-
-  exception InvalidQuery of string
-
-  type column = Column.column
-
-  type table = {
-    table_name : string;
-    columns : Column.t list;
-  }
-
+  let create_table (table_name: string) (column_names: string list) = let columns = (create_table_aux [] column_names) in let new_table = {table_name = table_name; columns = columns} in new_table
   let empty_table (name : string) : table =
     if name = "" then
       raise (InvalidQuery "You must enter the name of your table!")
@@ -46,17 +18,7 @@ module Table: Table = struct
       let table = { table_name = name; columns = [] } in
       table
 
-  let create_table_aux (acc : column list) (data : string list) =
-    match data with
-    | [] -> tab
-    | (head : string * string) :: (tail : (string * string) list) -> (
-        match head with
-        | name, datatype -> failwith "TODO")
-
-  let create_table (_ : string) (_ : (string * string) list) : table =
-    failwith "TODO: Requires function that creates a column from Column module"
-
-  let insert_into (table_name: string) (column_names : string list) (values : string list) (table : table) =
+  let insert_into (_: string) (column_names : string list) (values : string list) (_ : table) =
     if List.length column_names <> List.length values then
       raise (InvalidQuery "Column names and values must have the same length")
     else
@@ -75,10 +37,6 @@ module Table: Table = struct
           table.columns
       in
       { table with columns = updated_columns } *)
-
-  (* let alter_add (_ : string) (_ : string) (_ : string) = failwith "TODO" *)
-  (* let alter_drop (_ : string) (_ : string) = failwith "TODO" *)
-  (* let alter_rename (_ : string) (_ : string) (_ : string) = failwith "TODO" *)
   let print_table (_ : table) = failwith "TODO"
 end
 
@@ -96,7 +54,7 @@ module type Table = sig
 
   val create_table : string -> string list -> table
   (**[create_table] is a [table], titled [string] and containing columns titled 
-  after each string in [string list]. This function is a auxiliary function that
+  after each string in [string list]. This function is an auxiliary function that
   helps to implement the function that would correspond to the SQL CREATE TABLE
   statement *)
 
@@ -130,7 +88,7 @@ module Database = struct
   let table_exists (name : string) (db : database) : bool =
       List.exists (fun t -> t.table_name = name) db.tables
 
-  let insert_table (db : database) (name : string) (columns : (string * string) list) : database
+  let insert_table (db : database) (name : string) (columns : string list) : database
       =
       if table_exists name db then
         db

@@ -6,7 +6,7 @@ type elem =
   | String of string
   | Date of int * int * int
 
-type column = {
+type t = {
   title : string;
   data : elem list;
 }
@@ -14,12 +14,12 @@ type column = {
 (* let title t = t.title *)
 (* let data t = t.data *)
 
-let empty_column (name : string) : column = { title = name; data = [] }
+let empty_column (name : string) : t = { title = name; data = [] }
 
 (* let title t = t.title *)
 (* let data t = t.data *)
 
-let empty_column (name : string) : column = { title = name; data = [] }
+let empty_column (name : string) : t = { title = name; data = [] }
 
 (* [all_numbers s] returns whether or not the string [s] contains only
    numbers. *)
@@ -148,7 +148,7 @@ let add_elem_to_column elem col = { title = col.title; data = elem :: col.data }
 let title t = t.title
 let data t = t.data
 
-let string_of_data date =
+let string_of_date date =
   match date with
   | year, month, day ->
       "(" ^ string_of_int year ^ ", " ^ string_of_int month ^ ", "
@@ -161,7 +161,7 @@ let elem_to_string (e : elem) : string =
   | Bool b -> string_of_bool b
   | Float f -> string_of_float f
   | String s -> s
-  | Date (y, m, d) -> string_of_data (y, m, d)
+  | Date (y, m, d) -> string_of_date (y, m, d)
 
 let rec print_data data =
   match data with
