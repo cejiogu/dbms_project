@@ -8,9 +8,17 @@ module Table = struct
     columns : column list;
   }
 
-  let rec create_table_aux (acc: column list) (column_names: string list) = match column_names with | [] -> acc | (h: string) :: (tail: string list) -> let col = Column.empty_column h in let columns = col :: acc in create_table_aux columns tail 
+  let rec create_table_aux (acc: column list) (column_names: string list) = 
+    match column_names with 
+    | [] -> acc 
+    | h :: t -> let col = Column.empty_column h in 
+        let columns = col :: acc in 
+      create_table_aux columns t 
 
-  let create_table (table_name: string) (column_names: string list) = let columns = (create_table_aux [] column_names) in let new_table = {table_name = table_name; columns = columns} in new_table
+  let create_table (table_name: string) (column_names: string list) = 
+    let columns = (create_table_aux [] column_names) in 
+    let new_table = {table_name = table_name; columns = columns} in 
+    new_table
   let empty_table (name : string) : table =
     if name = "" then
       raise (InvalidQuery "You must enter the name of your table!")
