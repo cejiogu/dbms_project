@@ -7,4 +7,7 @@ let rec prompt_and_print () =
       ()
   | _ ->
       (*insert parser call*)
-      prompt_and_print ()
+      prompt_and_print ();
+      ()
+
+let () = prompt_and_print ()
