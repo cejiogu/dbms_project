@@ -63,3 +63,6 @@ val print : t -> unit
 
 val elem_to_string : elem -> string
 (** [elem_to_string elem] returns [elem] as a string. *)
+
+val add_elem_to_column : elem -> t -> t
+(** [add_elem_to_column elem col] returns a column with [elem] added to the beginning of [col.data]. *)

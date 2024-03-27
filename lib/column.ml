@@ -161,6 +161,7 @@ let rec valid_column col =
       | Date (y, m, d) -> valid_data t (Date (y, m, d)))
 
 let make_column s d = { label = s; data = d }
+let add_elem_to_column elem col = { label = col.label; data = elem :: col.data }
 let label t = t.label
 let data t = t.data
 
