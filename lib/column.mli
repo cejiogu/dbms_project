@@ -33,3 +33,10 @@ val string_to_elem : string -> elem
 val date_of_string : string -> elem
 (** [string_to_elem s] takes in a string [s] and returns [s] as an elem of type [Date].
     If [s] cannot be returned as a [Date] then [NULL] is returned. *)
+
+val make_column : string -> elem list -> t
+(** [make_column s d] takes in a string [s] and an elem list [d] 
+    and creates a column where the label is [s] and the data is [d]. *)
+
+val valid_column_aux : elem list -> elem -> bool 
+(** [valid_column_aux d h] is a helper function for [valid_column].  *)

@@ -65,5 +65,73 @@ let string_to_elem (s : string) : elem =
         try String s
         with Failure _ -> ( try date_of_string s with Failure _ -> NULL))))
 
+let make_column s d = { label = s; data = d }
+
+let rec valid_column_aux (data : elem list) (h_data : elem) : bool =
+  match data with
+  | [] -> true
+  | h :: t -> begin
+      match h_data with
+      | NULL -> begin
+          match h with
+          | NULL -> valid_column_aux t h_data
+          | Int _ -> valid_column_aux t h_data
+          | Bool _ -> valid_column_aux t h_data
+          | Float _ -> valid_column_aux t h_data
+          | String _ -> valid_column_aux t h_data
+          | Date _ -> valid_column_aux t h_data
+        end
+      | Int _ -> begin
+          match h with
+          | NULL -> valid_column_aux t h_data
+          | Int _ -> valid_column_aux t h_data
+          | Bool _ -> false
+          | Float _ -> false
+          | String _ -> false
+          | Date _ -> false
+        end
+      | Bool _ -> begin
+          match h with
+          | NULL -> valid_column_aux t h_data
+          | Int _ -> false
+          | Bool _ -> valid_column_aux t h_data
+          | Float _ -> false
+          | String _ -> false
+          | Date _ -> false
+        end
+      | Float _ -> begin
+          match h with
+          | NULL -> valid_column_aux t h_data
+          | Int _ -> false
+          | Bool _ -> false
+          | Float _ -> valid_column_aux t h_data
+          | String _ -> false
+          | Date _ -> false
+        end
+      | String _ -> begin
+          match h with
+          | NULL -> valid_column_aux t h_data
+          | Int _ -> false
+          | Bool _ -> false
+          | Float _ -> false
+          | String _ -> valid_column_aux t h_data
+          | Date _ -> false
+        end
+      | Date _ -> begin
+          match h with
+          | NULL -> valid_column_aux t h_data
+          | Int _ -> false
+          | Bool _ -> false
+          | Float _ -> false
+          | String _ -> false
+          | Date _ -> valid_column_aux t h_data
+        end
+    end
+
+let rec valid_column col =
+  match col.data with
+  | [] -> true
+  | h :: _ -> valid_column_aux col.data h
+
 let label t = t.label
 let data t = t.data
