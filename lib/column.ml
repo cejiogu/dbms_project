@@ -69,7 +69,6 @@ let string_of_data date =
   | year, month, day ->
       "(" ^ string_of_int year ^ ", " ^ string_of_int month ^ ", "
       ^ string_of_int day ^ ")"
-  | _ -> failwith "Not a date"
 
 let elem_to_string (e : elem) : string =
   match e with
@@ -168,7 +167,9 @@ let data t = t.data
 let rec print_data data =
   match data with
   | [] -> ()
-  | h :: _ -> print_endline @@ elem_to_string h
+  | h :: t ->
+      print_endline @@ elem_to_string h;
+      print_data t
 
 let print col =
   print_endline col.label;
