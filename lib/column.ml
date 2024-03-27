@@ -58,14 +58,20 @@ let date_of_string (s : string) : elem =
 let empty = { title = ""; data = [] }
 
 let elem_of_string (s : string) : elem =
-  try Int (int_of_string s)
-  with Failure _ -> (
-    try Bool (bool_of_string s)
-    with Failure _ -> (
-      try Float (float_of_string s)
-      with Failure _ -> (
-        try String s
-        with Failure _ -> ( try date_of_string s with Failure _ -> NULL))))
+  let data_type = int_of_string_opt s in
+  match data_type with
+  | Some int -> Int int
+  | None -> (
+      let data_type = float_of_string_opt s in
+      match data_type with
+      | Some float -> Float float
+      | None -> (
+          let data_type = bool_of_string_opt s in
+          match data_type with
+          | Some bool -> Bool bool
+          | None ->
+              let data_type = date_of_string s in
+              if data_type = NULL then String s else data_type))
 
 (** [stringlist_to_elemlist_aux s acc] is a helper function for
     [stringlist_to_elemlist]. *)
