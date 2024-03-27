@@ -11,6 +11,9 @@ type t = {
   data : elem list;
 }
 
+let label t = t.label
+let data t = t.data
+
 let all_numbers (s : string) : bool =
   if Str.string_match (Str.regexp "[0-9]+$") s 0 then true else false
 
@@ -132,6 +135,3 @@ let rec valid_column col =
   match col.data with
   | [] -> true
   | h :: _ -> valid_column_aux col.data h
-
-let label t = t.label
-let data t = t.data
