@@ -27,8 +27,8 @@ module Table = struct
   let create_table (_ : string) (_ : (string * string) list) : table =
     failwith "TODO: Requires function that creates a column from Column module"
 
-  let insert_into (table_name: string) (column_names : string array) (values : string array) (table : table) =
-    if Array.length column_names <> Array.length values then
+  let insert_into (table_name: string) (column_names : string list) (values : string list) (table : table) =
+    if List.length column_names <> List.length values then
       raise (InvalidQuery "Column names and values must have the same length")
     else
       failwith "TODO: Requires function that creates a column from Column module"
@@ -71,9 +71,9 @@ module type Table = sig
   helps to implement the function that would correspond to the SQL CREATE TABLE
   statement *)
 
-  val insert_into : string -> string array -> string array -> table
+  val insert_into : string -> string list -> string list -> table
   (**[insert_into] is a [table] containing a new row of values [string] that
-     holds the string values in [string array]*)
+     holds the string values in [string list]*)
 
   val print_table : table -> unit
   (**[print_table] represents the table as a string in the terminal*)
@@ -135,9 +135,9 @@ module type Database = sig
      column is not found in [table]. This function corresponds to the SQL SELECT
      statement.*)
 
-  val insert_into : table -> string array -> string array -> table
+  val insert_into : table -> string list -> string list -> table
   (**[insert_into] is a [table] that inserts into the columns whose names are
-     speficied in the first [string array] argument a new row of data, which is
-     specified in the second [string array] argument. This function corresponds
+     speficied in the first [string list] argument a new row of data, which is
+     specified in the second [string list] argument. This function corresponds
      to the SQL INSERT INTO statement*)
 end
