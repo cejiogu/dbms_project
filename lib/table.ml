@@ -3,11 +3,9 @@ module Table = struct
 
   exception InvalidQuery of string
 
-  type column = {column_name : string }
-
   type table = {
     table_name : string;
-    columns : column list;
+    columns : Column.t list;
   }
 
   let empty_table (name : string) : table =
