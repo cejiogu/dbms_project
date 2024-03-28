@@ -58,8 +58,8 @@ let date_of_string (s : string) : elem =
 
 let empty = { title = ""; data = [] }
 
-(* [string_to_elem s] takes in a string [s] and returns [s] as an [elem]. *)
-let string_to_elem (s : string) : elem =
+(* [elem_of_string s] takes in a string [s] and returns [s] as an [elem]. *)
+let elem_of_string (s : string) : elem =
   try Int (int_of_string s)
   with Failure _ -> (
     try Bool (bool_of_string s)
@@ -69,20 +69,20 @@ let string_to_elem (s : string) : elem =
         try String s
         with Failure _ -> ( try date_of_string s with Failure _ -> NULL))))
 
-(* [stringlist_to_elemlist_aux s acc] is a helper function for
-   [stringlist_to_elemlist]. *)
+(** [stringlist_to_elemlist_aux s acc] is a helper function for
+    [stringlist_to_elemlist]. *)
 let rec stringlist_to_elemlist_aux (s : string list) (acc : elem list) :
     elem list =
   match s with
   | [] -> List.rev acc
-  | h :: t -> stringlist_to_elemlist_aux t @@ (string_to_elem h :: acc)
+  | h :: t -> stringlist_to_elemlist_aux t @@ (elem_of_string h :: acc)
 
 (** [stringlist_to_elemlist s] returns the string [s] as an [elem list]. *)
 let stringlist_to_elemlist (s : string list) = stringlist_to_elemlist_aux s []
 
-(* [valid_data d h] takes in an elem list [d] which could be the data of a
-   column. [h] is the elem type that [d] should be throughout. Returns true if
-   [d] is all of type [h] otherwise returns false. *)
+(** [valid_data d h] takes in an elem list [d] which could be the data of a
+    column. [h] is the elem type that [d] should be throughout. Returns true if
+    [d] is all of type [h] otherwise returns false. *)
 let rec valid_data (data : elem list) (h_data : elem) : bool =
   match data with
   | [] -> true
@@ -138,13 +138,15 @@ let add_elem_to_column elem col = { title = col.title; data = elem :: col.data }
 
 (* let title t = t.title let data t = t.data*)
 
+(** [string_of_date d] takes in a tuple of three ints known as [d] and returns a
+    string. [d] represents a [Date]. *)
 let string_of_date date =
   match date with
   | year, month, day ->
       "(" ^ string_of_int year ^ ", " ^ string_of_int month ^ ", "
       ^ string_of_int day ^ ")"
 
-let elem_to_string (e : elem) : string =
+let string_of_elem (e : elem) : string =
   match e with
   | NULL -> "NULL"
   | Int i -> string_of_int i
@@ -153,11 +155,21 @@ let elem_to_string (e : elem) : string =
   | String s -> s
   | Date (y, m, d) -> string_of_date (y, m, d)
 
+(** [string_of_data d] takes in an elem list [d] and returns it as a string. *)
+let rec string_of_data data =
+  match data with
+  | [] -> ""
+  | h :: t -> "[" ^ string_of_elem h ^ ", " ^ string_of_data t ^ "]"
+
+let string_of_column col =
+  "{" ^ col.title ^ ", " ^ string_of_data col.data ^ "}"
+
+(** [print_data d] prints the contents of the elem list [d]. *)
 let rec print_data data =
   match data with
   | [] -> ()
   | h :: t ->
-      print_endline @@ elem_to_string h;
+      print_endline @@ string_of_elem h;
       print_data t
 
 let print col =
