@@ -8,9 +8,9 @@ val string_of_elem : elem -> string
 (** [string_of_elem elem] returns [elem] as a string. *)
 
 (* val label : t -> string *)
-(** [label t] takes in a type t [t] and returns the label of [t] *)
+(* [label t] takes in a type t [t] and returns the label of [t] *)
 
-(* val data : t -> elem list *)
+val data : t -> elem list 
 (** [data t] takes in a type t [t] and returns the data of [t] *)
 
 val all_numbers : string -> bool
