@@ -5,6 +5,12 @@ type column
 
 type t
 (**[t] is an alias for the type of a table*)
+
+val table_name : t -> string
+(**[table_name t] returns the [table_name] field of [t]. *)
+
+val columns : t -> column list
+(**[columns t] returns the [columns] field of [t]. *)
   
 val empty_table : string -> t
 (**[empty_table] is an empty table, titled [string]. 

@@ -7,6 +7,9 @@ type t = {
   columns : column list;
 }
 
+let table_name t = t.table_name
+let columns t = t.columns
+
 let rec create_table_aux (acc : column list) (column_names : string list) =
   match column_names with
   | [] -> acc
