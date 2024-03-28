@@ -1,12 +1,13 @@
-{
+(* {
     open Parser
+    open Ast
 }
 
 let space = [' ']
-let empty_table = table.empty_table 
+(* let empty_table = Table.empty_table  *)
 
 rule read = 
     parse 
-    | "CREATE" { command }
+    | "CREATE" { Ast.command }
     (* for future reference: | "CREATE" { TABLE (table_of_string (Lexing.lexeme lexbuf)) } *)
-    | eof { EOF }
+    | eof { EOF } *)

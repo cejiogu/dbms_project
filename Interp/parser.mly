@@ -1,15 +1,15 @@
-%token CREATE
-%token TABLE
-%token DATABASE
-%token <string> name
-%token EOF
+// %token CREATE
+// %token TABLE
+// // %token DATABASE
+// %token <string> NAME
+// %token EOF
 
-%start <Ast.expr> prog
+// %start <Ast.expr> prog
 
-%% 
+// %% 
 
-prog: 
-    | e = expr; EOF { e }; 
+// prog: 
+//     | e = expr; EOF { e }; 
 
-expr:
-    | CREATE; TABLE; name {Command (CREATE, TABLE, name)}
+// expr:
+//     | CREATE; TABLE; s = NAME {Command (CREATE, TABLE, s)}
