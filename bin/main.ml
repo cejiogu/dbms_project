@@ -19,7 +19,7 @@ let cycler () =
   command
 
 let rec prompt_loop (exit : string list) (input : string)
-    (database : Final_project.Table.Database.database) =
+    (database : Final_project.Database.t) =
   if List.mem input exit then
     let () = print_endline "You have quit the program" in
     ()
@@ -40,8 +40,8 @@ let rec prompt_loop (exit : string list) (input : string)
         if first_word = "CREATE" && second_word = "TABLE" then
           let columns = StringBuilder.third_onward command in
           let database =
-            Final_project.Table.Database.insert_table database
-              (List.nth command 2) columns
+            Final_project.Database.insert_table database (List.nth command 2)
+              columns
           in
           prompt_loop exit (cycler ()) database
         else print_endline "Invalid Command; Terminating Program"
@@ -53,7 +53,7 @@ let initial_prompt =
   let name = read_line () in
   if List.mem name exit then print_endline "You have quit the program"
   else
-    let database = Final_project.Table.Database.empty_database name in
+    let database = Final_project.Database.empty_database name in
     let () = print_endline "Enter an SQL command to modify your database: " in
     let command = read_line () in
     prompt_loop exit command database
