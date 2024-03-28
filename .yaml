@@ -23,7 +23,7 @@ git-repo: "https://github.coecis.cornell.edu/ce248/final_project"
 demo-video-url: ""
 # Write a short, attention-grabbing description of your project.
 desc: >
-  Our project is a Databse Management System. It supports standard SQL queries.
+  Our project is a Databse Management System. It supports standard SQL queries,
   such as WHERE, SELECT, GROUP BY and FROM commands. The interface 
   allows the user to create, drop and manage tables and has functionality to
   insert, update and delete rows. The database will be stored as a file which 
