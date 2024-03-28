@@ -29,9 +29,9 @@ val date_of_string : string -> elem
 (** [string_to_elem s] takes in a string [s] and returns [s] as an elem of type
     [Date]. If [s] cannot be returned as a [Date] then [NULL] is returned. *)
 
-val make_column : string -> elem list -> t
-(** [make_column s d] takes in a string [s] and an elem list [d] and creates a
-    column where the label is [s] and the data is [d]. *)
+val make_column : string -> string list -> t
+(** [make_column s l] takes in a string [s] and a string list [l] and creates a
+    column where the label is [s] and the data is [l] as an [elem list]. *)
 
 val valid_data : elem list -> elem -> bool
 (** [valid_data d h] takes in an elem list [d] which could be the data of a
@@ -41,8 +41,8 @@ val valid_data : elem list -> elem -> bool
 val valid_column : t -> bool
 (** [valid_column col] returns if [col] is a valid [t]. *)
 
-val stringlist_to_elemlist : string list -> elem list
-(** [stringlist_to_elemlist s] returns the string [s] as an [elem list]. *)
+val elemlist_of_stringlist : string list -> elem list
+(** [elemlist_of_stringlist s] returns the string [s] as an [elem list]. *)
 
 val string_of_column : t -> string
 (** [string_of_column c] takes in a column [c] of type [t] and returns it as a string. *)
