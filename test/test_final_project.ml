@@ -1,6 +1,6 @@
 open OUnit2
 include Final_project
-open Final_project.Table
+include Final_project.Table
 
 let tests_column =
   "test Column"
