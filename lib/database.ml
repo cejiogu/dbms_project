@@ -15,6 +15,4 @@
 
    let insert_table (db : t) (name : string) (columns : string list) : t = if
    table_exists name db then db else let new_table = Table.create_table name
-   columns in { db with tables = new_table :: db.tables }
-
-   let select_from s table = failwith "not made yet" *)
+   columns in { db with tables = new_table :: db.tables } *)
