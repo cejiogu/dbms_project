@@ -11,38 +11,37 @@ type t = {
   data : elem list;
 }
 
-(* [all_numbers s] returns whether or not the string [s] contains only
-   numbers. *)
+(** [all_numbers s] returns whether or not the string [s] contains only numbers. *)
 let all_numbers (s : string) : bool =
   if Str.string_match (Str.regexp "[0-9]+$") s 0 then true else false
 
-(* [is_valid_year s] returns whether or not the string [s] is a valid year. *)
-let is_valid_year (year : string) : bool =
+(** [valid_year s] returns whether or not the string [s] is a valid year. *)
+let valid_year (year : string) : bool =
   if year = "NULL" || all_numbers year then true else false
 
-(* [is_valid_month_or_day s] returns whether or not the string [s] is a valid
-   month or day. *)
-let is_valid_month_or_day (month_or_day : string) : bool =
+(** [is_valid_month_or_day s] returns whether or not the string [s] is a valid
+    month or day. *)
+let valid_month_or_day (month_or_day : string) : bool =
   if
     month_or_day = "NULL"
     || (all_numbers month_or_day && String.length month_or_day = 2)
   then true
   else false
 
-(* [is_valid_date d] returns whether or not the Date [d] is a valid Date. *)
-let is_valid_date (date : elem) =
+(** [valid_date d] returns whether or not the Date [d] is a valid Date. *)
+let valid_date (date : elem) =
   match date with
   | Date (year, month, day) ->
       if
-        (is_valid_year @@ string_of_int year)
-        && (is_valid_month_or_day @@ string_of_int month)
-        && (is_valid_month_or_day @@ string_of_int day)
+        (valid_year @@ string_of_int year)
+        && (valid_month_or_day @@ string_of_int month)
+        && (valid_month_or_day @@ string_of_int day)
       then true
       else false
   | _ -> false
 
-(*[date_of_string s] takes in a string [s] and returns [s] as an elem of type
-  [Date]. If [s] cannot be returned as a [Date] then [NULL] is returned. *)
+(** [date_of_string s] takes in a string [s] and returns [s] as an elem of type
+    [Date]. If [s] cannot be returned as a [Date] then [NULL] is returned. *)
 let date_of_string (s : string) : elem =
   (* Regular expression to match a date in the format YYYY-MM-DD *)
   let regexp =
@@ -58,7 +57,6 @@ let date_of_string (s : string) : elem =
 
 let empty = { title = ""; data = [] }
 
-(* [elem_of_string s] takes in a string [s] and returns [s] as an [elem]. *)
 let elem_of_string (s : string) : elem =
   try Int (int_of_string s)
   with Failure _ -> (
