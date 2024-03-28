@@ -14,6 +14,12 @@ let tests_column =
          ( "Empty Table" >:: fun _ ->
            assert_equal (Table.empty_table "test")
              (Table.create_table "test" []) );
+         ( "Add String to Col" >:: fun _ ->
+           assert_equal
+             (Column.stringlist_to_elemlist [ "bus" ])
+             (Column.data
+                (Column.make_column "transport"
+                   (Column.stringlist_to_elemlist [ "bus" ]))) );
        ]
 
 let _ = run_test_tt_main tests_column

@@ -140,7 +140,8 @@ let rec valid_column col =
 let make_column s d = { title = s; data = d }
 let add_elem_to_column elem col = { title = col.title; data = elem :: col.data }
 
-(* let title t = t.title let data t = t.data*)
+(* let title t = t.title *)
+let data t = t.data
 
 (** [string_of_date d] takes in a tuple of three ints known as [d] and returns a
     string. [d] represents a [Date]. *)

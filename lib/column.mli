@@ -10,8 +10,8 @@ val string_of_elem : elem -> string
 (* val label : t -> string *)
 (* [label t] takes in a type t [t] and returns the label of [t] *)
 
-(* val data : t -> elem list *)
-(* [data t] takes in a type t [t] and returns the data of [t] *)
+val data : t -> elem list 
+(** [data t] takes in a type t [t] and returns the data of [t] *)
 
 val all_numbers : string -> bool
 (** [all_numbers s] returns whether or not the string [s] contains only numbers. *)

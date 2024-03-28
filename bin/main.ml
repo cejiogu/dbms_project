@@ -1,4 +1,4 @@
-open Final_project.Column
+(*open Final_project.Column*)
 
 let rec prompt_and_print () =
   print_endline "Enter SQL command:";
