@@ -73,16 +73,15 @@ let elem_of_string (s : string) : elem =
               let data_type = date_of_string s in
               if data_type = NULL then String s else data_type))
 
-(** [stringlist_to_elemlist_aux s acc] is a helper function for
-    [stringlist_to_elemlist]. *)
-let rec stringlist_to_elemlist_aux (s : string list) (acc : elem list) :
+(** [elemlist_of_stringlist_aux s acc] is a helper function for
+    [elemlist_of_stringlist]. *)
+let rec elemlist_of_stringlist_aux (s : string list) (acc : elem list) :
     elem list =
   match s with
   | [] -> List.rev acc
-  | h :: t -> stringlist_to_elemlist_aux t @@ (elem_of_string h :: acc)
+  | h :: t -> elemlist_of_stringlist_aux t @@ (elem_of_string h :: acc)
 
-(** [stringlist_to_elemlist s] returns the string [s] as an [elem list]. *)
-let stringlist_to_elemlist (s : string list) = stringlist_to_elemlist_aux s []
+let elemlist_of_stringlist (s : string list) = elemlist_of_stringlist_aux s []
 
 (** [valid_data d h] takes in an elem list [d] which could be the data of a
     column. [h] is the elem type that [d] should be throughout. Returns true if
@@ -137,10 +136,11 @@ let rec valid_column col =
       | String s -> valid_data t (String s)
       | Date (y, m, d) -> valid_data t (Date (y, m, d)))
 
-let make_column s d = { title = s; data = d }
+let make_column s d = { title = s; data = elemlist_of_stringlist d }
 let add_elem_to_column elem col = { title = col.title; data = elem :: col.data }
 
-(* let title t = t.title let data t = t.data*)
+(* let title t = t.title *)
+let data t = t.data
 
 (** [string_of_date d] takes in a tuple of three ints known as [d] and returns a
     string. [d] represents a [Date]. *)
@@ -160,10 +160,15 @@ let string_of_elem (e : elem) : string =
   | Date (y, m, d) -> string_of_date (y, m, d)
 
 (** [string_of_data d] takes in an elem list [d] and returns it as a string. *)
-let rec string_of_data data =
-  match data with
-  | [] -> ""
-  | h :: t -> "[" ^ string_of_elem h ^ ", " ^ string_of_data t ^ "]"
+
+let string_of_data data =
+  let rec aux acc = function
+    | [] -> acc
+    | [ last ] ->
+        acc ^ string_of_elem last (* No comma after the last element *)
+    | h :: t -> aux (acc ^ string_of_elem h ^ ", ") t
+  in
+  "[" ^ aux "" data ^ "]"
 
 let string_of_column col =
   "{" ^ col.title ^ ", " ^ string_of_data col.data ^ "}"

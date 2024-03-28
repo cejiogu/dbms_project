@@ -8,6 +8,6 @@ let space = [' ']
 
 rule read = 
     parse 
-    | "CREATE" { Ast.command }
+    | "CREATE" { CREATE (Ast.command) }
     (* for future reference: | "CREATE" { TABLE (table_of_string (Lexing.lexeme lexbuf)) } *)
     | eof { EOF } *)
