@@ -160,10 +160,15 @@ let string_of_elem (e : elem) : string =
   | Date (y, m, d) -> string_of_date (y, m, d)
 
 (** [string_of_data d] takes in an elem list [d] and returns it as a string. *)
-let rec string_of_data data =
-  match data with
-  | [] -> ""
-  | h :: t -> "[" ^ string_of_elem h ^ ", " ^ string_of_data t ^ "]"
+
+let string_of_data data =
+  let rec aux acc = function
+    | [] -> acc
+    | [ last ] ->
+        acc ^ string_of_elem last (* No comma after the last element *)
+    | h :: t -> aux (acc ^ string_of_elem h ^ ", ") t
+  in
+  "[" ^ aux "" data ^ "]"
 
 let string_of_column col =
   "{" ^ col.title ^ ", " ^ string_of_data col.data ^ "}"
