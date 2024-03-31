@@ -1,44 +1,37 @@
 exception InvalidQuery of string
 
 type table
-(**[table] is the type of database tables. *)
+(** The type representing a table within a database. *)
 
-type t = {
-  name : string;
-  tables : table list;
-}
-(**[t] is an alias for the type of a database. *)
+type t
+(** The type representing a database, which consists of a name and a list of tables. *)
 
 val name : t -> string
-(**[name] is the name [string] of a database [t]*)
+(** [name db] Returns the name of the database [db].
+      @param db The database instance whose name is to be retrieved. *)
 
 val tables : t -> table list
-(**[tables] is the tables in a database [t]*)
+(** [tables db] Returns the list of tables in the database [db].
+      @param db The database instance whose tables are to be retrieved. *)
 
 val empty_database : string -> t
-(**[empty_database] is an empty database, titled [string]. Raises [InvalidQuery]
-   if [string] is empty. *)
+(** [empty_database name] Creates an empty database with the specified name [name].
+      @param name The name of the database to be created.
+      @raise InvalidQuery if the provided [name] is an empty string.
+      @return A new database instance with the specified name and no tables.
+      @notes This function is useful for initializing a new database before tables are added. *)
 
 val table_exists : string -> t -> bool
-(**[table_exists] is whether or not a table of title [string] exists in [t]*)
+(** [table_exists name db] Checks if a table with the specified name [name] exists in the database [db].
+      @param name The name of the table to check for existence.
+      @param db The database in which to look for the table.
+      @return [true] if a table with the specified name exists in the database, [false] otherwise.
+      @notes This function can be used to prevent duplicate tables in a database. *)
 
 val insert_table : t -> string -> string list -> t
-(**[insert_table] is a [database] that now includes a new table titled [string]
-   and with columns titled after each string in [string list] into [database].
-   Does not change [database] if a table titled [string] already exists in
-   [database]. This function corresponds to the SQL CREATE TABLE statement. *)
-
-(* future implementation of insert_table below. Current implementation of
-   insert_table above. *)
-(* val insert_table : t -> string -> (string * string) list -> t *)
-
-(* val select_from : string -> table -> table *)
-(**[select_from] is a [table] representing the column, titled [string], selected
-   from [table]. Raises [InvalidQuery] if the [string] title of the column is
-   not found in [table]. This function corresponds to the SQL SELECT statement. *)
-
-(* val insert_into : table -> string list -> string list -> table *)
-(**[insert_into] is a [table] that inserts into the columns whose names are
-   speficied in the first [string list] argument a new row of data, which is
-   specified in the second [string list] argument. This function corresponds to
-   the SQL INSERT INTO statement. *)
+(** [insert_table db name columns] Creates a new table with the specified name [name] and columns [columns] and inserts it into the database [db].
+      @param db The database into which the new table is to be inserted.
+      @param name The name of the new table.
+      @param columns A list of names for each column in the new table.
+      @return An updated database containing the new table.
+      @raise Does not change the database if a table with the specified name already exists. *)

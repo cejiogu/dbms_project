@@ -1,55 +1,75 @@
 type elem
-(** [elem] represents the type of the data in a given column. *)
+(** The type representing the data contained within a column. Variants include 
+    integers, booleans, floats, strings, and dates. *)
 
 type t
-(** [column] represents the record which holds [label] - the label of the column
-    \- and [data] - the data of the column which is of type elem list. *)
-val string_of_elem : elem -> string
-(** [string_of_elem elem] returns [elem] as a string. *)
+(** The type representing a column within a table, which consists of a record holding the fields of 
+[title] the string label of the column and [data] the data entries of the column. *)
 
-(* val label : t -> string *)
-(* [label t] takes in a type t [t] and returns the label of [t] *)
+val string_of_elem : elem -> string
+(** [string_of_elem elem] Converts an element of type [elem] to its string representation.
+    @param elem The element to be converted. *)
 
 val data : t -> elem list 
-(** [data t] takes in a type t [t] and returns the data of [t] *)
+(** [data col] Retrieves the list of data entries from a column.
+    @param col The column from which data is retrieved. *)
 
 val all_numbers : string -> bool
-(** [all_numbers s] returns whether or not the string [s] contains only numbers. *)
+(** [all_numbers s] Checks if a given string consists entirely of digits.
+    @param s The string to check. *)
 
 val valid_date : elem -> bool
-(** [is_valid_date d] returns whether or not the Date [d] is a valid Date. *)
+(** [valid_date d] Determines if a given element represents a valid date.
+    @param d The element to validate. *)
 
 val empty : t
-(** [empty] returns an empty [t] *)
+(** [empty] Produces an empty column with no title and no data entries.
+    @return An empty column instance. *)
 
 val elem_of_string : string -> elem
-(** [elem_of_string s] takes in a string [s] and returns [s] as an [elem]. *)
+(** [elem_of_string s] Parses a string to produce an element of type [elem].
+    @param s The string to parse.
+    @return The corresponding element. *)
 
 val date_of_string : string -> elem
-(** [string_to_elem s] takes in a string [s] and returns [s] as an elem of type
-    [Date]. If [s] cannot be returned as a [Date] then [NULL] is returned. *)
+(** [date_of_string s] Attempts to parse a string into a [Date] element.
+    @param s The string representing a date.
+    @return A [Date] element if successful; otherwise, [NULL]. *)
 
 val make_column : string -> string list -> t
-(** [make_column s l] takes in a string [s] and a string list [l] and creates a
-    column where the label is [s] and the data is [l] as an [elem list]. *)
+(** [make_column t str_data_lst] Creates a column with a specified title and a list of data entries converted from strings.
+    @param t The title of the column.
+    @param str_data_lst The list of strings to be converted into data entries.
+    @return A new column with the specified data. *)
 
 val valid_data : elem list -> elem -> bool
-(** [valid_data d h] takes in an elem list [d] which could be the data of a
-    column. [h] is the elem type that [d] should be throughout. Returns true if
-    [d] is all of type [h] otherwise returns false. *)
+(** [valid_data data type_elem] Verifies that all data entries in a list match a specified type.
+    @param data The list of data entries to check.
+    @param type_elem The type element used to check the data list elem type.
+    @return [true] if all entries match the type; otherwise, [false]. *)
 
 val valid_column : t -> bool
-(** [valid_column col] returns if [col] is a valid [t]. *)
+(** [valid_column col] Checks if a column's data entries are consistent and valid.
+    @param col The column to validate.
+    @return [true] if the column is valid; otherwise, [false]. *)
 
 val elemlist_of_stringlist : string list -> elem list
-(** [elemlist_of_stringlist s] returns the string [s] as an [elem list]. *)
+(** [elemlist_of_stringlist str_lst] Converts a list of strings into a list of elements of type [elem].
+    @param str_lst The list of strings to convert.
+    @return A list of data entries corresponding to the input strings. *)
 
 val string_of_column : t -> string
-(** [string_of_column c] takes in a column [c] of type [t] and returns it as a string. *)
+(** [string_of_column col] Converts a column to its string representation, including its title and data entries.
+    @param col The column to convert.
+    @return The string representation of the column. *)
 
 val print : t -> unit
-(** [print col] prints the contents of the column [col]. *)
+(** [print col] Prints the contents of a column, including its title and data entries, to the console.
+    @param col The column to print. *)
 
 val add_elem_to_column : elem -> t -> t
-(** [add_elem_to_column elem col] returns a column with [elem] added to the
-    beginning of [col.data]. *)
+(** [add_elem_to_column elem col] Adds a new element to the beginning of a column's data list.
+    @param elem The element to add.
+    @param col The column to which the element will be added.
+    @return The updated column with the new element added. *)
+
