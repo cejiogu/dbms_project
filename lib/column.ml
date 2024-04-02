@@ -11,16 +11,24 @@ type t = {
   data : elem list;
 }
 
-(** [all_numbers s] returns whether or not the string [s] contains only numbers. *)
+(** [all_numbers s] checks if the string [s] contains only numeric characters.
+    @param s The string to check.
+    @return [true] if [s] contains only digits; otherwise, [false]. *)
 let all_numbers (s : string) : bool =
   if Str.string_match (Str.regexp "[0-9]+$") s 0 then true else false
 
-(** [valid_year s] returns whether or not the string [s] is a valid year. *)
+(** [valid_year s] checks if the string [s] represents a valid year.
+    @param s The string representing a year.
+    @return [true] if [s] is "NULL" or contains only digits; otherwise, [false]. *)
 let valid_year (year : string) : bool =
   if year = "NULL" || all_numbers year then true else false
 
-(** [is_valid_month_or_day s] returns whether or not the string [s] is a valid
-    month or day. *)
+(** [valid_month_or_day s] checks if the string [s] is a valid representation of
+    a month or day.
+    @param s The string to check.
+    @return
+      [true] if [s] is "NULL", consists of 2 digits, or both; otherwise,
+      [false]. *)
 let valid_month_or_day (month_or_day : string) : bool =
   if
     month_or_day = "NULL"
@@ -28,7 +36,9 @@ let valid_month_or_day (month_or_day : string) : bool =
   then true
   else false
 
-(** [valid_date d] returns whether or not the Date [d] is a valid Date. *)
+(** [valid_date d] checks if the Date [d] is valid.
+    @param d The Date to check, as an [elem] variant.
+    @return [true] if [d] represents a valid Date; otherwise, [false]. *)
 let valid_date (date : elem) =
   match date with
   | Date (year, month, day) ->
@@ -40,8 +50,6 @@ let valid_date (date : elem) =
       else false
   | _ -> false
 
-(** [date_of_string s] takes in a string [s] and returns [s] as an elem of type
-    [Date]. If [s] cannot be returned as a [Date] then [NULL] is returned. *)
 let date_of_string (s : string) : elem =
   (* Regular expression to match a date in the format YYYY-MM-DD *)
   let regexp =
@@ -73,8 +81,17 @@ let elem_of_string (s : string) : elem =
               let data_type = date_of_string s in
               if data_type = NULL then String s else data_type))
 
-(** [elemlist_of_stringlist_aux s acc] is a helper function for
-    [elemlist_of_stringlist]. *)
+(** [elemlist_of_stringlist_aux s acc] recursively converts a list of strings
+    [s] into a list of [elem]s, accumulating the result in [acc].
+    @param s The list of strings to convert.
+    @param acc The accumulator for the resulting [elem] list, initially empty.
+    @return
+      A list of [elem]s, constructed in reverse order from the input list
+      [s].
+
+      This is a helper function designed for internal use by
+      [elemlist_of_stringlist]. USE [elemlist_of_stringlist s] INSTEAD OF THIS
+      FUNCTION!*)
 let rec elemlist_of_stringlist_aux (s : string list) (acc : elem list) :
     elem list =
   match s with
@@ -83,9 +100,6 @@ let rec elemlist_of_stringlist_aux (s : string list) (acc : elem list) :
 
 let elemlist_of_stringlist (s : string list) = elemlist_of_stringlist_aux s []
 
-(** [valid_data d h] takes in an elem list [d] which could be the data of a
-    column. [h] is the elem type that [d] should be throughout. Returns true if
-    [d] is all of type [h] otherwise returns false. *)
 let rec valid_data (data : elem list) (h_data : elem) : bool =
   match data with
   | [] -> true
@@ -142,8 +156,14 @@ let add_elem_to_column elem col = { title = col.title; data = elem :: col.data }
 (* let title t = t.title *)
 let data t = t.data
 
-(** [string_of_date d] takes in a tuple of three ints known as [d] and returns a
-    string. [d] represents a [Date]. *)
+(** [string_of_date d] Converts a [Date] represented by the tuple [d] into a
+    string.
+    @param d
+      A tuple of three ints representing a date in the format (year, month,
+      day).
+    @return
+      A string representing the date in the format "(year, month, day)".
+      Example: [string_of_date (2023, 4, 2)] returns "(2023, 4, 2)". *)
 let string_of_date date =
   match date with
   | year, month, day ->
@@ -159,8 +179,15 @@ let string_of_elem (e : elem) : string =
   | String s -> s
   | Date (y, m, d) -> string_of_date (y, m, d)
 
-(** [string_of_data d] takes in an elem list [d] and returns it as a string. *)
+(** [string_of_data d] converts a list of elements [d] into a string
+    representation.
 
+    @param d The elem list to be converted to a string representation.
+    @return
+      A string representation of the list in the format
+      "[elem1, elem2, ..., elemN]".
+
+      Example: [string_of_data [1; 2; 3]] returns "[[1, 2, 3]]". *)
 let string_of_data data =
   let rec aux acc = function
     | [] -> acc
@@ -173,7 +200,8 @@ let string_of_data data =
 let string_of_column col =
   "{" ^ col.title ^ ", " ^ string_of_data col.data ^ "}"
 
-(** [print_data d] prints the contents of the elem list [d]. *)
+(** [print_data d] prints each element of the list [d] on a new line.
+    @param d The elem list to print. *)
 let rec print_data data =
   match data with
   | [] -> ()
