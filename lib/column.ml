@@ -69,17 +69,19 @@ let elem_of_string (s : string) : elem =
   let data_type = int_of_string_opt s in
   match data_type with
   | Some int -> Int int
-  | None -> (
+  | None -> begin
       let data_type = float_of_string_opt s in
       match data_type with
       | Some float -> Float float
-      | None -> (
+      | None -> begin
           let data_type = bool_of_string_opt s in
           match data_type with
           | Some bool -> Bool bool
           | None ->
               let data_type = date_of_string s in
-              if data_type = NULL then String s else data_type))
+              if data_type = NULL then String s else data_type
+        end
+    end
 
 (** [elemlist_of_stringlist_aux s acc] recursively converts a list of strings
     [s] into a list of [elem]s, accumulating the result in [acc].
