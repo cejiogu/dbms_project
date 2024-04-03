@@ -16,7 +16,7 @@ let columns t = t.columns
     @note This function is the helper function for [make tab_name col_names]. *)
 let rec make_aux (acc : column list) (col_names : string list) =
   match col_names with
-  | [] -> acc
+  | [] -> List.rev acc
   | h :: t ->
       let col = Column.empty h in
       let columns = col :: acc in
@@ -34,26 +34,43 @@ let empty (t_name : string) : t =
     let table = { name = t_name; columns = [] } in
     table
 
-let insert_into (_ : string) (column_names : string list) (values : string list)
-    (_ : t) =
+(** [find_index_opt value lst] Searches for [value] within the list [lst] and 
+    returns the index of the first occurrence.
+    @param value The value to search for within [lst].
+    @param lst The list to be searched.
+    @return [Some index] where [index] is the zero-based position of [value] in [lst] if found; otherwise, [None].
+    @note This function performs a linear search from the beginning of [lst], returning the index of the first match. *)
+let find_index_opt value lst =
+  let rec aux index = function
+    | [] -> None
+    | x :: xs -> if x = value then Some index else aux (index + 1) xs
+  in
+  aux 0 lst
+
+let insert_into table column_names values =
   if List.length column_names <> List.length values then
     raise (InvalidQuery "Column names and values must have the same length")
   else
-    failwith "TODO: Requires function that creates a column from Column module"
-(* let updated_columns = List.map (fun column -> if Array.mem column.column_name
-   column_names then let value_index = Array.index_of column.column_name
-   column_names in let value = values.(value_index) in (* Assuming you have a
-   function to add a value to a column *) Column.add_value column value else
-   column ) table.columns in { table with columns = updated_columns } *)
+    let update_column col =
+      match find_index_opt (Column.title col) column_names with
+      | Some index ->
+          let value = List.nth values index in
+          let elem = Column.elem_of_string value in
+          Column.add_elem_to_column elem col
+      | None -> col
+    in
+    let updated_columns = List.map update_column table.columns in
+    { table with columns = updated_columns }
 
-(* let rec delineator (input : string list) (acc : string list) : string list =
-   match input with | [] -> [] | head :: [] -> head :: [] | head :: tail -> let
-   new_lst = head :: "|" :: acc in delineator tail new_lst *)
+let string_of_table t =
+  let table_name = "Table: " ^ t.name ^ "\n" in
+  let columns_to_string cols =
+    List.fold_left
+      (fun acc col -> acc ^ Column.string_of_column col ^ "\n")
+      "" cols
+  in
+  table_name ^ columns_to_string t.columns
 
-(**[print_aux cols acc] Makes a 2-dimensional list of strings from [cols] and adds them to [acc]
-    @param cols The list of columns from a given table.
-    @param acc The accumulator for the 2-dimensional list of strings.
-    @note This function is the helper function for [print tab].*)
 let rec print_aux (cols : column list) (acc : string list list) :
     string list list =
   match cols with

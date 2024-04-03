@@ -47,6 +47,11 @@ val make : string -> string list -> t
     @param str_data_lst The list of strings to be converted into data entries.
     @return A new column with the specified data. *)
 
+val title : t -> string
+(**[title t] Gets the title of a given column [t]
+   @param t The column.
+   @return The title of a column*)
+
 val valid_data : elem list -> elem -> bool
 (** [valid_data data type_elem] Verifies that all data entries in a list match a
     specified type.
