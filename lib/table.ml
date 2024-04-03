@@ -34,17 +34,29 @@ let empty (t_name : string) : t =
     let table = { name = t_name; columns = [] } in
     table
 
-let insert_into (_ : string) (column_names : string list) (values : string list)
-    (_ : t) =
+(* Helper function to find the index of an element in a list. *)
+(* Returns Some index if found, None otherwise. *)
+let find_index_opt value lst =
+  let rec aux index = function
+    | [] -> None
+    | x :: xs -> if x = value then Some index else aux (index + 1) xs
+  in
+  aux 0 lst
+
+let insert_into column_names values table =
   if List.length column_names <> List.length values then
     raise (InvalidQuery "Column names and values must have the same length")
   else
-    failwith "TODO: Requires function that creates a column from Column module"
-(* let updated_columns = List.map (fun column -> if Array.mem column.column_name
-   column_names then let value_index = Array.index_of column.column_name
-   column_names in let value = values.(value_index) in (* Assuming you have a
-   function to add a value to a column *) Column.add_value column value else
-   column ) table.columns in { table with columns = updated_columns } *)
+    let update_column col =
+      match find_index_opt (Column.title col) column_names with
+      | Some index ->
+          let value = List.nth values index in
+          let elem = Column.elem_of_string value in
+          Column.add_elem_to_column elem col
+      | None -> col
+    in
+    let updated_columns = List.map update_column table.columns in
+    { table with columns = updated_columns }
 
 let rec print_aux (cols : column list) (acc : string list list) :
     string list list =

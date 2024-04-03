@@ -154,8 +154,7 @@ let rec valid_column col =
 
 let make s d = { title = s; data = elemlist_of_stringlist d }
 let add_elem_to_column elem col = { title = col.title; data = elem :: col.data }
-
-(* let title t = t.title *)
+let title t = t.title
 let data t = t.data
 
 (** [string_of_date d] Converts a [Date] represented by the tuple [d] into a

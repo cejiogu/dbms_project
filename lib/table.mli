@@ -28,9 +28,8 @@ val make : string -> string list -> t
     @return A new table instance with the specified name and columns.
     @note This function is analogous to the SQL CREATE TABLE statement. *)
 
-val insert_into : string -> string list -> string list -> t -> 'a
-(** [insert_into tab_name col_names values table] Inserts a new row into [table], with values specified in [values] corresponding to the columns named in [column_names].
-    @param tab_name The name of the table where values are to be inserted.
+val insert_into : string list -> string list -> t -> t
+(** [insert_into col_names values table] Inserts a new row into [table], with values specified in [values] corresponding to the columns named in [column_names].
     @param col_names A list of column names indicating where each value in [values] should be inserted.
     @param values A list of values to be inserted into the table, corresponding to [col_names].
     @param table The table into which the new row is to be inserted.

@@ -14,6 +14,10 @@ val data : t -> elem list
 (** [data col] Retrieves the list of data entries from a column.
     @param col The column from which data is retrieved. *)
 
+val title : t -> string 
+(** [title col] Retrieves the title from a column.
+    @param col The column from which data is retrieved. *)
+
 val all_numbers : string -> bool
 (** [all_numbers s] Checks if a given string consists entirely of digits.
     @param s The string to check. *)
