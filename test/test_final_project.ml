@@ -87,5 +87,10 @@ let tests_table =
              (Table.string_of_table t3_insert2) );
        ]
 
-let _ = run_test_tt_main tests_column
-let _ = run_test_tt_main tests_table
+let () =
+  run_test_tt_main
+    ("suite"
+    >::: [
+           "ColumnTests" >::: [ tests_column ];
+           "TableTests" >::: [ tests_table ];
+         ])
