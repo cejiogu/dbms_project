@@ -16,9 +16,9 @@ let columns t = t.columns
     @note This function is the helper function for [make tab_name col_names]. *)
 let rec make_aux (acc : column list) (col_names : string list) =
   match col_names with
-  | [] -> acc
-  | _ :: t ->
-      let col = Column.empty in
+  | [] -> List.rev acc
+  | h :: t ->
+      let col = Column.empty h in
       let columns = col :: acc in
       make_aux columns t
 
@@ -47,7 +47,7 @@ let find_index_opt value lst =
   in
   aux 0 lst
 
-let insert_into column_names values table =
+let insert_into table column_names values =
   if List.length column_names <> List.length values then
     raise (InvalidQuery "Column names and values must have the same length")
   else
@@ -61,6 +61,15 @@ let insert_into column_names values table =
     in
     let updated_columns = List.map update_column table.columns in
     { table with columns = updated_columns }
+
+let string_of_table t =
+  let table_name = "Table: " ^ t.name ^ "\n" in
+  let columns_to_string cols =
+    List.fold_left
+      (fun acc col -> acc ^ Column.string_of_column col ^ "\n")
+      "" cols
+  in
+  table_name ^ columns_to_string t.columns
 
 let rec print_aux (cols : column list) (acc : string list list) :
     string list list =

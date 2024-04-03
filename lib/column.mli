@@ -26,8 +26,9 @@ val valid_date : elem -> bool
 (** [valid_date d] Determines if a given element represents a valid date.
     @param d The element to validate. *)
 
-val empty : t
-(** [empty] Produces an empty column with no title and no data entries.
+val empty : string -> t
+(** [empty n] Produces an empty column with the title [n] and no data entries.
+    @param n The string set to the [title] of the column.
     @return An empty column instance. *)
 
 val elem_of_string : string -> elem

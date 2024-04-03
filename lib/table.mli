@@ -28,14 +28,22 @@ val make : string -> string list -> t
     @return A new table instance with the specified name and columns.
     @note This function is analogous to the SQL CREATE TABLE statement. *)
 
-val insert_into : string list -> string list -> t -> t
-(** [insert_into col_names values table] Inserts a new row into [table], with values specified in [values] corresponding to the columns named in [column_names].
+val insert_into : t -> string list -> string list -> t
+(** [insert_into table col_names values] Inserts a new row into [table], with values specified in [values] corresponding to the columns named in [column_names].
+    @param table The table into which the new row is to be inserted.
     @param col_names A list of column names indicating where each value in [values] should be inserted.
     @param values A list of values to be inserted into the table, corresponding to [col_names].
-    @param table The table into which the new row is to be inserted.
     @raise InvalidQuery if the lengths of [col_names] and [values] do not match.
     @return An updated table with the new row of values inserted.
     @notes Requires implementation of functionality from the Column module to properly add values to columns. *)
+
+val string_of_table : t -> string
+(** [string_of_table t] Converts the table [t] into a string representation.
+    @param t The table to convert to a string.
+    @return A string that represents the table, including its name and a formatted list of columns and their data.
+    The function formats the table name followed by each column's string representation, with each column separated by a newline. Each column's data is presented in a list format, and each data element within a column is also separated by newlines for clarity.
+    @example Calling [string_of_table my_table] where [my_table] has a name "TestTable" and two columns named "ID" and "Name" with respective values ["1", "2"] and ["Alice", "Bob"] returns:
+    "Table: TestTable\nID: [1, 2]\nName: [Alice, Bob]" *)
 
 val print : t -> string list list
 (** [print t] Prints the table [t] to the terminal, showing its structure and content.

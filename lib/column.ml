@@ -63,7 +63,7 @@ let date_of_string (s : string) : elem =
     Date (year, month, day)
   else NULL
 
-let empty = { title = ""; data = [] }
+let empty n = { title = n; data = [] }
 
 let elem_of_string (s : string) : elem =
   let data_type = int_of_string_opt s in
