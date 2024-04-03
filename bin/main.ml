@@ -43,9 +43,17 @@ let rec prompt_loop (exit : string list) (input : string)
     | word1 :: word2 :: _ ->
         if word1 = "CREATE" && word2 = "TABLE" then
           let columns = StringBuilder.third_onward command in
-          let database =
-            Database.insert_table database (List.nth command 2) columns
+          let title = List.nth command 2 in
+          let rest =
+            begin
+              match columns with
+              | [] -> []
+              | _ :: other -> other
+            end
           in
+          let tab = Table.make title rest in
+          let database = Database.insert_table database title columns in
+          let _ = Table.print tab in
           prompt_loop exit (cycler ()) database
         else
           let () = error_message () in
