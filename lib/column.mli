@@ -3,8 +3,16 @@ type elem
     integers, booleans, floats, strings, and dates. *)
 
 type t
-(** The type representing a column within a table, which consists of a record holding the fields of 
-[title] the string label of the column and [data] the data entries of the column. *)
+(** The type representing a column within a table, which consists of a record
+    holding the fields of [title] the string label of the column and [data] the
+    data entries of the column. [t] holds [elem_type] which is an int corresponding to the 
+    the type of elem. 
+    - `-1` for NULL
+    - `0` for Int
+    - `1` for Bool
+    - `2` for Float
+    - `3` for String
+    - `4`. *)
 
 val string_of_elem : elem -> string
 (** [string_of_elem elem] Converts an element of type [elem] to its string representation.

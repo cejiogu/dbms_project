@@ -1,12 +1,13 @@
 type elem =
   | NULL
-  | Int of int
-  | Bool of bool
-  | Float of float
-  | String of string
-  | Date of int * int * int
+  | Int of int (* 0 *)
+  | Bool of bool (* 1 *)
+  | Float of float (* 2 *)
+  | String of string (* 3 *)
+  | Date of int * int * int (* 4. Else -1 *)
 
 type t = {
+  elemtype : int;
   title : string;
   data : elem list;
 }
@@ -63,7 +64,7 @@ let date_of_string (s : string) : elem =
     Date (year, month, day)
   else NULL
 
-let empty n = { title = n; data = [] }
+let empty (name : string) = { title = name; data = [] }
 
 let elem_of_string (s : string) : elem =
   let data_type = int_of_string_opt s in
@@ -101,6 +102,60 @@ let rec elemlist_of_stringlist_aux (s : string list) (acc : elem list) :
   | h :: t -> elemlist_of_stringlist_aux t @@ (elem_of_string h :: acc)
 
 let elemlist_of_stringlist (s : string list) = elemlist_of_stringlist_aux s []
+
+(* let elemtype_of_elem_num elem = match elem with | -1 -> NULL | 0 -> Int 0 | 1
+   -> Bool false | 2 -> Float 0.0 | 3 -> String "" | 4 -> Date (0, 0, 0) | _ ->
+   failwith "Not a possible elem number" *)
+
+(** [elemtype_num_of_elem elem] Determine the numeric code associated with a
+    specific element type.
+    @param elem
+      The element whose type is to be evaluated. This element can be of several
+      predefined types (Int, Bool, Float, String, Date) or NULL.
+
+    @return
+      Returns a specific integer code for each
+      type:
+      - `-1` for NULL
+      - `0` for Int
+      - `1` for Bool
+      - `2` for Float
+      - `3` for String
+      - `4`. *)
+let elemtype_num_of_elem elem =
+  match elem with
+  | NULL -> -1
+  | Int _ -> 0
+  | Bool _ -> 1
+  | Float _ -> 2
+  | String _ -> 3
+  | Date _ -> 4
+
+(** [elemtype_num_of_data data] Finds the numeric code of the type of the first
+    non-NULL element. If all elements are NULL or the list is empty, it returns
+    -1.
+
+    @param data
+      The list of elements to be scanned. Each element in this list is subject
+      to type evaluation, similar to what is described in
+      `elemtype_num_of_elem`.
+
+    @return
+      Returns the numeric code corresponding to the type of the first non-NULL
+      element found in the list according to the
+      following:
+      - `-1` if all elements are NULL or the list is empty.
+      - An integer code (0 to 4) corresponding to the type of the first non-NULL
+        element found, following the same codes as `elemtype_num_of_elem`. This
+        function iterates through the list until it finds a non-NULL element or
+        exhausts the list. *)
+
+let rec elemtype_num_of_data data =
+  match data with
+  | [] -> -1
+  | h :: t ->
+      let num = elemtype_num_of_elem h in
+      if num = -1 then elemtype_num_of_data t else num
 
 let rec valid_data (data : elem list) (h_data : elem) : bool =
   match data with
@@ -145,15 +200,30 @@ let rec valid_column col =
   | [] -> true
   | h :: t -> (
       match h with
-      | NULL -> valid_column { title = col.title; data = t }
+      | NULL ->
+          valid_column { elemtype = col.elemtype; title = col.title; data = t }
       | Int i -> valid_data t (Int i)
       | Bool b -> valid_data t (Bool b)
       | Float f -> valid_data t (Float f)
       | String s -> valid_data t (String s)
       | Date (y, m, d) -> valid_data t (Date (y, m, d)))
 
-let make s d = { title = s; data = elemlist_of_stringlist d }
-let add_elem_to_column elem col = { title = col.title; data = elem :: col.data }
+let make s d =
+  let elemtype_unchanged =
+    { elemtype = -1; title = s; data = elemlist_of_stringlist d }
+  in
+  {
+    elemtype_unchanged with
+    elemtype = elemtype_num_of_data elemtype_unchanged.data;
+  }
+
+let add_elem_to_column elem col =
+  let new_col =
+    { elemtype = col.elemtype; title = col.title; data = elem :: col.data }
+  in
+  if col.elemtype = elemtype_num_of_elem elem then new_col
+  else failwith "All elements must be of the same type"
+
 let title t = t.title
 let data t = t.data
 
