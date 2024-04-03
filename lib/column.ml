@@ -199,6 +199,14 @@ let string_of_data data =
   in
   "[" ^ aux "" data ^ "]"
 
+let stringlist_of_data data =
+  let rec aux acc lst =
+    match lst with
+    | [] -> List.rev acc
+    | h :: t -> aux (string_of_elem h :: acc) t
+  in
+  aux [] data
+
 let string_of_column col =
   "{" ^ col.title ^ ", " ^ string_of_data col.data ^ "}"
 
