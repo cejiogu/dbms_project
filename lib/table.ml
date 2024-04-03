@@ -10,16 +10,20 @@ type t = {
 let name t = t.name
 let columns t = t.columns
 
-let rec create_table_aux (acc : column list) (column_names : string list) =
-  match column_names with
+(** [make_aux acc col_names] Makes a list of columns from [col_names] and adds them to [acc].
+    @param acc The accumulator for the columns.
+    @param col_names A list of names for each column in the table.
+    @note This function is the helper function for [make tab_name col_names]. *)
+let rec make_aux (acc : column list) (col_names : string list) =
+  match col_names with
   | [] -> acc
   | _ :: t ->
       let col = Column.empty in
       let columns = col :: acc in
-      create_table_aux columns t
+      make_aux columns t
 
 let make (name : string) (column_names : string list) =
-  let columns = create_table_aux [] column_names in
+  let columns = make_aux [] column_names in
   let new_table = { name; columns } in
   new_table
 
