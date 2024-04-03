@@ -42,11 +42,15 @@ let insert_into (_ : string) (column_names : string list) (values : string list)
    function to add a value to a column *) Column.add_value column value else
    column ) table.columns in { table with columns = updated_columns } *)
 
-let print_aux (tab : t) (acc : string list list) : string list list =
-  match tab.columns with
-  | [] -> acc
-  | (_ : column) :: (_ : column list) -> failwith "TODO"
+let rec print_aux (cols : column list) (acc : string list list) :
+    string list list =
+  match cols with
+  | [] -> List.rev acc
+  | (head : column) :: (tail : column list) ->
+      let lst = Column.stringlist_of_column head in
+      let new_acc = lst :: acc in
+      print_aux tail new_acc
 
 let print (tab : t) : string list list =
-  let conversion = print_aux tab [] in
+  let conversion = print_aux tab.columns [] in
   conversion
