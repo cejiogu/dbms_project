@@ -63,6 +63,16 @@ val string_of_column : t -> string
     @param col The column to convert.
     @return The string representation of the column. *)
 
+val stringlist_of_data : elem list -> string list
+(** [stringlist_of_data data] Converts an elem list to a string list.
+    @param data The elem list to convert.
+    @return The string representation of the data. *)
+
+val stringlist_of_column : t -> string list
+(** [stringlist_of_column col] Converts a column to a string list.
+    @param col The column to convert.
+    @return The string representation of the column. *)
+
 val print : t -> unit
 (** [print col] Prints the contents of a column, including its title and data entries, to the console.
     @param col The column to print. *)
