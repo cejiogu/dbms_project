@@ -38,8 +38,8 @@ val insert_into : string -> string list -> string list -> t -> 'a
     @return An updated table with the new row of values inserted.
     @notes Requires implementation of functionality from the Column module to properly add values to columns. *)
 
-val print : t -> string list list
+val print : t -> unit
 (** [print t] Prints the table [t] to the terminal, showing its structure and content.
     @param t The table to be printed.
-    @return The table converted to a 2-dimensional list of strings 
+    @return The table is represented in the terminal
     @notes The actual implementation should iterate over the table's rows and columns, formatting the output for readability. *)
