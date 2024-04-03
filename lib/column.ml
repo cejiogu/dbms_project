@@ -207,7 +207,7 @@ let stringlist_of_data data =
   in
   aux [] data
 
-let stringlist_of_column col = [ col.title ] @ stringlist_of_data col.data
+let stringlist_of_column col = col.title :: stringlist_of_data col.data
 
 let string_of_column col =
   "{" ^ col.title ^ ", " ^ string_of_data col.data ^ "}"
