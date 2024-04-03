@@ -17,8 +17,8 @@ let columns t = t.columns
 let rec make_aux (acc : column list) (col_names : string list) =
   match col_names with
   | [] -> acc
-  | _ :: t ->
-      let col = Column.empty in
+  | h :: t ->
+      let col = Column.empty h in
       let columns = col :: acc in
       make_aux columns t
 
@@ -46,15 +46,30 @@ let insert_into (_ : string) (column_names : string list) (values : string list)
    function to add a value to a column *) Column.add_value column value else
    column ) table.columns in { table with columns = updated_columns } *)
 
+(* let rec delineator (input : string list) (acc : string list) : string list =
+   match input with | [] -> [] | head :: [] -> head :: [] | head :: tail -> let
+   new_lst = head :: "|" :: acc in delineator tail new_lst *)
+
+(**[print_aux cols acc] Makes a 2-dimensional list of strings from [cols] and adds them to [acc]
+    @param cols The list of columns from a given table.
+    @param acc The accumulator for the 2-dimensional list of strings.
+    @note This function is the helper function for [print tab].*)
 let rec print_aux (cols : column list) (acc : string list list) :
     string list list =
   match cols with
-  | [] -> List.rev acc
+  | [] -> acc
   | (head : column) :: (tail : column list) ->
       let lst = Column.stringlist_of_column head in
       let new_acc = lst :: acc in
       print_aux tail new_acc
 
-let print (tab : t) : string list list =
+(**[NOTE:] Csv.print_readable was used prior to Csv.print, and is currently
+   being replaced because it does not provide the option of delineating columns
+   with characters other than the whitespace (' '), whereas Csv.print allows the
+   option to delineate columns with vertical bars ('|'). *)
+let print (tab : t) : unit =
   let conversion = print_aux tab.columns [] in
-  conversion
+  let transposition = Csv.transpose conversion in
+  let () = Csv.print ~separator:'|' transposition in
+  let _ = print_newline in
+  ()
