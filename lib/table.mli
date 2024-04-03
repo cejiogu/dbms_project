@@ -45,7 +45,7 @@ val string_of_table : t -> string
     @example Calling [string_of_table my_table] where [my_table] has a name "TestTable" and two columns named "ID" and "Name" with respective values ["1", "2"] and ["Alice", "Bob"] returns:
     "Table: TestTable\nID: [1, 2]\nName: [Alice, Bob]" *)
 
-val print : t -> string list list
+val print : t -> unit
 (** [print t] Prints the table [t] to the terminal, showing its structure and content.
     @param t The table to be printed.
     @return The table is represented in the terminal
