@@ -3,11 +3,11 @@ exception InvalidQuery of string
 type column = Column.t
 
 type t = {
-  table_name : string;
+  name : string;
   columns : column list;
 }
 
-let table_name t = t.table_name
+let name t = t.name
 let columns t = t.columns
 
 let rec create_table_aux (acc : column list) (column_names : string list) =
@@ -18,16 +18,16 @@ let rec create_table_aux (acc : column list) (column_names : string list) =
       let columns = col :: acc in
       create_table_aux columns t
 
-let create_table (table_name : string) (column_names : string list) =
+let make (name : string) (column_names : string list) =
   let columns = create_table_aux [] column_names in
-  let new_table = { table_name; columns } in
+  let new_table = { name; columns } in
   new_table
 
-let empty_table (name : string) : t =
-  if name = "" then
+let empty (t_name : string) : t =
+  if t_name = "" then
     raise (InvalidQuery "You must enter the name of your table!")
   else
-    let table = { table_name = name; columns = [] } in
+    let table = { name = t_name; columns = [] } in
     table
 
 let insert_into (_ : string) (column_names : string list) (values : string list)
@@ -42,4 +42,4 @@ let insert_into (_ : string) (column_names : string list) (values : string list)
    function to add a value to a column *) Column.add_value column value else
    column ) table.columns in { table with columns = updated_columns } *)
 
-let print_table (_ : t) = failwith "TODO"
+let print (_ : t) = failwith "TODO"

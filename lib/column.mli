@@ -36,8 +36,8 @@ val date_of_string : string -> elem
     @param s The string representing a date.
     @return A [Date] element if successful; otherwise, [NULL]. *)
 
-val make_column : string -> string list -> t
-(** [make_column t str_data_lst] Creates a column with a specified title and a list of data entries converted from strings.
+val make : string -> string list -> t
+(** [make t str_data_lst] Creates a column with a specified title and a list of data entries converted from strings.
     @param t The title of the column.
     @param str_data_lst The list of strings to be converted into data entries.
     @return A new column with the specified data. *)

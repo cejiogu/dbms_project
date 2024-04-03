@@ -4,24 +4,24 @@ type column
 (** The type representing a single column in a table. *)
 
 type t
-(** The type representing a table, which consists of a name and a list of columns. *)
+(** The type representing a table, which consists of a name [name] and a list of columns [columns]. *)
 
-val table_name : t -> string
-(** [table_name t] Returns the name of the table [t].
+val name : t -> string
+(** [name t] Returns the name of the table [t].
     @param t The table whose name you're retrieving. *)
 
 val columns : t -> column list
 (** [columns t] Returns the list of columns in the table [t].
     @param t The table whose name you're retrieving. *)
   
-val empty_table : string -> t
-(** [empty_table name] Creates an empty table with the specified name [name].
+val empty : string -> t
+(** [empty name] Creates an empty table with the specified name [name].
     @param name The name of the table to be created.
     @raise InvalidQuery if the provided [name] is an empty string.
     @return A new table instance with the specified name and no columns. *)
 
-val create_table : string -> string list -> t
-(** [create_table tab_name col_names] Creates a new table with the given [tab_name] and columns named according to [col_names].
+val make : string -> string list -> t
+(** [make tab_name col_names] Creates a new table with the given [tab_name] and columns named according to [col_names].
     @param tab_name The name of the table to be created.
     @param col_names A list of names for each column in the table.
     @return A new table instance with the specified name and columns.
@@ -37,7 +37,7 @@ val insert_into : string -> string list -> string list -> t -> 'a
     @return An updated table with the new row of values inserted.
     @notes Requires implementation of functionality from the Column module to properly add values to columns. *)
   
-val print_table : t -> unit
-(** [print_table t] Prints the table [t] to the terminal, showing its structure and content.
+val print : t -> unit
+(** [print t] Prints the table [t] to the terminal, showing its structure and content.
     @param t The table to be printed.
     @notes The actual implementation should iterate over the table's rows and columns, formatting the output for readability. *)

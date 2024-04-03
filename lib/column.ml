@@ -152,7 +152,7 @@ let rec valid_column col =
       | String s -> valid_data t (String s)
       | Date (y, m, d) -> valid_data t (Date (y, m, d)))
 
-let make_column s d = { title = s; data = elemlist_of_stringlist d }
+let make s d = { title = s; data = elemlist_of_stringlist d }
 let add_elem_to_column elem col = { title = col.title; data = elem :: col.data }
 
 (* let title t = t.title *)

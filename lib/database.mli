@@ -14,7 +14,7 @@ val tables : t -> table list
 (** [tables db] Returns the list of tables in the database [db].
       @param db The database instance whose tables are to be retrieved. *)
 
-val empty_database : string -> t
+val empty : string -> t
 (** [empty_database name] Creates an empty database with the specified name [name].
       @param name The name of the database to be created.
       @raise InvalidQuery if the provided [name] is an empty string.
