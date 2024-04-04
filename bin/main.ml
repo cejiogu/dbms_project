@@ -6,14 +6,14 @@
    in List.filter (fun x -> x <> "") words
 
    let third_onward (input : string list) : string list = match input with | _
-   :: _ :: rest -> rest | _ -> raise (ArgumentError "You did not enter enough
+   :: _ :: rest -> rest | _ -> raise (ArgumentError "You did not enter enough\n
    arguments") end
 
    let error_message () = let () = print_endline "Error: Invalid Command" in let
    () = print_endline "You did not enter a valid command. Please try again." in
    let () = print_endline "" in ()
 
-   let cycler () = let () = print_endline "Enter an SQL command to modify your
+   let cycler () = let () = print_endline "Enter an SQL command to modify your\n
    database: " in let command = read_line () in let () = print_endline "" in
    command
 
@@ -34,8 +34,8 @@
    in let () = print_endline "Enter the name of your database: " in let name =
    read_line () in let () = print_endline "" in if List.mem name exit then
    print_endline "You have quit the program" else let database = Database.empty
-   name in let () = print_endline "Enter an SQL command to modify your database:
-   " in let command = read_line () in let () = print_endline "" in prompt_loop
-   exit command database
+   name in let () = print_endline "Enter an SQL command to modify your
+   database:\n " in let command = read_line () in let () = print_endline "" in
+   prompt_loop exit command database
 
    let () = initial_prompt *)

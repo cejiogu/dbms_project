@@ -23,13 +23,13 @@ val data : t -> elem list
 (** [data col] Retrieves the list of data entries from a column.
     @param col The column from which data is retrieved. *)
 
-val all_numbers : string -> bool
+(* val all_numbers : string -> bool
 (** [all_numbers s] Checks if a given string consists entirely of digits.
-    @param s The string to check. *)
+    @param s The string to check. *) *)
 
-val valid_date : elem -> bool
+(* val valid_date : elem -> bool
 (** [valid_date d] Determines if a given element represents a valid date.
-    @param d The element to validate. *)
+    @param d The element to validate. *) *)
 
 val empty : int -> string -> t
 (** [empty elt n] Produces an empty column with the title [n], elemtype of [elt] and no data entries.
@@ -59,12 +59,12 @@ val title : t -> string
    @param t The column.
    @return The title of a column*)
 
-val valid_data : elem list -> elem -> bool
+(* val valid_data : elem list -> elem -> bool
 (** [valid_data data type_elem] Verifies that all data entries in a list match a
     specified type.
     @param data The list of data entries to check.
     @param type_elem The type element used to check the data list elem type.
-    @return [true] if all entries match the type; otherwise, [false]. *)
+    @return [true] if all entries match the type; otherwise, [false]. *) *)
 
 val valid_column : t -> bool
 (** [valid_column col] Checks if a column's data entries are consistent and
