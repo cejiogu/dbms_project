@@ -13,3 +13,4 @@
 
 // expr:
 //     | CREATE; TABLE; s = NAME {Command (CREATE, TABLE, s)}
+//     | INSERT; ....

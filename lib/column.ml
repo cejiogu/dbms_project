@@ -36,7 +36,7 @@ type t = {
    (valid_month_or_day @@ string_of_int month) && (valid_month_or_day @@
    string_of_int day) then true else false | _ -> false *)
 
-let date_of_string (s : string) : elem =
+let date_of_string (s : string) : elem option =
   (* Regular expression to match a date in the format YYYY-MM-DD *)
   let regexp =
     Str.regexp
@@ -46,31 +46,37 @@ let date_of_string (s : string) : elem =
     let year = Str.matched_group 1 s |> int_of_string in
     let month = Str.matched_group 2 s |> int_of_string in
     let day = Str.matched_group 3 s |> int_of_string in
-    Date (year, month, day)
+    Some (Date (year, month, day))
     (* let d = Date (year, month, day) in if valid_date d then d else failwith
        "NOT A VALID DATE!" *)
-  else NULL
+  else None
 
 let empty (et : int) (name : string) =
   { elemtype = et; title = name; data = [] }
 
 let elem_of_string (s : string) : elem =
-  let data_type = int_of_string_opt s in
-  match data_type with
-  | Some int -> Int int
-  | None -> begin
-      let data_type = float_of_string_opt s in
-      match data_type with
-      | Some float -> Float float
-      | None -> begin
-          let data_type = bool_of_string_opt s in
-          match data_type with
-          | Some bool -> Bool bool
-          | None ->
-              let data_type = date_of_string s in
-              if data_type = NULL then String s else data_type
-        end
-    end
+  if s = "NULL" then NULL
+  else
+    let data_type = int_of_string_opt s in
+    match data_type with
+    | Some int -> Int int
+    | None -> begin
+        let data_type = float_of_string_opt s in
+        match data_type with
+        | Some float -> Float float
+        | None -> begin
+            let data_type = bool_of_string_opt s in
+            match data_type with
+            | Some bool -> Bool bool
+            | None -> begin
+                let data_type = date_of_string s in
+                match data_type with
+                | Some (Date (y, m, d)) -> Date (y, m, d)
+                | None -> String s
+                | _ -> NULL
+              end
+          end
+      end
 
 (** [elemlist_of_stringlist_aux s acc] recursively converts a list of strings
     [s] into a list of [elem]s, accumulating the result in [acc].
@@ -254,12 +260,8 @@ let stringlist_of_data data =
 let stringlist_of_column col = col.title :: stringlist_of_data col.data
 
 let add_elem_to_column elem col =
-  if col.elemtype = -1 then
-    let new_col = make col.title @@ stringlist_of_data (elem :: col.data) in
-    if new_col.elemtype = elemtype_num_of_elem elem then new_col
-    else failwith "All elements must be of the same type"
-  else if col.elemtype = elemtype_num_of_elem elem then
-    { elemtype = col.elemtype; title = col.title; data = elem :: col.data }
+  if elemtype_num_of_elem elem = -1 || col.elemtype = elemtype_num_of_elem elem
+  then { elemtype = col.elemtype; title = col.title; data = elem :: col.data }
   else failwith "All elements must be of the same type"
 
 let string_of_column col =

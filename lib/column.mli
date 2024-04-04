@@ -42,10 +42,10 @@ val elem_of_string : string -> elem
     @param s The string to parse.
     @return The corresponding element. *)
 
-val date_of_string : string -> elem
-(** [date_of_string s] Attempts to parse a string into a [Date] element.
+val date_of_string : string -> elem option
+(** [date_of_string s] Attempts to parse a string into a [Date] option element.
     @param s The string representing a date.
-    @return A [Date] element if successful; otherwise, [NULL]. *)
+    @return [Some Date] element if successful; otherwise, [None]. *)
 
 val make : string -> string list -> t
 (** [make t str_data_lst] Creates a column with a specified title and a list of
