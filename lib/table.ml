@@ -88,15 +88,31 @@ let string_of_table t =
   in
   table_name ^ columns_to_string t.columns
 
+(** [print_aux cols acc] Recursively processes a list of columns to convert each
+    column into a list of strings (representing its data) and accumulates these
+    lists into a larger list of string lists.
+    @param cols The list of columns to process.
+    @param acc The accumulator where the resulting string lists are stored.
+    @return
+      The accumulated list of string lists after all columns have been
+      processed. *)
+
 let rec print_aux (cols : column list) (acc : string list list) :
     string list list =
   match cols with
-  | [] -> List.rev acc
+  | [] -> acc
   | (head : column) :: (tail : column list) ->
       let lst = Column.stringlist_of_column head in
       let new_acc = lst :: acc in
       print_aux tail new_acc
 
-let print (tab : t) : string list list =
+(**[NOTE:] Csv.print_readable was used prior to Csv.print, and is currently
+   being replaced because it does not provide the option of delineating columns
+   with characters other than the whitespace (' '), whereas Csv.print allows the
+   option to delineate columns with vertical bars ('|'). *)
+let print (tab : t) : unit =
   let conversion = print_aux tab.columns [] in
-  conversion
+  let transposition = Csv.transpose conversion in
+  let () = Csv.print ~separator:'|' transposition in
+  let _ = print_newline in
+  ()

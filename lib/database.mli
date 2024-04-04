@@ -4,15 +4,16 @@ type table
 (** The type representing a table within a database. *)
 
 type t
-(** The type representing a database, which consists of a name and a list of tables. *)
+(** The type representing a database, which consists of a name and a list of
+    tables. *)
 
 val name : t -> string
 (** [name db] Returns the name of the database [db].
-      @param db The database instance whose name is to be retrieved. *)
+    @param db The database instance whose name is to be retrieved. *)
 
 val tables : t -> table list
 (** [tables db] Returns the list of tables in the database [db].
-      @param db The database instance whose tables are to be retrieved. *)
+    @param db The database instance whose tables are to be retrieved. *)
 
 val empty : string -> t
 (** [empty_database name] Creates an empty database with the specified name [name].
