@@ -53,7 +53,10 @@ let valid_date (date : elem) =
 
 let date_of_string (s : string) : elem =
   (* Regular expression to match a date in the format YYYY-MM-DD *)
-  let regexp = Str.regexp "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}$" in
+  let regexp =
+    Str.regexp
+      "\\(2[0-9][0-9][0-9]\\)-\\([0][1-9]\\|1[0-2]\\)-\\(0[1-9]\\|[12][0-9]\\|3[0-1]\\)"
+  in
   if Str.string_match regexp s 0 then
     let year = Str.matched_group 1 s |> int_of_string in
     let month = Str.matched_group 2 s |> int_of_string in

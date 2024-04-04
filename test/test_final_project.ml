@@ -6,7 +6,7 @@ let tests_column =
   "test Column"
   >::: [
          ( "Empty Column" >:: fun _ ->
-           assert_equal (Column.empty 0 "") (Column.make "" []) );
+           assert_equal (Column.empty 0 "Test") (Column.make "Test" []) );
          ( "Add to Column" >:: fun _ ->
            assert_equal "{Time, [5:53, 2:43]}"
              (Column.string_of_column @@ Column.make "Time" [ "5:53"; "2:43" ])
