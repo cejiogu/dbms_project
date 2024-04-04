@@ -22,8 +22,9 @@ let empty (name : string) : t =
 let table_exists (name : string) (db : t) : bool =
   List.exists (fun t -> Table.name t = name) db.tables
 
-let insert_table (db : t) (name : string) (columns : string list) : t =
+let insert_table (db : t) (name : string) (column_names : string list)
+    (column_types : string list) : t =
   if table_exists name db then db
   else
-    let new_table = Table.make name columns in
+    let new_table = Table.make name column_names column_types in
     { db with tables = new_table :: db.tables }

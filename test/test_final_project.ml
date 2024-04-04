@@ -6,7 +6,7 @@ let tests_column =
   "test Column"
   >::: [
          ( "Empty Column" >:: fun _ ->
-           assert_equal (Column.empty "") (Column.make "" []) );
+           assert_equal (Column.empty 0 "") (Column.make "" []) );
          ( "Add to Column" >:: fun _ ->
            assert_equal "{Time, [5:53, 2:43]}"
              (Column.string_of_column @@ Column.make "Time" [ "5:53"; "2:43" ])
@@ -18,12 +18,13 @@ let tests_column =
        ]
 
 (* Table1: *)
-let t1 = Table.make "IntegerTable" [ "ID"; "Value" ]
+let t1 = Table.make "IntegerTable" [ "ID"; "Value" ] [ "Int"; "Int" ]
 let t1_insert1 = Table.insert_into t1 [ "ID"; "Value" ] [ "1"; "100" ]
 let t1_insert2 = Table.insert_into t1_insert1 [ "ID"; "Value" ] [ "2"; "200" ]
 
 (* Table2: *)
-let t2 = Table.make "StringTable" [ "Name"; "Occupation" ]
+let t2 =
+  Table.make "StringTable" [ "Name"; "Occupation" ] [ "String"; "String" ]
 
 let t2_insert1 =
   Table.insert_into t2 [ "Name"; "Occupation" ] [ "Alice"; "Engineer" ]
@@ -32,7 +33,10 @@ let t2_insert2 =
   Table.insert_into t2_insert1 [ "Name"; "Occupation" ] [ "Bob"; "Doctor" ]
 
 (* Table3: *)
-let t3 = Table.make "MixedTable" [ "ID"; "Name"; "Birthday" ]
+let t3 =
+  Table.make "MixedTable"
+    [ "ID"; "Name"; "Birthday" ]
+    [ "Int"; "String"; "Date" ]
 
 let t3_insert1 =
   Table.insert_into t3
@@ -48,7 +52,7 @@ let tests_table =
   "test Table"
   >::: [
          ( "Empty Table" >:: fun _ ->
-           assert_equal (Table.empty "test") (Table.make "test" []) );
+           assert_equal (Table.empty "test") (Table.make "test" [] []) );
          ( "Make Table with Columns (table1)" >:: fun _ ->
            assert_equal "Table: IntegerTable\n{ID, []}\n{Value, []}\n"
              (Table.string_of_table t1) );

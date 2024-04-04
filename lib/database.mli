@@ -28,10 +28,12 @@ val table_exists : string -> t -> bool
       @return [true] if a table with the specified name exists in the database, [false] otherwise.
       @notes This function can be used to prevent duplicate tables in a database. *)
 
-val insert_table : t -> string -> string list -> t
-(** [insert_table db name columns] Creates a new table with the specified name [name] and columns [columns] and inserts it into the database [db].
+val insert_table : t -> string -> string list -> string list -> t
+(** [insert_table db name column_names column_types] Creates a new table with the specified name [name] and columns [column_names] 
+            whos types are of [column_types] and inserts it into the database [db].
       @param db The database into which the new table is to be inserted.
       @param name The name of the new table.
-      @param columns A list of names for each column in the new table.
+      @param column_names A list of names for each column in the new table.
+      @param column_types A list of types for each column in the new table.
       @return An updated database containing the new table.
       @raise Does not change the database if a table with the specified name already exists. *)

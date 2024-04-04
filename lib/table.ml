@@ -10,20 +10,37 @@ type t = {
 let name t = t.name
 let columns t = t.columns
 
-(** [make_aux acc col_names] Makes a list of columns from [col_names] and adds them to [acc].
+(** [make_aux acc col_names col_types] Makes a list of columns from [col_names] 
+        and [col_types] and adds them to [acc].
     @param acc The accumulator for the columns.
     @param col_names A list of names for each column in the table.
+    @param col_types A list of types of the data for each column in the table.
+          The possible types are ["Int", "Bool", "Float", "String", and "Date"]
     @note This function is the helper function for [make tab_name col_names]. *)
-let rec make_aux (acc : column list) (col_names : string list) =
-  match col_names with
-  | [] -> List.rev acc
-  | h :: t ->
-      let col = Column.empty h in
-      let columns = col :: acc in
-      make_aux columns t
+let rec make_aux (acc : column list) (col_names : string list)
+    (col_types : string list) =
+  if List.length col_names <> List.length col_types then
+    raise (InvalidQuery "Column names and values must have the same length")
+  else
+    match col_names with
+    | [] -> List.rev acc
+    | h :: t ->
+        let h_col_types = List.hd col_types in
+        let num =
+          if h_col_types = "Int" then 0
+          else if h_col_types = "Bool" then 1
+          else if h_col_types = "Float" then 2
+          else if h_col_types = "String" then 3
+          else if h_col_types = "Date" then 4
+          else raise (InvalidQuery "You included a nonexistent type!")
+        in
+        let col = Column.empty num h in
+        let columns = col :: acc in
+        make_aux columns t @@ List.tl col_types
 
-let make (name : string) (column_names : string list) =
-  let columns = make_aux [] column_names in
+let make (name : string) (column_names : string list)
+    (column_types : string list) =
+  let columns = make_aux [] column_names column_types in
   let new_table = { name; columns } in
   new_table
 

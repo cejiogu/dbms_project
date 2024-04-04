@@ -12,7 +12,7 @@ type t
     - `1` for Bool
     - `2` for Float
     - `3` for String
-    - `4`. *)
+    - `4` for Date. *)
 
 val string_of_elem : elem -> string
 (** [string_of_elem elem] Converts an element of type [elem] to its string representation.
@@ -34,8 +34,9 @@ val valid_date : elem -> bool
 (** [valid_date d] Determines if a given element represents a valid date.
     @param d The element to validate. *)
 
-val empty : string -> t
-(** [empty n] Produces an empty column with the title [n] and no data entries.
+val empty : int -> string -> t
+(** [empty elt n] Produces an empty column with the title [n], elemtype of [elt] and no data entries.
+    @param elt The int set to the [elemtype] of the column.
     @param n The string set to the [title] of the column.
     @return An empty column instance. *)
 

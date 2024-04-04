@@ -53,18 +53,17 @@ let valid_date (date : elem) =
 
 let date_of_string (s : string) : elem =
   (* Regular expression to match a date in the format YYYY-MM-DD *)
-  let regexp =
-    Str.regexp
-      "^\\(\\([0-9]\\{4\\}\\)-\\([0-9]\\{2\\}\\)-\\([0-9]\\{2\\}\\)\\)$"
-  in
+  let regexp = Str.regexp "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}$" in
   if Str.string_match regexp s 0 then
     let year = Str.matched_group 1 s |> int_of_string in
     let month = Str.matched_group 2 s |> int_of_string in
     let day = Str.matched_group 3 s |> int_of_string in
-    Date (year, month, day)
+    let d = Date (year, month, day) in
+    if valid_date d then d else failwith "NOT A VALID DATE!"
   else NULL
 
-let empty (name : string) = { elemtype = -1; title = name; data = [] }
+let empty (et : int) (name : string) =
+  { elemtype = et; title = name; data = [] }
 
 let elem_of_string (s : string) : elem =
   let data_type = int_of_string_opt s in
@@ -209,20 +208,8 @@ let rec valid_column col =
       | Date (y, m, d) -> valid_data t (Date (y, m, d)))
 
 let make s d =
-  let elemtype_unchanged =
-    { elemtype = -1; title = s; data = elemlist_of_stringlist d }
-  in
-  {
-    elemtype_unchanged with
-    elemtype = elemtype_num_of_data elemtype_unchanged.data;
-  }
-
-let add_elem_to_column elem col =
-  let new_col =
-    { elemtype = col.elemtype; title = col.title; data = elem :: col.data }
-  in
-  if col.elemtype = elemtype_num_of_elem elem then new_col
-  else failwith "All elements must be of the same type"
+  let data_insert = elemlist_of_stringlist d in
+  { elemtype = elemtype_num_of_data data_insert; title = s; data = data_insert }
 
 let title t = t.title
 let data t = t.data
@@ -277,6 +264,13 @@ let stringlist_of_data data =
   aux [] data
 
 let stringlist_of_column col = col.title :: stringlist_of_data col.data
+
+let add_elem_to_column elem col =
+  if col.elemtype = -1 then
+    let new_col = make col.title @@ stringlist_of_data (elem :: col.data) in
+    if new_col.elemtype = elemtype_num_of_elem elem then new_col
+    else failwith "All elements must be of the same type"
+  else { elemtype = col.elemtype; title = col.title; data = elem :: col.data }
 
 let string_of_column col =
   "{" ^ col.title ^ ", " ^ string_of_data col.data ^ "}"
