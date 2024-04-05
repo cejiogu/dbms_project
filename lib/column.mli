@@ -53,10 +53,11 @@ val elem_of_string : string -> elem
     @param s The string to parse.
     @return The corresponding element. *)
 
-val elemlist_of_stringlist : string list -> elem list
-(** [elemlist_of_stringlist str_lst] Converts a list of strings into a list of
+val elemlist_of_stringlist : string list -> int -> elem list
+(** [elemlist_of_stringlist str_lst elt] Converts a list of strings into a list of
     elements of type [elem].
     @param str_lst The list of strings to convert.
+    @param elt The type associated with the strings to convert.
     @return A list of data entries corresponding to the input strings. *)
 
 val string_of_column : t -> string

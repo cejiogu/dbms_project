@@ -56,12 +56,13 @@ let tests_column =
              (Column.string_of_column
                 (Column.make "New_Years"
                    [ "NULL"; "2022-01-01"; "2023-01-01"; "2024-01-01" ]));
-           assert_equal "{transport, [bus]}"
-             (Column.string_of_column (Column.make "transport" [ "bus" ]));
+           assert_equal "{transport, [bus, car]}"
+             (Column.string_of_column
+                (Column.make "transport" [ "bus"; "car" ]));
            (* testing elemlist_of_stringlist function *)
            assert_equal
-             (Column.elemlist_of_stringlist [ "bus" ])
-             (Column.data (Column.make "transport" [ "bus" ])) );
+             (Column.elemlist_of_stringlist [ "bus"; "car" ] 3)
+             (Column.data (Column.make "transport" [ "bus"; "car" ])) );
          ( "Rename column" >:: fun _ ->
            assert_equal "{New_name, []}"
              (Column.string_of_column @@ Column.rename float_column "New_name")
@@ -178,7 +179,7 @@ let tests_table =
               {Value, [NULL, 5.2343444]}\n"
              (Table.string_of_table
              @@ Table.rename_column "ID" "New_Name" t5_insert2) );
-         ( "Remove column in (table5)" >:: fun _ ->
+         ( "Testing remove_column" >:: fun _ ->
            assert_equal
              "Table: NULL_add_table\n\
               {ID, [NULL, 143]}\n\

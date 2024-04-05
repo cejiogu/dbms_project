@@ -20,6 +20,30 @@ let empty (et : int) (name : string) =
 
 let rename col new_title = { col with title = new_title }
 
+(** [elemtype_num_of_elem elem] Determine the numeric code associated with a
+    specific element type.
+    @param elem
+      The element whose type is to be evaluated. This element can be of several
+      predefined types (Int, Bool, Float, String, Date) or NULL.
+
+    @return
+      Returns a specific integer code for each
+      type:
+      - `-1` for NULL
+      - `0` for Int
+      - `1` for Bool
+      - `2` for Float
+      - `3` for String
+      - `4`. *)
+let elemtype_num_of_elem elem =
+  match elem with
+  | NULL -> -1
+  | Int _ -> 0
+  | Bool _ -> 1
+  | Float _ -> 2
+  | String _ -> 3
+  | Date _ -> 4
+
 let date_of_string (s : string) : elem option =
   (* Regular expression to match a date in the format YYYY-MM-DD *)
   let regexp =
@@ -60,9 +84,10 @@ let elem_of_string (s : string) : elem =
           end
       end
 
-(** [elemlist_of_stringlist_aux s acc] recursively converts a list of strings
-    [s] into a list of [elem]s, accumulating the result in [acc].
+(** [elemlist_of_stringlist_aux s eltype acc] recursively converts a list of
+    strings [s] into a list of [elem]s, accumulating the result in [acc].
     @param s The list of strings to convert.
+    @param eltype The elemtype number of the string to convert.
     @param acc The accumulator for the resulting [elem] list, initially empty.
     @return
       A list of [elem]s, constructed in reverse order from the input list
@@ -71,41 +96,19 @@ let elem_of_string (s : string) : elem =
       This is a helper function designed for internal use by
       [elemlist_of_stringlist]. USE [elemlist_of_stringlist s] INSTEAD OF THIS
       FUNCTION!*)
-let rec elemlist_of_stringlist_aux (s : string list) (acc : elem list) :
-    elem list =
+let rec elemlist_of_stringlist_aux (s : string list) (eltype : int)
+    (acc : elem list) : elem list =
   match s with
   | [] -> List.rev acc
-  | h :: t -> elemlist_of_stringlist_aux t @@ (elem_of_string h :: acc)
+  | h :: t ->
+      let elem_added = elem_of_string h in
+      let eltype_s = elemtype_num_of_elem elem_added in
+      if eltype_s = eltype || eltype_s = -1 then
+        elemlist_of_stringlist_aux t eltype @@ (elem_added :: acc)
+      else failwith "All elemnts must be of the same type!"
 
-let elemlist_of_stringlist (s : string list) = elemlist_of_stringlist_aux s []
-
-(* let elemtype_of_elem_num elem = match elem with | -1 -> NULL | 0 -> Int 0 | 1
-   -> Bool false | 2 -> Float 0.0 | 3 -> String "" | 4 -> Date (0, 0, 0) | _ ->
-   failwith "Not a possible elem number" *)
-
-(** [elemtype_num_of_elem elem] Determine the numeric code associated with a
-    specific element type.
-    @param elem
-      The element whose type is to be evaluated. This element can be of several
-      predefined types (Int, Bool, Float, String, Date) or NULL.
-
-    @return
-      Returns a specific integer code for each
-      type:
-      - `-1` for NULL
-      - `0` for Int
-      - `1` for Bool
-      - `2` for Float
-      - `3` for String
-      - `4`. *)
-let elemtype_num_of_elem elem =
-  match elem with
-  | NULL -> -1
-  | Int _ -> 0
-  | Bool _ -> 1
-  | Float _ -> 2
-  | String _ -> 3
-  | Date _ -> 4
+let elemlist_of_stringlist (s : string list) (eltype : int) =
+  elemlist_of_stringlist_aux s eltype []
 
 (** [elemtype_num_of_data data] Finds the numeric code of the type of the first
     non-NULL element. If all elements are NULL or the list is empty, it returns
@@ -133,8 +136,33 @@ let rec elemtype_num_of_data data =
       let num = elemtype_num_of_elem h in
       if num = -1 then elemtype_num_of_data t else num
 
+(** [elemtype_num_of_stringlist str_lst] Finds the numeric code of the type of
+    the first non-NULL element in [str_lst]. If all elements are NULL or the
+    list is empty, it returns -1.
+
+    @param str_lst
+      The string list to be scanned. Each element in this list is subject to
+      type evaluation, similar to what is described in `elemtype_num_of_elem`.
+
+    @return
+      Returns the numeric code corresponding to the type of the first non-NULL
+      element found in the list according to the
+      following:
+      - `-1` if all elements are NULL or the list is empty.
+      - An integer code (0 to 4) corresponding to the type of the first non-NULL
+        element found, following the same codes as `elemtype_num_of_elem`. This
+        function iterates through the list until it finds a non-NULL element or
+        exhausts the list. *)
+let rec elemtype_num_of_stringlist str_lst =
+  match str_lst with
+  | [] -> -1
+  | h :: t ->
+      let elemtype_num = elemtype_num_of_elem @@ elem_of_string h in
+      if elemtype_num = -1 then elemtype_num_of_stringlist t else elemtype_num
+
 let make s d =
-  let data_insert = elemlist_of_stringlist d in
+  let elemtype = elemtype_num_of_stringlist d in
+  let data_insert = elemlist_of_stringlist d elemtype in
   { elemtype = elemtype_num_of_data data_insert; title = s; data = data_insert }
 
 (** [string_of_date d] Converts a [Date] represented by the tuple [d] into a
