@@ -178,6 +178,20 @@ let tests_table =
               {Value, [NULL, 5.2343444]}\n"
              (Table.string_of_table
              @@ Table.rename_column "ID" "New_Name" t5_insert2) );
+         ( "Remove column in (table5)" >:: fun _ ->
+           assert_equal
+             "Table: NULL_add_table\n\
+              {ID, [NULL, 143]}\n\
+              {Value, [NULL, 5.2343444]}\n"
+             (Table.string_of_table t5_insert2);
+           assert_equal "Table: NULL_add_table\n{Value, [NULL, 5.2343444]}\n"
+             (Table.string_of_table @@ Table.remove_column "ID" t5_insert2);
+           assert_equal
+             "Table: NULL_add_table\n\
+              {ID, [NULL, 143]}\n\
+              {Value, [NULL, 5.2343444]}\n"
+             (Table.string_of_table
+             @@ Table.remove_column "NOTINTABLE" t5_insert2) );
        ]
 
 let () =

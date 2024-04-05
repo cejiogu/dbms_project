@@ -48,6 +48,14 @@ val rename_column : string -> string -> t -> t
     @param tab The table containing the column to be renamed.
     @return A new table instance with the column name updated, if applicable. *)
 
+val remove_column : string -> t -> t
+(** [remove_column col_name tab] returns a new table [t] that is identical to [tab] but with the column named [col_name] removed. 
+    If [col_name] does not exist in [tab], the table is returned unchanged.
+
+    @param col_name The name of the column to be removed.
+    @param tab The table from which the column will be removed.
+    @return A new table with the specified column removed. *)
+
 val string_of_table : t -> string
 (** [string_of_table t] Converts the table [t] into a string representation.
     @param t The table to convert to a string.

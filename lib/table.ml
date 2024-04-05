@@ -89,6 +89,15 @@ let rename_column pre_name post_name tab : t =
   in
   { tab with columns = helper [] tab.columns }
 
+let remove_column col_name tab : t =
+  let rec helper acc = function
+    | [] -> List.rev acc
+    | col :: cols ->
+        if Column.title col = col_name then helper acc cols
+        else helper (col :: acc) cols
+  in
+  { tab with columns = helper [] tab.columns }
+
 let string_of_table t =
   let table_name = "Table: " ^ t.name ^ "\n" in
   let columns_to_string cols =
