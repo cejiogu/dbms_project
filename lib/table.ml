@@ -117,4 +117,12 @@ let print (tab : t) : unit =
   let _ = print_newline in
   ()
 
-let select_from (tab : t) (names : string list) : t = failwith "TODO"
+let rec select_from_aux (columns : column list) (names : string list) (acc : t)
+    =
+  match names with
+  | [] -> acc
+  | (h : string) :: (t : string list) -> failwith "TODO"
+
+let select_from (tab : t) (names : string list) : t =
+  let selected = select_from_aux tab.columns names (empty tab.name) in
+  selected
