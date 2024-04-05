@@ -52,6 +52,14 @@ val print : t -> unit
     @return The table is represented in the terminal
     @notes The actual implementation should iterate over the table's rows and columns, formatting the output for readability. *)
 
+val exists_opt : string -> column list -> column option
+(** [exists_opt name cols] Searches for a column titled [name] in [cols]
+    @param name The name of the column being searched for
+    @param cols A list of columns
+    @return
+      The column titled [name] if it exists in [cols], or [None] if the column
+      does not exist in [cols]*)
+
 val select_from : t -> string list -> t
 (** [select_from tab names] Selects the columns whose titles are in [names] from
     table [tab]
