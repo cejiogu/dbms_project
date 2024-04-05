@@ -123,8 +123,18 @@ let rec exists_opt (name : string) (cols : column list) : column option =
   | (h : column) :: (t : column list) ->
       if Column.title h = name then Some h else exists_opt name t
 
+(**[select_from_aux columns names acc] Creates a table of the columns from
+   [columns] whose names are in [names] and adds them to the accumulator table
+   [acc]
+   @param columns The columns that are under scrutiny in this function
+   @param names The titles of the columns that the function
+   @param acc The table accumulator for the columns
+   @return
+     [table] where [table] is the table that accumulated all the columns from
+     [columns] whose names were in [names]*)
+
 let rec select_from_aux (columns : column list) (names : string list) (acc : t)
-    =
+    : t =
   match names with
   | [] -> acc
   | (h : string) :: (t : string list) -> (
