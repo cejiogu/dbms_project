@@ -5,8 +5,8 @@ type elem
 type t
 (** The type representing a column within a table, which consists of a record
     holding the fields of [title] the string label of the column and [data] the
-    data entries of the column. [t] holds [elem_type] which is an int corresponding to the 
-    the type of elem. 
+    data entries of the column. [t] holds [elem_type] which is an int
+    corresponding to the the type of elem.
     - `-1` for NULL
     - `0` for Int
     - `1` for Bool
@@ -23,16 +23,15 @@ val data : t -> elem list
 (** [data col] Retrieves the list of data entries from a column.
     @param col The column from which data is retrieved. *)
 
-(* val all_numbers : string -> bool
-(** [all_numbers s] Checks if a given string consists entirely of digits.
-    @param s The string to check. *) *)
+(* val all_numbers : string -> bool (** [all_numbers s] Checks if a given string
+   consists entirely of digits. @param s The string to check. *) *)
 
-(* val valid_date : elem -> bool
-(** [valid_date d] Determines if a given element represents a valid date.
-    @param d The element to validate. *) *)
+(* val valid_date : elem -> bool (** [valid_date d] Determines if a given
+   element represents a valid date. @param d The element to validate. *) *)
 
 val empty : int -> string -> t
-(** [empty elt n] Produces an empty column with the title [n], elemtype of [elt] and no data entries.
+(** [empty elt n] Produces an empty column with the title [n], elemtype of [elt]
+    and no data entries.
     @param elt The int set to the [elemtype] of the column.
     @param n The string set to the [title] of the column.
     @return An empty column instance. *)
@@ -59,12 +58,11 @@ val title : t -> string
    @param t The column.
    @return The title of a column*)
 
-(* val valid_data : elem list -> elem -> bool
-(** [valid_data data type_elem] Verifies that all data entries in a list match a
-    specified type.
-    @param data The list of data entries to check.
-    @param type_elem The type element used to check the data list elem type.
-    @return [true] if all entries match the type; otherwise, [false]. *) *)
+(* val valid_data : elem list -> elem -> bool (** [valid_data data type_elem]
+   Verifies that all data entries in a list match a specified type. @param data
+   The list of data entries to check. @param type_elem The type element used to
+   check the data list elem type. @return [true] if all entries match the type;
+   otherwise, [false]. *) *)
 
 val valid_column : t -> bool
 (** [valid_column col] Checks if a column's data entries are consistent and
