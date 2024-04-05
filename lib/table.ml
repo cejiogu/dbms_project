@@ -117,8 +117,11 @@ let print (tab : t) : unit =
   let _ = print_newline in
   ()
 
-let exists_aux (name : string) (cols : column list) : bool = failwith "TODO"
-let exists (name : string) (tab : t) : bool = failwith "TODO"
+let rec exists (name : string) (cols : column list) : bool =
+  match cols with
+  | [] -> false
+  | (h : column) :: (t : column list) ->
+      if Column.title h = name then true else exists name t
 
 let rec select_from_aux (columns : column list) (names : string list) (acc : t)
     =
