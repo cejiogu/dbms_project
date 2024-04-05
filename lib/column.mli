@@ -5,7 +5,14 @@ type elem
 type t
 (** The type representing a column within a table, which consists of a record
     holding the fields of [title] the string label of the column and [data] the
-    data entries of the column. *)
+    data entries of the column. [t] holds [elem_type] which is an int corresponding to the 
+    the type of elem. 
+    - `-1` for NULL
+    - `0` for Int
+    - `1` for Bool
+    - `2` for Float
+    - `3` for String
+    - `4` for Date. *)
 
 val string_of_elem : elem -> string
 (** [string_of_elem elem] Converts an element of type [elem] to its string
@@ -16,18 +23,18 @@ val data : t -> elem list
 (** [data col] Retrieves the list of data entries from a column.
     @param col The column from which data is retrieved. *)
 
-val all_numbers : string -> bool
+(* val all_numbers : string -> bool
 (** [all_numbers s] Checks if a given string consists entirely of digits.
-    @param s The string to check. *)
+    @param s The string to check. *) *)
 
-val valid_date : elem -> bool
+(* val valid_date : elem -> bool
 (** [valid_date d] Determines if a given element represents a valid date.
-    @param d The element to validate. *)
+    @param d The element to validate. *) *)
 
-val empty : string -> t
-(** [empty name] Produces an empty column of title [string] with no data
-    entries.
-    @param name The title of the column.
+val empty : int -> string -> t
+(** [empty elt n] Produces an empty column with the title [n], elemtype of [elt] and no data entries.
+    @param elt The int set to the [elemtype] of the column.
+    @param n The string set to the [title] of the column.
     @return An empty column instance. *)
 
 val elem_of_string : string -> elem
@@ -35,10 +42,10 @@ val elem_of_string : string -> elem
     @param s The string to parse.
     @return The corresponding element. *)
 
-val date_of_string : string -> elem
-(** [date_of_string s] Attempts to parse a string into a [Date] element.
+val date_of_string : string -> elem option
+(** [date_of_string s] Attempts to parse a string into a [Date] option element.
     @param s The string representing a date.
-    @return A [Date] element if successful; otherwise, [NULL]. *)
+    @return [Some Date] element if successful; otherwise, [None]. *)
 
 val make : string -> string list -> t
 (** [make t str_data_lst] Creates a column with a specified title and a list of
@@ -52,12 +59,12 @@ val title : t -> string
    @param t The column.
    @return The title of a column*)
 
-val valid_data : elem list -> elem -> bool
+(* val valid_data : elem list -> elem -> bool
 (** [valid_data data type_elem] Verifies that all data entries in a list match a
     specified type.
     @param data The list of data entries to check.
     @param type_elem The type element used to check the data list elem type.
-    @return [true] if all entries match the type; otherwise, [false]. *)
+    @return [true] if all entries match the type; otherwise, [false]. *) *)
 
 val valid_column : t -> bool
 (** [valid_column col] Checks if a column's data entries are consistent and

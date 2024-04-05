@@ -21,10 +21,11 @@ val empty : string -> t
     @raise InvalidQuery if the provided [name] is an empty string.
     @return A new table instance with the specified name and no columns. *)
 
-val make : string -> string list -> t
-(** [make tab_name col_names] Creates a new table with the given [tab_name] and columns named according to [col_names].
+val make : string -> string list -> string list -> t
+(** [make tab_name col_names col_types] Creates a new table with the given [tab_name] and columns named according to [col_names] with types according to [col_types].
     @param tab_name The name of the table to be created.
     @param col_names A list of names for each column in the table.
+    @param col_types A list of data types for each column in the table.
     @return A new table instance with the specified name and columns.
     @note This function is analogous to the SQL CREATE TABLE statement. *)
 
