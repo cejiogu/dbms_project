@@ -117,17 +117,29 @@ let print (tab : t) : unit =
   let _ = print_newline in
   ()
 
-let rec exists (name : string) (cols : column list) : bool =
+let rec exists_opt (name : string) (cols : column list) : column option =
   match cols with
-  | [] -> false
+  | [] -> None
   | (h : column) :: (t : column list) ->
-      if Column.title h = name then true else exists name t
+      if Column.title h = name then Some h else exists_opt name t
 
 let rec select_from_aux (columns : column list) (names : string list) (acc : t)
     =
   match names with
   | [] -> acc
-  | (h : string) :: (t : string list) -> failwith "TODO"
+  | (h : string) :: (t : string list) -> (
+      match exists_opt h columns with
+      | None ->
+          raise
+            (InvalidQuery
+               ("Column " ^ h ^ " does not exist in the selected table"))
+      | Some col ->
+          let data = Column.data col in
+          let title = Column.title col in
+          let new_acc =
+            insert_into acc [ title ] (Column.stringlist_of_data data)
+          in
+          select_from_aux columns t new_acc)
 
 let select_from (tab : t) (names : string list) : t =
   let selected = select_from_aux tab.columns names (empty tab.name) in
