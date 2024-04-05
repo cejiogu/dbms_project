@@ -117,6 +117,9 @@ let print (tab : t) : unit =
   let _ = print_newline in
   ()
 
+let exists_aux (name : string) (cols : column list) : bool = failwith "TODO"
+let exists (name : string) (tab : t) : bool = failwith "TODO"
+
 let rec select_from_aux (columns : column list) (names : string list) (acc : t)
     =
   match names with
