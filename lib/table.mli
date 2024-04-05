@@ -7,8 +7,8 @@ type t
 (** The type representing a table, which consists of a name [name] and a list of
     columns [columns]. *)
 
-val name : t -> string
-(** [name t] Returns the name of the table [t].
+val title : t -> string
+(** [title t] Returns the name of the table [t].
     @param t The table whose name you're retrieving. *)
 
 val columns : t -> column list

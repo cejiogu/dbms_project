@@ -7,7 +7,7 @@ type t = {
   columns : column list;
 }
 
-let name t = t.name
+let title t = t.name
 let columns t = t.columns
 
 (** [make_aux acc col_names col_types] Makes a list of columns from [col_names] 
