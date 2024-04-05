@@ -12,6 +12,14 @@ type t = {
   data : elem list;
 }
 
+let title t = t.title
+let data t = t.data
+
+let empty (et : int) (name : string) =
+  { elemtype = et; title = name; data = [] }
+
+let rename col new_title = { col with title = new_title }
+
 let date_of_string (s : string) : elem option =
   (* Regular expression to match a date in the format YYYY-MM-DD *)
   let regexp =
@@ -26,9 +34,6 @@ let date_of_string (s : string) : elem option =
     (* let d = Date (year, month, day) in if valid_date d then d else failwith
        "NOT A VALID DATE!" *)
   else None
-
-let empty (et : int) (name : string) =
-  { elemtype = et; title = name; data = [] }
 
 let elem_of_string (s : string) : elem =
   if s = "NULL" then NULL
@@ -49,7 +54,8 @@ let elem_of_string (s : string) : elem =
                 match data_type with
                 | Some (Date (y, m, d)) -> Date (y, m, d)
                 | None -> String s
-                | _ -> NULL
+                | _ ->
+                    failwith "You should be getting NULL. This is impossible!"
               end
           end
       end
@@ -130,9 +136,6 @@ let rec elemtype_num_of_data data =
 let make s d =
   let data_insert = elemlist_of_stringlist d in
   { elemtype = elemtype_num_of_data data_insert; title = s; data = data_insert }
-
-let title t = t.title
-let data t = t.data
 
 (** [string_of_date d] Converts a [Date] represented by the tuple [d] into a
     string.

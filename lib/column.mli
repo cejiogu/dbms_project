@@ -19,17 +19,14 @@ val string_of_elem : elem -> string
     representation.
     @param elem The element to be converted. *)
 
+val title : t -> string
+(**[title t] Gets the title of a given column [t]
+    @param t The column.
+    @return The title of a column*)
+
 val data : t -> elem list
 (** [data col] Retrieves the list of data entries from a column.
     @param col The column from which data is retrieved. *)
-
-(* val all_numbers : string -> bool
-(** [all_numbers s] Checks if a given string consists entirely of digits.
-    @param s The string to check. *) *)
-
-(* val valid_date : elem -> bool
-(** [valid_date d] Determines if a given element represents a valid date.
-    @param d The element to validate. *) *)
 
 val empty : int -> string -> t
 (** [empty elt n] Produces an empty column with the title [n], elemtype of [elt] and no data entries.
@@ -37,27 +34,24 @@ val empty : int -> string -> t
     @param n The string set to the [title] of the column.
     @return An empty column instance. *)
 
-val elem_of_string : string -> elem
-(** [elem_of_string s] Parses a string to produce an element of type [elem].
-    @param s The string to parse.
-    @return The corresponding element. *)
+val rename : t -> string -> t
+(** [rename col new_title] Updates the title of a column [col] to [new_title].
+    This function creates a new column with the updated title while preserving 
+    the original column's data and element type.
+
+    @param col The column to rename.
+    @param new_title The new title for the column.
+    @return A new column instance with the updated title and original data and element type. *)
 
 val date_of_string : string -> elem option
 (** [date_of_string s] Attempts to parse a string into a [Date] option element.
     @param s The string representing a date.
     @return [Some Date] element if successful; otherwise, [None]. *)
 
-val make : string -> string list -> t
-(** [make t str_data_lst] Creates a column with a specified title and a list of
-    data entries converted from strings.
-    @param t The title of the column.
-    @param str_data_lst The list of strings to be converted into data entries.
-    @return A new column with the specified data. *)
-
-val title : t -> string
-(**[title t] Gets the title of a given column [t]
-   @param t The column.
-   @return The title of a column*)
+val elem_of_string : string -> elem
+(** [elem_of_string s] Parses a string to produce an element of type [elem].
+    @param s The string to parse.
+    @return The corresponding element. *)
 
 val elemlist_of_stringlist : string list -> elem list
 (** [elemlist_of_stringlist str_lst] Converts a list of strings into a list of
@@ -76,10 +70,12 @@ val stringlist_of_column : t -> string list
     @param col The column to convert.
     @return The string representation of the column. *) 
 
-val print : t -> unit
-(** [print col] Prints the contents of a column, including its title and data
-    entries, to the console.
-    @param col The column to print. *)
+val make : string -> string list -> t
+(** [make t str_data_lst] Creates a column with a specified title and a list of
+    data entries converted from strings.
+    @param t The title of the column.
+    @param str_data_lst The list of strings to be converted into data entries.
+    @return A new column with the specified data. *)
 
 val add : string -> t -> t
 (** [add str_elem col] Adds an element, parsed from [str_elem], to the column [col], ensuring type consistency. If the parsed element's type matches the column's type, or if the column is uninitialized, the element is added; otherwise, a "All elements must be of the same type" exception is raised.
@@ -88,6 +84,13 @@ val add : string -> t -> t
     @param col The target column.
     @return The column with the new element added.
     @raise Failure if there's a type mismatch between the element and the column elemtype. *)
+
+val print : t -> unit
+(** [print col] Prints the contents of a column, including its title and data
+    entries, to the console.
+    @param col The column to print. *)
+
+
 
 (* FUNCTION CEMETERY
 
@@ -103,8 +106,15 @@ val valid_column : t -> bool
     valid.
     @param col The column to validate.
     @return [true] if the column is valid; otherwise, [false]. *)
+ *)
 
-val stringlist_of_data : elem list -> string list
-(** [stringlist_of_data data] Converts an elem list to a string list.
-    @param data The elem list to convert.
-    @return The string representation of the data. *) *)
+
+(* MISCELLANEOUS CEMETERY
+
+val all_numbers : string -> bool
+(** [all_numbers s] Checks if a given string consists entirely of digits.
+    @param s The string to check. *)
+
+val valid_date : elem -> bool
+(** [valid_date d] Determines if a given element represents a valid date.
+    @param d The element to validate. *) *)

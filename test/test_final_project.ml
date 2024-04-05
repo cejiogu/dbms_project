@@ -62,6 +62,10 @@ let tests_column =
            assert_equal
              (Column.elemlist_of_stringlist [ "bus" ])
              (Column.data (Column.make "transport" [ "bus" ])) );
+         ( "Rename column" >:: fun _ ->
+           assert_equal "{New_name, []}"
+             (Column.string_of_column @@ Column.rename float_column "New_name")
+         );
        ]
 
 (* Table1: *)
@@ -167,6 +171,13 @@ let tests_table =
               {ID, [NULL, 143]}\n\
               {Value, [NULL, 5.2343444]}\n"
              (Table.string_of_table t5_insert2) );
+         ( "Rename ID column in (table5)" >:: fun _ ->
+           assert_equal
+             "Table: NULL_add_table\n\
+              {New_Name, [NULL, 143]}\n\
+              {Value, [NULL, 5.2343444]}\n"
+             (Table.string_of_table
+             @@ Table.rename_column "ID" "New_Name" t5_insert2) );
        ]
 
 let () =

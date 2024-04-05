@@ -78,6 +78,17 @@ let insert_into table column_names values =
     let updated_columns = List.map update_column table.columns in
     { table with columns = updated_columns }
 
+let rename_column pre_name post_name tab : t =
+  let rec helper acc = function
+    | [] -> List.rev acc
+    | col :: cols ->
+        if Column.title col = pre_name then
+          let updated_col = Column.rename col post_name in
+          helper (updated_col :: acc) cols
+        else helper (col :: acc) cols
+  in
+  { tab with columns = helper [] tab.columns }
+
 let string_of_table t =
   let table_name = "Table: " ^ t.name ^ "\n" in
   let columns_to_string cols =
