@@ -90,3 +90,5 @@ let print (tab : t) : unit =
   let () = Csv.print ~separator:'|' transposition in
   let _ = print_newline in
   ()
+
+let select_from (tab : t) (names : string list) : t = failwith "TODO"
