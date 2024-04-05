@@ -50,3 +50,11 @@ val print : t -> unit
     @param t The table to be printed.
     @return The table is represented in the terminal
     @notes The actual implementation should iterate over the table's rows and columns, formatting the output for readability. *)
+
+val select_from : t -> string list -> t
+(** [select_from tab names] Selects the columns whose titles are in [names] from
+    table [tab]
+    @param tab The table from which the columns are being selected
+    @param names
+      The names of the columns that are being selected from table [tab]
+    @return *)
