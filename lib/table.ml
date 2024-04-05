@@ -72,8 +72,7 @@ let insert_into table column_names values =
       match find_index_opt (Column.title col) column_names with
       | Some index ->
           let value = List.nth values index in
-          let elem = Column.elem_of_string value in
-          Column.add_elem_to_column elem col
+          Column.add value col
       | None -> col
     in
     let updated_columns = List.map update_column table.columns in

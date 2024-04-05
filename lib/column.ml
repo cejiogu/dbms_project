@@ -12,30 +12,6 @@ type t = {
   data : elem list;
 }
 
-(* (** [all_numbers s] checks if the string [s] contains only numeric
-   characters. @param s The string to check. @return [true] if [s] contains only
-   digits; otherwise, [false]. *) let all_numbers (s : string) : bool = if
-   Str.string_match (Str.regexp "[0-9]+$") s 0 then true else false
-
-   (** [valid_year s] checks if the string [s] represents a valid year. @param s
-   The string representing a year. @return [true] if [s] is "NULL" or contains
-   only digits; otherwise, [false]. *) let valid_year (year : string) : bool =
-   if year = "NULL" || all_numbers year then true else false
-
-   (** [valid_month_or_day s] checks if the string [s] is a valid representation
-   of a month or day. @param s The string to check. @return [true] if [s] is
-   "NULL", consists of 2 digits, or both; otherwise, [false]. *) let
-   valid_month_or_day (month_or_day : string) : bool = if month_or_day = "NULL"
-   || (all_numbers month_or_day && String.length month_or_day = 2) then true
-   else false
-
-   (** [valid_date d] checks if the Date [d] is valid. @param d The Date to
-   check, as an [elem] variant. @return [true] if [d] represents a valid Date;
-   otherwise, [false]. *) let valid_date (date : elem) = match date with | Date
-   (year, month, day) -> if (valid_year @@ string_of_int year) &&
-   (valid_month_or_day @@ string_of_int month) && (valid_month_or_day @@
-   string_of_int day) then true else false | _ -> false *)
-
 let date_of_string (s : string) : elem option =
   (* Regular expression to match a date in the format YYYY-MM-DD *)
   let regexp =
@@ -151,57 +127,6 @@ let rec elemtype_num_of_data data =
       let num = elemtype_num_of_elem h in
       if num = -1 then elemtype_num_of_data t else num
 
-let rec valid_data (data : elem list) (h_data : elem) : bool =
-  match data with
-  | [] -> true
-  | h :: t -> begin
-      match h_data with
-      | NULL -> valid_data t h_data
-      | Int _ -> begin
-          match h with
-          | NULL -> valid_data t h_data
-          | Int _ -> valid_data t h_data
-          | _ -> false
-        end
-      | Bool _ -> begin
-          match h with
-          | NULL -> valid_data t h_data
-          | Bool _ -> valid_data t h_data
-          | _ -> false
-        end
-      | Float _ -> begin
-          match h with
-          | NULL -> valid_data t h_data
-          | Float _ -> valid_data t h_data
-          | _ -> false
-        end
-      | String _ -> begin
-          match h with
-          | NULL -> valid_data t h_data
-          | String _ -> valid_data t h_data
-          | _ -> false
-        end
-      | Date _ -> begin
-          match h with
-          | NULL -> valid_data t h_data
-          | Date _ -> valid_data t h_data
-          | _ -> false
-        end
-    end
-
-let rec valid_column col =
-  match col.data with
-  | [] -> true
-  | h :: t -> (
-      match h with
-      | NULL ->
-          valid_column { elemtype = col.elemtype; title = col.title; data = t }
-      | Int i -> valid_data t (Int i)
-      | Bool b -> valid_data t (Bool b)
-      | Float f -> valid_data t (Float f)
-      | String s -> valid_data t (String s)
-      | Date (y, m, d) -> valid_data t (Date (y, m, d)))
-
 let make s d =
   let data_insert = elemlist_of_stringlist d in
   { elemtype = elemtype_num_of_data data_insert; title = s; data = data_insert }
@@ -249,6 +174,9 @@ let string_of_data data =
   in
   "[" ^ aux "" data ^ "]"
 
+let string_of_column col =
+  "{" ^ col.title ^ ", " ^ string_of_data col.data ^ "}"
+
 let stringlist_of_data data =
   let rec aux acc lst =
     match lst with
@@ -259,13 +187,17 @@ let stringlist_of_data data =
 
 let stringlist_of_column col = col.title :: stringlist_of_data col.data
 
+(** [add_elem_to_column elem col] Adds a new element to the beginning of a
+    column's data list.
+    @param elem The element to add.
+    @param col The column to which the element will be added.
+    @return The updated column with the new element added. *)
 let add_elem_to_column elem col =
   if elemtype_num_of_elem elem = -1 || col.elemtype = elemtype_num_of_elem elem
   then { elemtype = col.elemtype; title = col.title; data = elem :: col.data }
   else failwith "All elements must be of the same type"
 
-let string_of_column col =
-  "{" ^ col.title ^ ", " ^ string_of_data col.data ^ "}"
+let add str_elem col = add_elem_to_column (elem_of_string str_elem) col
 
 (** [print_data d] prints each element of the list [d] on a new line.
     @param d The elem list to print. *)
@@ -279,3 +211,48 @@ let rec print_data data =
 let print col =
   print_endline col.title;
   print_data col.data
+
+(* FUNCTION CEMETERY
+
+   let rec valid_data (data : elem list) (h_data : elem) : bool = match data
+   with | [] -> true | h :: t -> begin match h_data with | NULL -> valid_data t
+   h_data | Int _ -> begin match h with | NULL -> valid_data t h_data | Int _ ->
+   valid_data t h_data | _ -> false end | Bool _ -> begin match h with | NULL ->
+   valid_data t h_data | Bool _ -> valid_data t h_data | _ -> false end | Float
+   _ -> begin match h with | NULL -> valid_data t h_data | Float _ -> valid_data
+   t h_data | _ -> false end | String _ -> begin match h with | NULL ->
+   valid_data t h_data | String _ -> valid_data t h_data | _ -> false end | Date
+   _ -> begin match h with | NULL -> valid_data t h_data | Date _ -> valid_data
+   t h_data | _ -> false end end
+
+   let rec valid_column col = match col.data with | [] -> true | h :: t -> (
+   match h with | NULL -> valid_column { elemtype = col.elemtype; title =
+   col.title; data = t } | Int i -> valid_data t (Int i) | Bool b -> valid_data
+   t (Bool b) | Float f -> valid_data t (Float f) | String s -> valid_data t
+   (String s) | Date (y, m, d) -> valid_data t (Date (y, m, d))) *)
+
+(* MISCELLANEOUS CEMETERY
+
+   (** [all_numbers s] checks if the string [s] contains only numeric
+   characters. @param s The string to check. @return [true] if [s] contains only
+   digits; otherwise, [false]. *) let all_numbers (s : string) : bool = if
+   Str.string_match (Str.regexp "[0-9]+$") s 0 then true else false
+
+   (** [valid_year s] checks if the string [s] represents a valid year. @param s
+   The string representing a year. @return [true] if [s] is "NULL" or contains
+   only digits; otherwise, [false]. *) let valid_year (year : string) : bool =
+   if year = "NULL" || all_numbers year then true else false
+
+   (** [valid_month_or_day s] checks if the string [s] is a valid representation
+   of a month or day. @param s The string to check. @return [true] if [s] is
+   "NULL", consists of 2 digits, or both; otherwise, [false]. *) let
+   valid_month_or_day (month_or_day : string) : bool = if month_or_day = "NULL"
+   || (all_numbers month_or_day && String.length month_or_day = 2) then true
+   else false
+
+   (** [valid_date d] checks if the Date [d] is valid. @param d The Date to
+   check, as an [elem] variant. @return [true] if [d] represents a valid Date;
+   otherwise, [false]. *) let valid_date (date : elem) = match date with | Date
+   (year, month, day) -> if (valid_year @@ string_of_int year) &&
+   (valid_month_or_day @@ string_of_int month) && (valid_month_or_day @@
+   string_of_int day) then true else false | _ -> false *)

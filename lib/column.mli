@@ -59,19 +59,6 @@ val title : t -> string
    @param t The column.
    @return The title of a column*)
 
-(* val valid_data : elem list -> elem -> bool
-(** [valid_data data type_elem] Verifies that all data entries in a list match a
-    specified type.
-    @param data The list of data entries to check.
-    @param type_elem The type element used to check the data list elem type.
-    @return [true] if all entries match the type; otherwise, [false]. *) *)
-
-val valid_column : t -> bool
-(** [valid_column col] Checks if a column's data entries are consistent and
-    valid.
-    @param col The column to validate.
-    @return [true] if the column is valid; otherwise, [false]. *)
-
 val elemlist_of_stringlist : string list -> elem list
 (** [elemlist_of_stringlist str_lst] Converts a list of strings into a list of
     elements of type [elem].
@@ -84,24 +71,40 @@ val string_of_column : t -> string
     @param col The column to convert.
     @return The string representation of the column. *)
 
-val stringlist_of_data : elem list -> string list
-(** [stringlist_of_data data] Converts an elem list to a string list.
-    @param data The elem list to convert.
-    @return The string representation of the data. *)
-
 val stringlist_of_column : t -> string list
 (** [stringlist_of_column col] Converts a column to a string list.
     @param col The column to convert.
-    @return The string representation of the column. *)
+    @return The string representation of the column. *) 
 
 val print : t -> unit
 (** [print col] Prints the contents of a column, including its title and data
     entries, to the console.
     @param col The column to print. *)
 
-val add_elem_to_column : elem -> t -> t
-(** [add_elem_to_column elem col] Adds a new element to the beginning of a
-    column's data list.
-    @param elem The element to add.
-    @param col The column to which the element will be added.
-    @return The updated column with the new element added. *)
+val add : string -> t -> t
+(** [add str_elem col] Adds an element, parsed from [str_elem], to the column [col], ensuring type consistency. If the parsed element's type matches the column's type, or if the column is uninitialized, the element is added; otherwise, a "All elements must be of the same type" exception is raised.
+
+    @param str_elem The string representation of the element to be added.
+    @param col The target column.
+    @return The column with the new element added.
+    @raise Failure if there's a type mismatch between the element and the column elemtype. *)
+
+(* FUNCTION CEMETERY
+
+val valid_data : elem list -> elem -> bool
+(** [valid_data data type_elem] Verifies that all data entries in a list match a
+    specified type.
+    @param data The list of data entries to check.
+    @param type_elem The type element used to check the data list elem type.
+    @return [true] if all entries match the type; otherwise, [false]. *)
+
+val valid_column : t -> bool
+(** [valid_column col] Checks if a column's data entries are consistent and
+    valid.
+    @param col The column to validate.
+    @return [true] if the column is valid; otherwise, [false]. *)
+
+val stringlist_of_data : elem list -> string list
+(** [stringlist_of_data data] Converts an elem list to a string list.
+    @param data The elem list to convert.
+    @return The string representation of the data. *) *)
