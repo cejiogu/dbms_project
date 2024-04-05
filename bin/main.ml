@@ -7,6 +7,12 @@ module StringBuilder = struct
     let words = Str.split (Str.regexp "[ \t\n]+") input in
     List.filter (fun x -> x <> "") words
 
+  (** [demarker_aux]
+      @param input
+      @param finish
+      @param acc
+      @return *)
+
   let rec demarker_aux (input : string list) (finish : string)
       (acc : string list) : string list =
     match input with
@@ -69,13 +75,15 @@ let rec prompt_loop (exit : string list) (input : string)
     | word1 :: word2 :: _ ->
         if word1 = "CREATE" && word2 = "TABLE" then
           let table_title = List.nth command 2 in
-          let columns = StringBuilder.demarker command "COLUMNS" "DATA TYPES" in
-          let col_values = StringBuilder.demarker command "VALUES" "" in
+          let columns = StringBuilder.demarker command "COLUMNS" "DATATYPES" in
+          let col_values = StringBuilder.demarker command "DATATYPES" "" in
           match (columns, col_values) with
           | Some cols, Some vals -> begin
+              let tab = Table.make table_title cols vals in
               let database =
                 Database.insert_table database table_title cols vals
               in
+              let () = Table.print tab in
               prompt_loop exit (cycler ()) database
             end
           | _ ->
