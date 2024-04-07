@@ -1,6 +1,5 @@
 open OUnit2
 include Final_project
-include Final_project.Table
 
 let tests_column =
   let int_column = Column.empty 0 "Int" in
