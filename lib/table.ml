@@ -136,7 +136,9 @@ let rec exists_opt (name : string) (cols : column list) : column option =
 let rec select_from_aux (columns : column list) (names : string list) (acc : t)
     : t =
   match names with
-  | [] -> acc
+  | [] ->
+      let output : t = { name = acc.name; columns = List.rev acc.columns } in
+      output
   | (h : string) :: (t : string list) -> (
       match exists_opt h columns with
       | None ->
@@ -146,8 +148,9 @@ let rec select_from_aux (columns : column list) (names : string list) (acc : t)
       | Some col ->
           let data = Column.data col in
           let title = Column.title col in
-          let new_acc =
-            insert_into acc [ title ] (Column.stringlist_of_data data)
+          let new_column = Column.make_raw data title in
+          let new_acc : t =
+            { name = acc.name; columns = new_column :: acc.columns }
           in
           select_from_aux columns t new_acc)
 
