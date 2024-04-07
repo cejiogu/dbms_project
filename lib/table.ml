@@ -89,7 +89,7 @@ let rename_column pre_name post_name tab : t =
   in
   { tab with columns = helper [] tab.columns }
 
-let remove_column col_name tab : t =
+let remove col_name tab : t =
   let rec helper acc = function
     | [] -> List.rev acc
     | col :: cols ->
