@@ -1,6 +1,6 @@
 exception InvalidQuery of string
 
-type table
+type table = Table.t
 (** The type representing a table within a database. *)
 
 type t
@@ -30,11 +30,20 @@ val table_exists : string -> t -> bool
       @notes This function can be used to prevent duplicate tables in a database. *)
 
 val insert_table : t -> string -> string list -> string list -> t
-(** [insert_table db name column_names column_types] Creates a new table with the specified name [name] and columns [column_names] 
-            whos types are of [column_types] and inserts it into the database [db].
-      @param db The database into which the new table is to be inserted.
-      @param name The name of the new table.
-      @param column_names A list of names for each column in the new table.
-      @param column_types A list of types for each column in the new table.
-      @return An updated database containing the new table.
-      @raise Does not change the database if a table with the specified name already exists. *)
+(** [insert_table db name column_names column_types] Creates a new table with
+    the specified name [name] and columns [column_names] whos types are of
+    [column_types] and inserts it into the database [db].
+    @param db The database into which the new table is to be inserted.
+    @param name The name of the new table.
+    @param column_names A list of names for each column in the new table.
+    @param column_types A list of types for each column in the new table.
+    @return An updated database containing the new table.
+    @raise Does
+      not change the database if a table with the specified name already exists. *)
+
+val get_table : t -> string -> table
+(** [get_table db name] Retrieves the table titled [name] from database [db]
+    @param db The database from which the table is being retrieved
+    @param name The title of the table being retrieved
+    @return The table from the database with the name [name]
+    @raise InvalidQuery if a table titled [name] does not exist in database [db]*)
