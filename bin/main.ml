@@ -28,7 +28,7 @@ module StringBuilder = struct
       @param start The string, exclusive, at which the function begin selecting strings
       @param finish The string, exclusive, at which the function stops selecting strings
       @return A string list of all the words in between [start] and [finish], exclusive
-      @raises ArgumentError if [start] is equal to ""
+      @raises ArgumentError if [start] is equal to "", if [start] does not exist in [input], or if [finish] does not exist in [input] and [finish] is not equal to ""
       @note If [finish] is equal to "", then the function selects all strings from [start] to the end of [input]*)
 
   let rec demarker (input : string list) (start : string) (finish : string) :
@@ -37,6 +37,14 @@ module StringBuilder = struct
       raise
         (ArgumentError
            "Invalid Input: 'start' argument cannot be an empty string")
+    else if
+      List.mem start input = false
+      || ((not (List.mem finish input)) && finish <> "")
+    then
+      raise
+        (ArgumentError
+           "Invalid Input: One of the specified strings does not exist in the \
+            string list")
     else
       match input with
       | [] -> None
@@ -72,7 +80,7 @@ let rec prompt_loop (exit : string list) (input : string)
         let () = print_endline "You did not provide any commands" in
         let () = print_endline "" in
         prompt_loop exit (cycler ()) database
-    | word1 :: word2 :: _ ->
+    | word1 :: word2 :: _ -> begin
         if word1 = "CREATE" && word2 = "TABLE" then
           let table_title = List.nth command 2 in
           let columns = StringBuilder.demarker command "COLUMNS" "DATATYPES" in
@@ -88,13 +96,28 @@ let rec prompt_loop (exit : string list) (input : string)
             end
           | _ ->
               let () =
-                print_endline "You did not enter the titles of your columns"
+                print_endline "You did not enter the titles of the columns"
               in
               let () = print_endline "" in
               prompt_loop exit (cycler ()) database
-        else
-          let () = error_message () in
-          prompt_loop exit (cycler ()) database
+        else if word1 = "SELECT" then
+          let columns = StringBuilder.demarker command "SELECT" "FROM" in
+          let table_title = List.nth command (List.length command - 1) in
+          match columns with
+          | Some cols -> begin
+              let tab = Database.get_table database table_title in
+              let selected = Table.select_from tab cols in
+              let () = Table.print selected in
+              prompt_loop exit (cycler ()) database
+            end
+          | None -> begin
+              let () =
+                print_endline "You did not enter the titles of the columns"
+              in
+              let () = print_endline "" in
+              prompt_loop exit (cycler ()) database
+            end
+      end
     | _ ->
         let () = error_message () in
         prompt_loop exit (cycler ()) database
