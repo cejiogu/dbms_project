@@ -103,3 +103,10 @@ val add_elem_to_column : elem -> t -> t
     @param elem The element to add.
     @param col The column to which the element will be added.
     @return The updated column with the new element added. *)
+
+val make_raw : elem list -> string -> t
+(** [make_raw data title] Creates a column with the title [title] and with data
+    [data]
+    @param data The values to be stored within the column
+    @param title The name of the column
+    @return A new column titled [title] with data [data] *)
