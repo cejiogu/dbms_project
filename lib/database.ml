@@ -29,11 +29,12 @@ let insert_table (db : t) (name : string) (column_names : string list)
     let new_table = Table.make name column_names column_types in
     { db with tables = new_table :: db.tables }
 
-(* let rec get_table_aux (tables : table list) (name : string) : table = match
-   tables with | [] -> failwith "Should never come to this case" | (h : table)
-   :: (t : table list) -> if Table.title h = name then h else get_table_aux t
-   name *)
+let rec get_table_aux (tables : table list) (name : string) : table =
+  match tables with
+  | [] -> failwith "Should never come to this case"
+  | (h : table) :: (t : table list) ->
+      if Table.title h = name then h else get_table_aux t name
 
-(* let get_table (db : t) (name : string) = if table_exists name db then
-   get_table_aux db.tables name else raise (InvalidQuery ("The table titled " ^
-   name ^ " does not exist ")) *)
+let get_table (db : t) (name : string) : table =
+  if table_exists name db then get_table_aux db.tables name
+  else raise (InvalidQuery ("The table titled " ^ name ^ " does not exist "))
