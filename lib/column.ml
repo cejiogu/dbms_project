@@ -240,7 +240,7 @@ let rec print_data data =
       print_data t
 
 let print col =
-  print_endline col.title;
+  print_endline @@ "\n" ^ col.title;
   print_data col.data
 
 (* FUNCTION CEMETERY

@@ -130,6 +130,7 @@ let rec print_aux (cols : column list) (acc : string list list) :
    with characters other than the whitespace (' '), whereas Csv.print allows the
    option to delineate columns with vertical bars ('|'). *)
 let print (tab : t) : unit =
+  print_endline "";
   let conversion = print_aux tab.columns [] in
   let transposition = Csv.transpose conversion in
   let () = Csv.print ~separator:'|' transposition in
