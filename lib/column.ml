@@ -279,3 +279,7 @@ let rec print_data data =
 let print col =
   print_endline col.title;
   print_data col.data
+
+let make_raw (data : elem list) (title : string) : t =
+  let col : t = { elemtype = elemtype_num_of_data data; title; data } in
+  col
