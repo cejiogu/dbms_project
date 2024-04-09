@@ -165,6 +165,11 @@ let make s d =
   let data_insert = elemlist_of_stringlist d elemtype in
   { elemtype = elemtype_num_of_data data_insert; title = s; data = data_insert }
 
+(** [add_zero s] Adds a zero to the beginning of s if the length is 1 else
+    returns s
+    @param s The string to add a zero to depending on the length. *)
+let add_zero s = if String.length s = 1 then "0" ^ s else s
+
 (** [string_of_date d] Converts a [Date] represented by the tuple [d] into a
     string.
     @param d
@@ -176,7 +181,9 @@ let make s d =
 let string_of_date date =
   match date with
   | year, month, day ->
-      string_of_int year ^ "-" ^ string_of_int month ^ "-" ^ string_of_int day
+      string_of_int year ^ "-"
+      ^ (add_zero @@ string_of_int month)
+      ^ "-" ^ add_zero @@ string_of_int day
 
 let string_of_elem (e : elem) : string =
   match e with

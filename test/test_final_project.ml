@@ -18,7 +18,7 @@ let tests_column =
          ( "Add to Column" >:: fun _ ->
            assert_equal "{Time, [5:53, 2:43]}"
              (Column.string_of_column @@ Column.make "Time" [ "5:53"; "2:43" ]);
-           assert_equal "{DATE, [2003-6-3, 2003-7-16]}"
+           assert_equal "{DATE, [2003-06-03, 2003-07-16]}"
              (Column.string_of_column
              @@ Column.make "DATE" [ "2003-06-03"; "2003-07-16" ]) );
          ( "Adding to empty columns of each type, including NULL" >:: fun _ ->
@@ -38,7 +38,7 @@ let tests_column =
              (Column.string_of_column @@ Column.add "HEY" string_column);
            assert_equal "{String, [NULL]}"
              (Column.string_of_column @@ Column.add "NULL" string_column);
-           assert_equal "{Date, [2012-1-29]}"
+           assert_equal "{Date, [2012-01-29]}"
              (Column.string_of_column @@ Column.add "2012-01-29" date_column);
            assert_equal "{Date, [NULL]}"
              (Column.string_of_column @@ Column.add "NULL" date_column) );
@@ -52,7 +52,8 @@ let tests_column =
            assert_equal "{floating_pi, [3., 3.1, 3.14, NULL]}"
              (Column.string_of_column
                 (Column.make "floating_pi" [ "3."; "3.1"; "3.14"; "NULL" ]));
-           assert_equal "{New_Years, [NULL, 2022-1-1, 2023-1-1, 2024-1-1]}"
+           assert_equal
+             "{New_Years, [NULL, 2022-01-01, 2023-01-01, 2024-01-01]}"
              (Column.string_of_column
                 (Column.make "New_Years"
                    [ "NULL"; "2022-01-01"; "2023-01-01"; "2024-01-01" ]));
@@ -158,13 +159,13 @@ let tests_table =
              "Table: MixedTable\n\
               {ID, [1]}\n\
               {Name, [Charlie]}\n\
-              {Birthday, [1990-1-1]}\n"
+              {Birthday, [1990-01-01]}\n"
              (Table.string_of_table t3_insert1);
            assert_equal
              "Table: MixedTable\n\
               {ID, [2, 1]}\n\
               {Name, [Dana, Charlie]}\n\
-              {Birthday, [1985-5-23, 1990-1-1]}\n"
+              {Birthday, [1985-05-23, 1990-01-01]}\n"
              (Table.string_of_table t3_insert2) );
          ( "Make table with Float, and Bool Columns (table4)" >:: fun _ ->
            assert_equal "Table: FloatsBools\n{ID, []}\n{Has_Name, []}\n"
