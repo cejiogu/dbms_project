@@ -51,29 +51,10 @@ val date_of_string : string -> elem option
     @param s The string representing a date.
     @return [Some Date] element if successful; otherwise, [None]. *)
 
-val make : string -> string list -> t
-(** [make t str_data_lst] Creates a column with a specified title and a list of
-    data entries converted from strings.
-    @param t The title of the column.
-    @param str_data_lst The list of strings to be converted into data entries.
-    @return A new column with the specified data. *)
-
-val title : t -> string
-(**[title t] Gets the title of a given column [t]
-   @param t The column.
-   @return The title of a column*)
-
-(* val valid_data : elem list -> elem -> bool (** [valid_data data type_elem]
-   Verifies that all data entries in a list match a specified type. @param data
-   The list of data entries to check. @param type_elem The type element used to
-   check the data list elem type. @return [true] if all entries match the type;
-   otherwise, [false]. *) *)
-
-val valid_column : t -> bool
-(** [valid_column col] Checks if a column's data entries are consistent and
-    valid.
-    @param col The column to validate.
-    @return [true] if the column is valid; otherwise, [false]. *)
+val elem_of_string : string -> elem
+(** [elem_of_string s] Parses a string to produce an element of type [elem].
+    @param s The string to parse.
+    @return The corresponding element. *)
 
 val elemlist_of_stringlist : string list -> int -> elem list
 (** [elemlist_of_stringlist str_lst elt] Converts a list of strings into a list
@@ -117,9 +98,22 @@ val print : t -> unit
     entries, to the console.
     @param col The column to print. *)
 
-val add_elem_to_column : elem -> t -> t
-(** [add_elem_to_column elem col] Adds a new element to the beginning of a
-    column's data list.
-    @param elem The element to add.
-    @param col The column to which the element will be added.
-    @return The updated column with the new element added. *)
+(* FUNCTION CEMETERY
+
+   val valid_data : elem list -> elem -> bool (** [valid_data data type_elem]
+   Verifies that all data entries in a list match a specified type. @param data
+   The list of data entries to check. @param type_elem The type element used to
+   check the data list elem type. @return [true] if all entries match the type;
+   otherwise, [false]. *)
+
+   val valid_column : t -> bool (** [valid_column col] Checks if a column's data
+   entries are consistent and valid. @param col The column to validate. @return
+   [true] if the column is valid; otherwise, [false]. *) *)
+
+(* MISCELLANEOUS CEMETERY
+
+   val all_numbers : string -> bool (** [all_numbers s] Checks if a given string
+   consists entirely of digits. @param s The string to check. *)
+
+   val valid_date : elem -> bool (** [valid_date d] Determines if a given
+   element represents a valid date. @param d The element to validate. *) *)
