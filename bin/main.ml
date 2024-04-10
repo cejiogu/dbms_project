@@ -53,14 +53,6 @@ module StringBuilder = struct
           else demarker t start finish
 end
 
-let error_message () =
-  let () = print_endline "Error: Invalid Command" in
-  let () =
-    print_endline "You did not enter a valid command. Please try again."
-  in
-  let () = print_endline "" in
-  ()
-
 let cycler () =
   let () = print_endline "Enter an SQL command to modify your database: " in
   let command = read_line () in
@@ -80,6 +72,13 @@ let rec prompt_loop (exit : string list) (input : string)
         let () = print_endline "You did not provide any commands" in
         let () = print_endline "" in
         prompt_loop exit (cycler ()) database
+    | word :: [] -> begin
+        if word = "SCHEMA" then
+          let tables = List.rev (Database.tables database) in
+          let () = Database.schema tables in
+          let () = print_endline "" in
+          prompt_loop exit (cycler ()) database
+      end
     | word1 :: word2 :: _ -> begin
         if word1 = "CREATE" && word2 = "TABLE" then
           let table_title = List.nth command 2 in
@@ -94,12 +93,13 @@ let rec prompt_loop (exit : string list) (input : string)
               let () = Table.print tab in
               prompt_loop exit (cycler ()) database
             end
-          | _ ->
+          | _ -> begin
               let () =
                 print_endline "You did not enter the titles of the columns"
               in
               let () = print_endline "" in
               prompt_loop exit (cycler ()) database
+            end
         else if word1 = "SELECT" then
           let columns = StringBuilder.demarker command "SELECT" "FROM" in
           let table_title = List.nth command (List.length command - 1) in
@@ -118,9 +118,6 @@ let rec prompt_loop (exit : string list) (input : string)
               prompt_loop exit (cycler ()) database
             end
       end
-    | _ ->
-        let () = error_message () in
-        prompt_loop exit (cycler ()) database
 
 let initial_prompt =
   let open Final_project in
