@@ -47,3 +47,7 @@ val get_table : t -> string -> table
     @param name The title of the table being retrieved
     @return The table from the database with the name [name]
     @raise InvalidQuery if a table titled [name] does not exist in database [db]*)
+
+val schema : table list -> unit
+(** [schema tables] Prints the names of all the names in a tables in [tables]
+    @param tables The tables whose names are to be printed *)
