@@ -98,6 +98,8 @@ val print : t -> unit
     entries, to the console.
     @param col The column to print. *)
 
+val make_raw : elem list -> string -> t
+
 (* FUNCTION CEMETERY
 
    val valid_data : elem list -> elem -> bool (** [valid_data data type_elem]
