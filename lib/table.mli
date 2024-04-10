@@ -38,6 +38,24 @@ val insert_into : t -> string list -> string list -> t
     @return An updated table with the new row of values inserted.
     @notes Requires implementation of functionality from the Column module to properly add values to columns. *)
 
+val rename_column : string -> string -> t -> t
+(** [rename_column pre_name post_name tab] Renames a column from [pre_name] to
+    [post_name] in the table [tab]. If a column with [pre_name] exists, its name
+    is updated to [post_name]; otherwise, the table remains unchanged.
+
+    @param pre_name The current name of the column to be renamed.
+    @param post_name The new name for the column.
+    @param tab The table containing the column to be renamed.
+    @return A new table instance with the column name updated, if applicable. *)
+
+val remove : string -> t -> t
+(** [remove col_name tab] returns a new table [t] that is identical to [tab] but with the column named [col_name] removed. 
+    If [col_name] does not exist in [tab], the table is returned unchanged.
+
+    @param col_name The name of the column to be removed.
+    @param tab The table from which the column will be removed.
+    @return A new table with the specified column removed. *)
+
 val string_of_table : t -> string
 (** [string_of_table t] Converts the table [t] into a string representation.
     @param t The table to convert to a string.

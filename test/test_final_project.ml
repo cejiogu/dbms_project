@@ -1,66 +1,132 @@
 open OUnit2
 include Final_project
-include Final_project.Table
 
 let tests_column =
+  let int_column = Column.empty 0 "Int" in
+  let bool_column = Column.empty 1 "Bool" in
+  let float_column = Column.empty 2 "Float" in
+  let string_column = Column.empty 3 "String" in
+  let date_column = Column.empty 4 "Date" in
   "test Column"
   >::: [
-         (* ( "Empty Column" >:: fun _ -> assert_equal (Column.empty 0 "Test")
-            (Column.make "Test" []) ); *)
+         ( "Empty Column of different types" >:: fun _ ->
+           assert_equal "{Int, []}" (Column.string_of_column int_column);
+           assert_equal "{Bool, []}" (Column.string_of_column bool_column);
+           assert_equal "{Float, []}" (Column.string_of_column float_column);
+           assert_equal "{String, []}" (Column.string_of_column string_column);
+           assert_equal "{Date, []}" (Column.string_of_column date_column) );
          ( "Add to Column" >:: fun _ ->
            assert_equal "{Time, [5:53, 2:43]}"
-             (Column.string_of_column @@ Column.make "Time" [ "5:53"; "2:43" ])
-         );
-         ( "Add String to Col" >:: fun _ ->
+             (Column.string_of_column @@ Column.make "Time" [ "5:53"; "2:43" ]);
+           assert_equal "{DATE, [2003-06-03, 2003-07-16]}"
+             (Column.string_of_column
+             @@ Column.make "DATE" [ "2003-06-03"; "2003-07-16" ]) );
+         ( "Adding to empty columns of each type, including NULL" >:: fun _ ->
+           assert_equal "{Int, [12]}"
+             (Column.string_of_column @@ Column.add "12" int_column);
+           assert_equal "{Int, [NULL]}"
+             (Column.string_of_column @@ Column.add "NULL" int_column);
+           assert_equal "{Bool, [false]}"
+             (Column.string_of_column @@ Column.add "false" bool_column);
+           assert_equal "{Bool, [NULL]}"
+             (Column.string_of_column @@ Column.add "NULL" bool_column);
+           assert_equal "{Float, [12.32]}"
+             (Column.string_of_column @@ Column.add "12.32" float_column);
+           assert_equal "{Float, [NULL]}"
+             (Column.string_of_column @@ Column.add "NULL" float_column);
+           assert_equal "{String, [HEY]}"
+             (Column.string_of_column @@ Column.add "HEY" string_column);
+           assert_equal "{String, [NULL]}"
+             (Column.string_of_column @@ Column.add "NULL" string_column);
+           assert_equal "{Date, [2012-01-29]}"
+             (Column.string_of_column @@ Column.add "2012-01-29" date_column);
+           assert_equal "{Date, [NULL]}"
+             (Column.string_of_column @@ Column.add "NULL" date_column) );
+         ( "Making column of different types" >:: fun _ ->
+           assert_equal "{PI, [3, 1, 4, NULL]}"
+             (Column.string_of_column
+                (Column.make "PI" [ "3"; "1"; "4"; "NULL" ]));
+           assert_equal "{is_column, [true, NULL, false, false]}"
+             (Column.string_of_column
+                (Column.make "is_column" [ "true"; "NULL"; "false"; "false" ]));
+           assert_equal "{floating_pi, [3., 3.1, 3.14, NULL]}"
+             (Column.string_of_column
+                (Column.make "floating_pi" [ "3."; "3.1"; "3.14"; "NULL" ]));
            assert_equal
-             (Column.elemlist_of_stringlist [ "bus" ])
-             (Column.data (Column.make "transport" [ "bus" ])) );
+             "{New_Years, [NULL, 2022-01-01, 2023-01-01, 2024-01-01]}"
+             (Column.string_of_column
+                (Column.make "New_Years"
+                   [ "NULL"; "2022-01-01"; "2023-01-01"; "2024-01-01" ]));
+           assert_equal "{transport, [bus, car]}"
+             (Column.string_of_column
+                (Column.make "transport" [ "bus"; "car" ]));
+           (* testing elemlist_of_stringlist function *)
+           assert_equal
+             (Column.elemlist_of_stringlist [ "bus"; "car" ] 3)
+             (Column.data (Column.make "transport" [ "bus"; "car" ])) );
+         ( "Rename column" >:: fun _ ->
+           assert_equal "{New_name, []}"
+             (Column.string_of_column @@ Column.rename float_column "New_name")
+         );
        ]
 
-(* Table1: *)
-let t1 = Table.make "IntegerTable" [ "ID"; "Value" ] [ "Int"; "Int" ]
-let t1_insert1 = Table.insert_into t1 [ "ID"; "Value" ] [ "1"; "100" ]
-let t1_insert2 = Table.insert_into t1_insert1 [ "ID"; "Value" ] [ "2"; "200" ]
-
-(* Table2: *)
-let t2 =
-  Table.make "StringTable" [ "Name"; "Occupation" ] [ "String"; "String" ]
-
-let t2_insert1 =
-  Table.insert_into t2 [ "Name"; "Occupation" ] [ "Alice"; "Engineer" ]
-
-let t2_insert2 =
-  Table.insert_into t2_insert1 [ "Name"; "Occupation" ] [ "Bob"; "Doctor" ]
-
-(* Table3: *)
-let t3 =
-  Table.make "MixedTable"
-    [ "ID"; "Name"; "Birthday" ]
-    [ "Int"; "String"; "Date" ]
-
-let t3_insert1 =
-  Table.insert_into t3
-    [ "ID"; "Name"; "Birthday" ]
-    [ "1"; "Charlie"; "1990-01-01" ]
-
-let t3_insert2 =
-  Table.insert_into t3_insert1
-    [ "ID"; "Name"; "Birthday" ]
-    [ "2"; "Dana"; "1985-05-23" ]
-
-let t4 = Table.make "FloatsBools" [ "ID"; "Has_Name" ] [ "Float"; "Bool" ]
-let t4_insert1 = Table.insert_into t4 [ "ID"; "Has_Name" ] [ "1.2"; "true" ]
-
-let t4_insert2 =
-  Table.insert_into t4_insert1 [ "ID"; "Has_Name" ] [ "0."; "false" ]
-
-let t5 = Table.make "NULL_add_table" [ "ID"; "Value" ] [ "Int"; "Float" ]
-let t5_insert1 = Table.insert_into t5 [ "ID"; "Value" ] [ "143"; "5.2343444" ]
-
-let t5_insert2 =
-  Table.insert_into t5_insert1 [ "ID"; "Value" ] [ "NULL"; "NULL" ]
-
 let tests_table =
+  (* Table1: *)
+  let t1 = Table.make "IntegerTable" [ "ID"; "Value" ] [ "Int"; "Int" ] in
+  let t1_insert1 = Table.insert_into t1 [ "ID"; "Value" ] [ "1"; "100" ] in
+  let t1_insert2 =
+    Table.insert_into t1_insert1 [ "ID"; "Value" ] [ "2"; "200" ]
+  in
+
+  (* Table2: *)
+  let t2 =
+    Table.make "StringTable" [ "Name"; "Occupation" ] [ "String"; "String" ]
+  in
+
+  let t2_insert1 =
+    Table.insert_into t2 [ "Name"; "Occupation" ] [ "Alice"; "Engineer" ]
+  in
+
+  let t2_insert2 =
+    Table.insert_into t2_insert1 [ "Name"; "Occupation" ] [ "Bob"; "Doctor" ]
+  in
+
+  (* Table3: *)
+  let t3 =
+    Table.make "MixedTable"
+      [ "ID"; "Name"; "Birthday" ]
+      [ "Int"; "String"; "Date" ]
+  in
+
+  let t3_insert1 =
+    Table.insert_into t3
+      [ "ID"; "Name"; "Birthday" ]
+      [ "1"; "Charlie"; "1990-01-01" ]
+  in
+
+  let t3_insert2 =
+    Table.insert_into t3_insert1
+      [ "ID"; "Name"; "Birthday" ]
+      [ "2"; "Dana"; "1985-05-23" ]
+  in
+
+  let t4 = Table.make "FloatsBools" [ "ID"; "Has_Name" ] [ "Float"; "Bool" ] in
+  let t4_insert1 =
+    Table.insert_into t4 [ "ID"; "Has_Name" ] [ "1.2"; "true" ]
+  in
+
+  let t4_insert2 =
+    Table.insert_into t4_insert1 [ "ID"; "Has_Name" ] [ "0."; "false" ]
+  in
+
+  let t5 = Table.make "NULL_add_table" [ "ID"; "Value" ] [ "Int"; "Float" ] in
+  let t5_insert1 =
+    Table.insert_into t5 [ "ID"; "Value" ] [ "143"; "5.2343444" ]
+  in
+
+  let t5_insert2 =
+    Table.insert_into t5_insert1 [ "ID"; "Value" ] [ "NULL"; "NULL" ]
+  in
   "test Table"
   >::: [
          ( "Empty Table" >:: fun _ ->
@@ -93,13 +159,13 @@ let tests_table =
              "Table: MixedTable\n\
               {ID, [1]}\n\
               {Name, [Charlie]}\n\
-              {Birthday, [1990-1-1]}\n"
+              {Birthday, [1990-01-01]}\n"
              (Table.string_of_table t3_insert1);
            assert_equal
              "Table: MixedTable\n\
               {ID, [2, 1]}\n\
               {Name, [Dana, Charlie]}\n\
-              {Birthday, [1985-5-23, 1990-1-1]}\n"
+              {Birthday, [1985-05-23, 1990-01-01]}\n"
              (Table.string_of_table t3_insert2) );
          ( "Make table with Float, and Bool Columns (table4)" >:: fun _ ->
            assert_equal "Table: FloatsBools\n{ID, []}\n{Has_Name, []}\n"
@@ -120,6 +186,51 @@ let tests_table =
               {ID, [NULL, 143]}\n\
               {Value, [NULL, 5.2343444]}\n"
              (Table.string_of_table t5_insert2) );
+         ( "Rename ID column in (table5)" >:: fun _ ->
+           assert_equal
+             "Table: NULL_add_table\n\
+              {New_Name, [NULL, 143]}\n\
+              {Value, [NULL, 5.2343444]}\n"
+             (Table.string_of_table
+             @@ Table.rename_column "ID" "New_Name" t5_insert2) );
+         ( "Testing remove column" >:: fun _ ->
+           assert_equal
+             "Table: NULL_add_table\n\
+              {ID, [NULL, 143]}\n\
+              {Value, [NULL, 5.2343444]}\n"
+             (Table.string_of_table t5_insert2);
+           assert_equal "Table: NULL_add_table\n{Value, [NULL, 5.2343444]}\n"
+             (Table.string_of_table @@ Table.remove "ID" t5_insert2);
+           assert_equal
+             "Table: NULL_add_table\n\
+              {ID, [NULL, 143]}\n\
+              {Value, [NULL, 5.2343444]}\n"
+             (Table.string_of_table @@ Table.remove "NOTINTABLE" t5_insert2) );
+       ]
+
+let tests_printing =
+  let print_column = Column.make "Print Column" [ "1"; "2"; "3"; "4" ] in
+  let print_table =
+    let t =
+      Table.make "Print Table"
+        [ "Strings"; "Ints"; "Bools"; "Dates"; "Floates" ]
+        [ "String"; "Int"; "Bool"; "Date"; "Float" ]
+    in
+    let t1 =
+      Table.insert_into t
+        [ "Strings"; "Ints"; "Bools"; "Dates"; "Floates" ]
+        [ "Print that stuff well"; "5"; "false"; "2003-07-16"; "3.14159262" ]
+    in
+    Table.insert_into t1
+      [ "Strings"; "Ints"; "Bools"; "Dates"; "Floates" ]
+      [ "Print that stuff even better"; "100"; "true"; "2023-12-31"; "2.1" ]
+  in
+  "test print functions"
+  >::: [
+         ( "Print column" >:: fun _ ->
+           assert_equal () (Column.print print_column) );
+         ( "Testing print table" >:: fun _ ->
+           assert_equal () (Table.print print_table) );
        ]
 
 let () =
@@ -128,4 +239,5 @@ let () =
     >::: [
            "ColumnTests" >::: [ tests_column ];
            "TableTests" >::: [ tests_table ];
+           "PrintingTests" >::: [ tests_printing ];
          ])

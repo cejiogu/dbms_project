@@ -72,12 +72,31 @@ let insert_into table column_names values =
       match find_index_opt (Column.title col) column_names with
       | Some index ->
           let value = List.nth values index in
-          let elem = Column.elem_of_string value in
-          Column.add_elem_to_column elem col
+          Column.add value col
       | None -> col
     in
     let updated_columns = List.map update_column table.columns in
     { table with columns = updated_columns }
+
+let rename_column pre_name post_name tab : t =
+  let rec helper acc = function
+    | [] -> List.rev acc
+    | col :: cols ->
+        if Column.title col = pre_name then
+          let updated_col = Column.rename col post_name in
+          helper (updated_col :: acc) cols
+        else helper (col :: acc) cols
+  in
+  { tab with columns = helper [] tab.columns }
+
+let remove col_name tab : t =
+  let rec helper acc = function
+    | [] -> List.rev acc
+    | col :: cols ->
+        if Column.title col = col_name then helper acc cols
+        else helper (col :: acc) cols
+  in
+  { tab with columns = helper [] tab.columns }
 
 let string_of_table t =
   let table_name = "Table: " ^ t.name ^ "\n" in
@@ -111,6 +130,7 @@ let rec print_aux (cols : column list) (acc : string list list) :
    with characters other than the whitespace (' '), whereas Csv.print allows the
    option to delineate columns with vertical bars ('|'). *)
 let print (tab : t) : unit =
+  print_endline "";
   let conversion = print_aux tab.columns [] in
   let transposition = Csv.transpose conversion in
   let () = Csv.print ~separator:'|' transposition in
