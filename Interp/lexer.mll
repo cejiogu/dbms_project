@@ -9,5 +9,5 @@ let space = [' ']
 rule read = 
     parse 
     | "CREATE" { CREATE (Ast.command) }
-    (* for future reference: | "CREATE" { TABLE (table_of_string (Lexing.lexeme lexbuf)) } *)
+    (* for future reference: | "CREATE" { TABLE (Table.make (Lexing.lexeme lexbuf)) } *)
     | eof { EOF } *)

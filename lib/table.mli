@@ -60,8 +60,10 @@ val string_of_table : t -> string
 (** [string_of_table t] Converts the table [t] into a string representation.
     @param t The table to convert to a string.
     @return A string that represents the table, including its name and a formatted list of columns and their data.
-    The function formats the table name followed by each column's string representation, with each column separated by a newline. Each column's data is presented in a list format, and each data element within a column is also separated by newlines for clarity.
-    @example Calling [string_of_table my_table] where [my_table] has a name "TestTable" and two columns named "ID" and "Name" with respective values ["1", "2"] and ["Alice", "Bob"] returns:
+    The function formats the table name followed by each column's string representation, with each column separated by a newline. 
+    Each column's data is presented in a list format, and each data element within a column is also separated by newlines for clarity.
+    @example Calling [string_of_table my_table] where [my_table] has a name "TestTable" and two columns named "ID" and "Name" 
+with respective values ["1", "2"] and ["Alice", "Bob"] returns:
     "Table: TestTable\nID: [1, 2]\nName: [Alice, Bob]" *)
 
 val print : t -> unit

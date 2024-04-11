@@ -26,17 +26,12 @@ let rec make_aux (acc : column list) (col_names : string list)
     | [] -> List.rev acc
     | h :: t ->
         let h_col_types = List.hd col_types in
-        let num =
-          if h_col_types = "Int" then 0
-          else if h_col_types = "Bool" then 1
-          else if h_col_types = "Float" then 2
-          else if h_col_types = "String" then 3
-          else if h_col_types = "Date" then 4
-          else raise (InvalidQuery "You included a nonexistent type!")
-        in
-        let col = Column.empty num h in
-        let columns = col :: acc in
-        make_aux columns t @@ List.tl col_types
+        if List.mem h_col_types [ "Int"; "Bool"; "Float"; "String"; "Date" ]
+        then
+          let col = Column.empty h h_col_types in
+          let columns = col :: acc in
+          make_aux columns t @@ List.tl col_types
+        else raise (InvalidQuery "You included a nonexistent type!")
 
 let make (name : string) (column_names : string list)
     (column_types : string list) =
