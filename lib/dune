@@ -1,6 +1,6 @@
 (library
- (inline_tests)
  (name final_project)
+ (inline_tests)
  (instrumentation
   (backend bisect_ppx))
  (preprocess

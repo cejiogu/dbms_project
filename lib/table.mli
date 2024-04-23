@@ -87,3 +87,7 @@ val select_from : t -> string list -> t
     @param names
       The names of the columns that are being selected from table [tab]
     @return *)
+
+val prt_des: t->string
+val str_cols:t->string list
+val str_coltyp:t->string list

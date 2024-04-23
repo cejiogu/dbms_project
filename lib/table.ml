@@ -10,6 +10,7 @@ type t = {
 let title t = t.name
 let columns t = t.columns
 
+
 (** [make_aux acc col_names col_types] Makes a list of columns from [col_names] 
         and [col_types] and adds them to [acc].
     @param acc The accumulator for the columns.
@@ -172,3 +173,10 @@ let rec select_from_aux (columns : column list) (names : string list) (acc : t)
 let select_from (tab : t) (names : string list) : t =
   let selected = select_from_aux tab.columns names (empty tab.name) in
   selected
+
+let prt_des t=
+  let des=List.map (fun col-> (Column.title col)^" : "^( Column.sqlstr_of_elm (Column.col_type col))) (columns t) in
+  "Table added to Database\nTable: "^ (title t)^"\nColumns:\n  "^(String.concat "\n  " des)
+
+let str_cols t=List.map (fun col-> (Column.title col)) (columns t)
+let str_coltyp t=List.map (fun col-> Column.string_of_elmtyp (Column.col_type col)) (columns t)

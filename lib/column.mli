@@ -93,6 +93,10 @@ val print : t -> unit
 
 val make_raw : elem list -> string -> t
 
+val col_type: t->elem
+val elemtype_of_stringparse: string->string
+val sqlstr_of_elm: elem->string
+val string_of_elmtyp:elem->string
 (* FUNCTION CEMETERY
 
    val valid_data : elem list -> elem -> bool (** [valid_data data type_elem]
