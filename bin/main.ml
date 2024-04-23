@@ -18,7 +18,9 @@ let main () =
        database.\n\
       \ The following are valid commands:\n\
       \  -CREATE TABLE <table_name> (<column_name> <column_type>,<column_name> \
-       <column_type>,..)\n\n\
+       <column_type>,..)\n\
+      \  -SCHEMA\n\
+      \  -SELECT <column_name1>,<column_name2>,... FROM <table_name>\n\n\
        The following are valid column types:\n\
       \ -INT\n\
       \ -BOOL\n\
