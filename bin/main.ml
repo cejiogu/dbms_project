@@ -95,7 +95,9 @@ let rec prompt_loop (exit : string list) (input : string)
             end
           | _ -> begin
               let () =
-                print_endline "You did not enter the titles of the columns"
+                print_endline
+                  "You did not enter the required titles of the columns or \
+                   their required corresponding datatypes"
               in
               let () = print_endline "" in
               prompt_loop exit (cycler ()) database
@@ -112,11 +114,26 @@ let rec prompt_loop (exit : string list) (input : string)
             end
           | None -> begin
               let () =
-                print_endline "You did not enter the titles of the columns"
+                print_endline
+                  "You did not enter the required titles of the columns or \
+                   their required corresponding values"
               in
               let () = print_endline "" in
               prompt_loop exit (cycler ()) database
             end
+        else if word1 = "INSERT" && word2 = "INTO" then
+          let table_title = List.nth command 2 in
+          let columns = StringBuilder.demarker command "COLUMNS" "VALUES" in
+          let values = StringBuilder.demarker command "VALUES" "" in
+          match (columns, values) with
+          | Some cols, Some vals -> begin
+              let old_tab = Database.get_table database table_title in
+              let tab = Table.insert_into old_tab cols vals in
+              let database = Database.insert_existing_table database tab in
+              let () = Table.print tab in
+              prompt_loop exit (cycler ()) database
+            end
+          | _ -> ()
       end
 
 let initial_prompt =

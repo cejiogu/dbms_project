@@ -45,9 +45,18 @@ let get_table (db : t) (name : string) : table =
   if table_exists name db then get_table_aux db.tables name
   else raise (InvalidQuery ("The table titled " ^ name ^ " does not exist "))
 
-let rec schema (tables : table list) : unit =
+let rec schema_aux (tables : table list) : unit =
   match tables with
   | [] -> ()
   | h :: t ->
-      let () = print_endline (Table.title h) in
-      schema t
+      let () = print_endline ("- " ^ Table.title h) in
+      schema_aux t
+
+let schema (tables : table list) : unit =
+  print_endline "";
+  print_endline "TABLES:";
+  schema_aux tables
+
+let insert_existing_table (db : t) (tab : table) : t =
+  let new_db = { name = db.name; tables = List.rev (tab :: db.tables) } in
+  new_db

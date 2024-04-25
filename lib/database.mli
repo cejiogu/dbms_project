@@ -51,3 +51,9 @@ val get_table : t -> string -> table
 val schema : table list -> unit
 (** [schema tables] Prints the names of all the names in a tables in [tables]
     @param tables The tables whose names are to be printed *)
+
+val insert_existing_table : t -> table -> t
+(** [insert_existing_table db tab]
+    @param db The database into which you are inserting [tab]
+    @param tab The table that you are inserting into [db]
+    @return A new database that contains [tab]*)
