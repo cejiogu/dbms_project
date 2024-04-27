@@ -51,3 +51,7 @@ val get_table : t -> string -> table
 val schema : table list -> unit
 (** [schema tables] Prints the names of all the names in a tables in [tables]
     @param tables The tables whose names are to be printed *)
+
+val delete : t -> table -> t
+(**[delete db t] is the Database [db] with table [t] removed. Requires: [t] is a
+   Table in Database [db]*)

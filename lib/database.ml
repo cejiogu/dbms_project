@@ -51,3 +51,19 @@ let rec schema (tables : table list) : unit =
   | h :: t ->
       let () = print_endline (Table.title h) in
       schema t
+
+let rec tab_names acc l cnt =
+  if cnt <= List.length l - 1 then
+    Table.title (List.nth l cnt) :: tab_names acc l (cnt + 1)
+  else acc
+
+let delete db t =
+  if List.mem (Table.title t) (tab_names [] (tables db) 0) then (
+    let acc = ref [] in
+    for x = 0 to List.length (tables db) - 1 do
+      acc := List.nth (tables db) x :: !acc
+    done;
+    { name = name db; tables = !acc })
+  else
+    raise
+      (Failure ("TABLE " ^ Table.title t ^ " is NOT in Database " ^ name db))

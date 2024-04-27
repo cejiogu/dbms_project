@@ -16,6 +16,8 @@ rule read =
   | "SCHEMA" {SCHEMA}
   | "SELECT" {SELECT}
   | "FROM" {FROM}
+  | "ALTER" {ALTER}
+  | "ADD" {ADD}
   | "INTEGER" | "INT" {INT}
   (* | "VARCHAR" {VARCHAR} *)
   | "STRING" {STRING}

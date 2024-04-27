@@ -22,8 +22,8 @@ val data : t -> elem list
     @param col The column from which data is retrieved. *)
 
 val empty : string -> string -> t
-(** [empty n el] Produces an empty column with the title [n], elem of [el]
-    and no data entries.
+(** [empty n el] Produces an empty column with the title [n], elem of [el] and
+    no data entries.
     @param n The string set to the [title] of the column.
     @param el The elem set to the [elemtype] of the column.
     @return An empty column instance. *)
@@ -92,11 +92,10 @@ val print : t -> unit
     @param col The column to print. *)
 
 val make_raw : elem list -> string -> t
-
-val col_type: t->elem
-val elemtype_of_stringparse: string->string
-val sqlstr_of_elm: elem->string
-val string_of_elmtyp:elem->string
+val col_type : t -> elem
+val elemtype_of_stringparse : string -> string
+val sqlstr_of_elm : elem -> string
+val string_of_elmtyp : elem -> string
 (* FUNCTION CEMETERY
 
    val valid_data : elem list -> elem -> bool (** [valid_data data type_elem]

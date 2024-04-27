@@ -14,7 +14,7 @@ type t = {
 
 let title t = t.title
 let data t = t.data
-let col_type t=t.elemtype
+let col_type t = t.elemtype
 
 let date_of_string (s : string) : elem option =
   (* Regular expression to match a date in the format YYYY-MM-DD *)
@@ -89,8 +89,6 @@ let elem_of_elemlist (lst : elem list) : elem =
       | String _ -> String ""
       | Date _ -> Date (0000, 00, 00)
     end
-
-
 
 let empty (name : string) (el : string) =
   { elemtype = elemtype_of_stringtype el; title = name; data = [] }
@@ -233,29 +231,29 @@ let make_raw (data : elem list) (title : string) : t =
   col
 
 let elemtype_of_stringparse str =
-    match str with
-    | "INT" -> "Int"
-    | "STRING"->"String"
-    | "FLOAT"->"Float"
-    | "BOOL"->"Bool"
-    | "DATE"-> "Date"
-    | _ -> failwith "Not a valid type!"
+  match str with
+  | "INT" -> "Int"
+  | "STRING" -> "String"
+  | "FLOAT" -> "Float"
+  | "BOOL" -> "Bool"
+  | "DATE" -> "Date"
+  | _ -> failwith "Not a valid type!"
 
-let sqlstr_of_elm=function
-  | Int _->"INT"
-  | Bool _->"BOOL"
-  | Float _->"FLOAT"
-  | String _->"STRING"
-  | Date _-> "DATE"
-  | _->failwith "Not a valid elem!"
+let sqlstr_of_elm = function
+  | Int _ -> "INT"
+  | Bool _ -> "BOOL"
+  | Float _ -> "FLOAT"
+  | String _ -> "STRING"
+  | Date _ -> "DATE"
+  | _ -> failwith "Not a valid elem!"
 
-let string_of_elmtyp=function
-  | Int _->"Int"
-  | Bool _->"Bool"
-  | Float _->"Float"
-  | String _->"String"
-  | Date _->"Date"
-  | _->failwith "Not a valid elem!"
+let string_of_elmtyp = function
+  | Int _ -> "Int"
+  | Bool _ -> "Bool"
+  | Float _ -> "Float"
+  | String _ -> "String"
+  | Date _ -> "Date"
+  | _ -> failwith "Not a valid elem!"
 (* FUNCTION CEMETERY
 
    let rec valid_data (data : elem list) (h_data : elem) : bool = match data

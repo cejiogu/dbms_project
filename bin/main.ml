@@ -61,6 +61,23 @@ let main () =
            | Ast.Select a ->
                Table.print
                  (Table.select_from (Database.get_table db (snd a)) (fst a))
+           (*Can we make a better DB insert func that just takes in a table?*)
+           | Ast.AlterTable (table_name, col_name, col_type) ->
+               if Database.table_exists table_name db then (
+                 let t =
+                   Table.alter_table_add
+                     (Database.get_table db table_name)
+                     col_name
+                     (Column.elemtype_of_stringparse col_type)
+                 in
+                 d := Database.delete db (Database.get_table db table_name);
+                 d :=
+                   Database.insert_table db (Table.title t) (Table.str_cols t)
+                     (Table.str_coltyp t);
+                 print_endline (Table.prt_des t))
+               else
+                 Printf.printf "TABLE %s is not in DB %s\n" table_name
+                   (Database.name db)
            (* | _->Printf.printf "Not a command\n" *)
          with Parser.Error -> Printf.printf "Parse error");
       (* | Failure msg -> Printf.printf "Error:%s\n" msg); *)

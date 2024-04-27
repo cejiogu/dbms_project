@@ -4,3 +4,4 @@ type expr =
   | CreateTable of Table.t
   | Schema
   | Select of (string list * string)
+  | AlterTable of (string * string * string)

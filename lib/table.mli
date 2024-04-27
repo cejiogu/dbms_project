@@ -49,8 +49,9 @@ val rename_column : string -> string -> t -> t
     @return A new table instance with the column name updated, if applicable. *)
 
 val remove : string -> t -> t
-(** [remove col_name tab] returns a new table [t] that is identical to [tab] but with the column named [col_name] removed. 
-    If [col_name] does not exist in [tab], the table is returned unchanged.
+(** [remove col_name tab] returns a new table [t] that is identical to [tab] but
+    with the column named [col_name] removed. If [col_name] does not exist in
+    [tab], the table is returned unchanged.
 
     @param col_name The name of the column to be removed.
     @param tab The table from which the column will be removed.
@@ -88,6 +89,10 @@ val select_from : t -> string list -> t
       The names of the columns that are being selected from table [tab]
     @return *)
 
-val prt_des: t->string
-val str_cols:t->string list
-val str_coltyp:t->string list
+val prt_des : t -> string
+val str_cols : t -> string list
+val str_coltyp : t -> string list
+
+val alter_table_add : t -> string -> string -> t
+(**[alter_table_add t col_name typ] is the table [t] with a column added which
+   has title [col_name] and column type [typ]*)

@@ -10,6 +10,8 @@ open Final_project
 %token SCHEMA
 %token SELECT
 %token FROM
+%token ALTER
+%token ADD
 %token INT
 %token STRING
 %token BOOL
@@ -29,6 +31,7 @@ prog:
 	| CREATE TABLE id=ID LPAREN cols=col_def RPAREN EOF { let names,types=List.split (List.map (fun (n,t) -> (n,Column.elemtype_of_stringparse t)) cols) in CreateTable (Table.make id names types)}
 	| SCHEMA {Schema}
 	| SELECT col_nm=col_nm_def FROM id=ID EOF {Select (col_nm,id)}
+	| ALTER TABLE id=ID ADD nm=ID typ=col_type EOF {AlterTable (id,nm,typ)}
 	;
 
 col_nm_def:
