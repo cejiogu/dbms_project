@@ -207,6 +207,25 @@ let tests_table =
               {ID, [NULL, 143]}\n\
               {Value, [NULL, 5.2343444]}\n"
              (Table.string_of_table @@ Table.remove "NOTINTABLE" t5_insert2) );
+         ( "Test alter table" >:: fun _ ->
+           assert_equal
+             (Table.make "test"
+                [ "testa"; "testb"; "testc"; "testd" ]
+                [ "Int"; "Float"; "Date"; "Bool" ])
+             (Table.alter_table_add
+                (Table.make "test"
+                   [ "testa"; "testb"; "testc" ]
+                   [ "Int"; "Float"; "Date" ])
+                "testd" "Bool");
+           assert_equal
+             (Table.make "test"
+                [ "testa"; "testb"; "testc"; "testb" ]
+                [ "Int"; "Float"; "Date"; "Float" ])
+             (Table.alter_table_add
+                (Table.make "test"
+                   [ "testa"; "testb"; "testc" ]
+                   [ "Int"; "Float"; "Date" ])
+                "testb" "Float") );
        ]
 
 let tests_printing =

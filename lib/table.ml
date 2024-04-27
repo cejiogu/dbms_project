@@ -192,17 +192,16 @@ let str_coltyp t =
 
 let alter_table_add t col_name typ =
   let rec names_lp acc cnt l =
-    if cnt >= 0 then Column.title (List.nth l cnt) :: names_lp acc (cnt - 1) l
+    if cnt <= List.length t.columns - 1 then
+      Column.title (List.nth l cnt) :: names_lp acc (cnt + 1) l
     else acc
   in
-  let names =
-    names_lp [] (List.length t.columns - 1) t.columns @ (col_name :: [])
-  in
+  let names = names_lp [] 0 t.columns @ (col_name :: []) in
   let rec types_lp acc cnt l =
-    if cnt >= 0 then
+    if cnt <= List.length t.columns - 1 then
       Column.string_of_elmtyp (Column.col_type (List.nth l cnt))
-      :: types_lp acc (cnt - 1) l
+      :: types_lp acc (cnt + 1) l
     else acc
   in
-  let types = types_lp [] (List.length t.columns - 1) t.columns @ (typ :: []) in
+  let types = types_lp [] 0 t.columns @ (typ :: []) in
   make t.name names types
