@@ -11,6 +11,7 @@ type t = {
 
 let name t = t.name
 let tables t = t.tables
+let add d tabl = { name = name d; tables = tabl :: tables d }
 
 let empty (name : string) : t =
   if name = "" then
@@ -67,3 +68,24 @@ let delete db t =
   else
     raise
       (Failure ("TABLE " ^ Table.title t ^ " is NOT in Database " ^ name db))
+
+let select_from_where db col_list table_name (col, valu) =
+  let org_tab = get_table db table_name in
+  let cols = Table.select_from org_tab (col :: col_list) in
+  let (c : Column.t) = (Table.get_col cols col : Column.t) in
+  (*how can we avoid using Column.elem here? Do we need to?*)
+  let i = Column.filter_indicies c valu in
+  let tab = Table.filtered_indx cols i in
+  let d = delete db org_tab in
+  add d tab
+
+(* let _ = for x=0 to (Table.col_size cols c) -1 do if List.nth (Column.data c)
+   x=valu then indx := x :: !indx else () done in print_endline (List.length
+   !indx) *)
+(*for each column in col_list, create a new column which contains all of the
+  elements at the indicies from indx list, add the column to a new table*)
+(* let _= for a=0 to (List.length cols) do for b=0 to (List.length (List.nth
+   cols a)) *)
+
+(*return the table*)
+(*return the database with the table updated*)

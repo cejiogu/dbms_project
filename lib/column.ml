@@ -15,6 +15,7 @@ type t = {
 let title t = t.title
 let data t = t.data
 let col_type t = t.elemtype
+let col_size t = List.length t.data
 
 let date_of_string (s : string) : elem option =
   (* Regular expression to match a date in the format YYYY-MM-DD *)
@@ -254,6 +255,19 @@ let string_of_elmtyp = function
   | String _ -> "String"
   | Date _ -> "Date"
   | _ -> failwith "Not a valid elem!"
+
+let filter_indx c indx_list =
+  let l = ref [] in
+  List.iter (fun x -> l := (List.nth (data c) x :: []) @ !l) indx_list;
+  make_raw !l (title c)
+
+let filter_indicies c e =
+  let i = ref [] in
+  for x = 0 to List.length (data c) - 1 do
+    let el = List.nth (data c) x in
+    if el = e then i := x :: !i else ()
+  done;
+  !i
 (* FUNCTION CEMETERY
 
    let rec valid_data (data : elem list) (h_data : elem) : bool = match data

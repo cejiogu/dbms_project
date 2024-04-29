@@ -1,10 +1,10 @@
 exception InvalidQuery of string
 
-type column = Column.t
+(* type column = Column.t *)
 
 type t = {
   name : string;
-  columns : column list;
+  columns : Column.t list;
 }
 
 let title t = t.name
@@ -17,7 +17,7 @@ let columns t = t.columns
     @param col_types A list of types of the data for each column in the table.
           The possible types are ["Int", "Bool", "Float", "String", and "Date"]
     @note This function is the helper function for [make tab_name col_names]. *)
-let rec make_aux (acc : column list) (col_names : string list)
+let rec make_aux (acc : Column.t list) (col_names : string list)
     (col_types : string list) =
   if List.length col_names <> List.length col_types then
     raise (InvalidQuery "Column names and values must have the same length")
@@ -111,11 +111,11 @@ let string_of_table t =
       The accumulated list of string lists after all columns have been
       processed. *)
 
-let rec print_aux (cols : column list) (acc : string list list) :
+let rec print_aux (cols : Column.t list) (acc : string list list) :
     string list list =
   match cols with
   | [] -> acc
-  | (head : column) :: (tail : column list) ->
+  | (head : Column.t) :: (tail : Column.t list) ->
       let lst = Column.stringlist_of_column head in
       let new_acc = lst :: acc in
       print_aux tail new_acc
@@ -132,10 +132,10 @@ let print (tab : t) : unit =
   let _ = print_newline in
   ()
 
-let rec exists_opt (name : string) (cols : column list) : column option =
+let rec exists_opt (name : string) (cols : Column.t list) : Column.t option =
   match cols with
   | [] -> None
-  | (h : column) :: (t : column list) ->
+  | (h : Column.t) :: (t : Column.t list) ->
       if Column.title h = name then Some h else exists_opt name t
 
 (** [select_from_aux columns names acc] Creates a table of the columns from
@@ -148,8 +148,8 @@ let rec exists_opt (name : string) (cols : column list) : column option =
       The table that accumulated all the columns from [columns] whose names were
       in [names]*)
 
-let rec select_from_aux (columns : column list) (names : string list) (acc : t)
-    : t =
+let rec select_from_aux (columns : Column.t list) (names : string list)
+    (acc : t) : t =
   match names with
   | [] ->
       let output : t = { name = acc.name; columns = List.rev acc.columns } in
@@ -205,3 +205,22 @@ let alter_table_add t col_name typ =
   in
   let types = types_lp [] 0 t.columns @ (typ :: []) in
   make t.name names types
+
+let insert_col t c = { name = title t; columns = columns t @ (c :: []) }
+
+let filtered_indx t indx =
+  {
+    name = title t;
+    columns = List.map (fun col -> Column.filter_indx col indx) (columns t);
+  }
+
+let get_col t name =
+  let f = List.filter (fun x -> Column.title x = name) (columns t) in
+  match f with
+  | [ a ] -> a
+  | _ -> failwith "Column with given name not in table"
+
+(* let get_col_data t titl=let c=select_from t (titl::[]) in match (columns c)
+   with | [x] ->Column.data x |_-> failwith "Column not in table" *)
+
+(* let col_size t col=Column.col_size (get_col_data t (Column.title col)) *)

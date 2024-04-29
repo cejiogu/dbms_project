@@ -1,6 +1,6 @@
 exception InvalidQuery of string
 
-type column
+(* type column *)
 (** The type representing a single column in a table. *)
 
 type t
@@ -11,7 +11,7 @@ val title : t -> string
 (** [title t] Returns the name of the table [t].
     @param t The table whose name you're retrieving. *)
 
-val columns : t -> column list
+val columns : t -> Column.t list
 (** [columns t] Returns the list of columns in the table [t].
     @param t The table whose name you're retrieving. *)
 
@@ -73,7 +73,7 @@ val print : t -> unit
     @return The table is represented in the terminal
     @notes The actual implementation should iterate over the table's rows and columns, formatting the output for readability. *)
 
-val exists_opt : string -> column list -> column option
+val exists_opt : string -> Column.t list -> Column.t option
 (** [exists_opt name cols] Searches for a column titled [name] in [cols]
     @param name The name of the column being searched for
     @param cols A list of columns
@@ -92,7 +92,17 @@ val select_from : t -> string list -> t
 val prt_des : t -> string
 val str_cols : t -> string list
 val str_coltyp : t -> string list
+val insert_col : t -> Column.t -> t
 
 val alter_table_add : t -> string -> string -> t
 (**[alter_table_add t col_name typ] is the table [t] with a column added which
    has title [col_name] and column type [typ]*)
+
+val get_col : t -> string -> Column.t
+(**[get_col t name] is column with title [name] in table [t]. Requires: [name]
+   is the title of a column in table [t]*)
+
+val filtered_indx : t -> int list -> t
+(* val col_size: t->column->int *)
+(*[get_size t col] is size of column [col] in table [t]. Requires: [col] is a
+  column in table [t] *)

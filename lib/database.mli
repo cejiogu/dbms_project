@@ -55,3 +55,9 @@ val schema : table list -> unit
 val delete : t -> table -> t
 (**[delete db t] is the Database [db] with table [t] removed. Requires: [t] is a
    Table in Database [db]*)
+
+val add : t -> table -> t
+(**[add d tabl] is the Database [d] with table [tabl] added. Requires: Table
+   [tabl] is not alrady in Database [d]*)
+
+val select_from_where : t -> string list -> string -> string * Column.elem -> t
