@@ -20,13 +20,19 @@ let main () =
       \  -CREATE TABLE <table_name> (<column_name> <column_type>,<column_name> \
        <column_type>,..)\n\
       \  -SCHEMA\n\
-      \  -SELECT <column_name1>,<column_name2>,... FROM <table_name>\n\n\
+      \  -SELECT <column_name1>,<column_name2>,... FROM <table_name>\n\
+      \  -ALTER TABLE <table_name> ADD <column_name> <column_type>\n\
+      \  -INSERT INTO <table_name> (<col_name1>,<col_name1>,...) VALUES \
+       (<value1>, <value2>,..)\n\
+      \  -SELECT (<col_name1>,<col_name1>,...) FROM <table_name> WHERE \
+       <column_name> = <value>\n\n\
        The following are valid column types:\n\
-      \ -INT\n\
-      \ -BOOL\n\
-      \ -STRING\n\
-      \ -DATE\n\
-      \ -FLOAT\n\
+      \  -INT\n\
+      \  -BOOL\n\
+      \  -STRING\n\
+      \  -DATE (Note date value format: YYYY-MM-DD)\n\
+      \  -FLOAT\n\n\
+      \      \n\
        Let's begin!\n\n"
   in
   let () = print_endline "Enter the name of your database: " in
@@ -78,6 +84,28 @@ let main () =
                else
                  Printf.printf "TABLE %s is not in DB %s\n" table_name
                    (Database.name db)
+           | Ast.SelectFromWhere (col_names, table_name, (col_nam, elem_value))
+             ->
+               if Database.table_exists table_name db then
+                 let t =
+                   Database.select_from_where db col_names table_name
+                     (col_nam, elem_value)
+                 in
+                 print_endline (Table.string_of_table t)
+               else
+                 Printf.printf "TABLE %s is not in DB %s\n" table_name
+                   (Database.name db)
+           | Ast.InsertInto (table_name, col_names, rw_values) ->
+               let tab = Database.get_table db table_name in
+               d := Database.delete db (Database.get_table db table_name);
+               d := Database.add db (Table.insert_into tab col_names rw_values);
+               print_endline ("Row added to " ^ Table.title tab);
+               Printf.printf "[";
+               List.iter (fun x -> Printf.printf "%s, " x) col_names;
+               Printf.printf "]\n";
+               Printf.printf "[";
+               List.iter (fun x -> Printf.printf "%s, " x) rw_values;
+               Printf.printf "]\n"
            (* | _->Printf.printf "Not a command\n" *)
          with Parser.Error -> Printf.printf "Parse error");
       (* | Failure msg -> Printf.printf "Error:%s\n" msg); *)
