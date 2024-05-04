@@ -74,12 +74,12 @@ let delete db t =
 
 (*^CATCH FAILURE in main*)
 
-let select_from_where db col_list table_name (col, valu) =
+let select_from_where db col_list table_name (col, value) =
   let org_tab = get_table db table_name in
   let cols = Table.select_from org_tab (col :: col_list) in
   let (c : Column.t) = (Table.get_col cols col : Column.t) in
   (*how can we avoid using Column.elem here? Do we need to?*)
-  let i = Column.filter_indicies c (Column.elem_of_string valu) in
+  let i = Column.filter_indicies c (Column.elem_of_string value) in
   let tab = Table.filtered_indx (Table.remove col cols) i in
   tab
 (* let d = delete db org_tab in add d tab *)
