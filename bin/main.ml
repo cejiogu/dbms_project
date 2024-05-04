@@ -7,8 +7,6 @@ let parse (s : string) : Ast.expr =
   let ast = Parser.prog Lexer.read lexbuf in
   ast
 
-(*change to rec*)
-
 let main () =
   let exit = [ "exit"; "quit" ] in
   let () =
