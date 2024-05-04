@@ -95,12 +95,31 @@ val print : t -> unit
     @param col The column to print. *)
 
 val make_raw : elem list -> string -> t
+(**[make_raw data title] is the column with title [title] and data [data]*)
+
 val col_type : t -> elem
+(**[col_type t] is the element type of the column [t]*)
+
 val elemtype_of_stringparse : string -> string
+(**[elemtype_of_stringparse str] is the lowercase string version of the string
+   [str] SQL command version of an element type (ex: elemtype_of_stringparse
+   FLOAT -> Float))*)
+
 val sqlstr_of_elm : elem -> string
+(**[sqlstr_of_elm] is the uppercase SQL version of an elem type
+   (ex:sqlstr_of_elm true -> "TRUE")*)
+
 val string_of_elmtyp : elem -> string
+(**[string_of_elmtyp] is the string elem type of the input (ex:
+   string_of_elemtyp 6-> Int)*)
+
 val filter_indx : t -> int list -> t
+(**[filter_indx c indx_lst] is the column [c] containing only the indecies in
+   [indx_lst]*)
+
 val filter_indicies : t -> elem -> int list
+(**[filter_indicies c e] is the list containing the indicies of [c] which have a
+   data element equal to [e]*)
 
 (* FUNCTION CEMETERY
 
