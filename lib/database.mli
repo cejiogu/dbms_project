@@ -1,6 +1,6 @@
 exception InvalidQuery of string
 
-type table = Table.t
+(* type table = Table.t *)
 (** The type representing a table within a database. *)
 
 type t
@@ -11,7 +11,7 @@ val name : t -> string
 (** [name db] Returns the name of the database [db].
     @param db The database instance whose name is to be retrieved. *)
 
-val tables : t -> table list
+val tables : t -> Table.t list
 (** [tables db] Returns the list of tables in the database [db].
     @param db The database instance whose tables are to be retrieved. *)
 
@@ -41,19 +41,26 @@ val insert_table : t -> string -> string list -> string list -> t
     @raise Does
       not change the database if a table with the specified name already exists. *)
 
-val get_table : t -> string -> table
+val get_table : t -> string -> Table.t
 (** [get_table db name] Retrieves the table titled [name] from database [db]
     @param db The database from which the table is being retrieved
     @param name The title of the table being retrieved
     @return The table from the database with the name [name]
     @raise InvalidQuery if a table titled [name] does not exist in database [db]*)
 
-val schema : table list -> unit
+val schema : Table.t list -> unit
 (** [schema tables] Prints the names of all the names in a tables in [tables]
     @param tables The tables whose names are to be printed *)
 
-val insert_existing_table : t -> table -> t
-(** [insert_existing_table db tab]
-    @param db The database into which you are inserting [tab]
-    @param tab The table that you are inserting into [db]
-    @return A new database that contains [tab]*)
+val delete : t -> Table.t -> t
+(**[delete db t] is the Database [db] with table [t] removed. Requires: [t] is a
+   Table in Database [db]*)
+
+val add : t -> Table.t -> t
+(**[add d tabl] is the Database [d] with table [tabl] added. Requires: Table
+   [tabl] is not alrady in Database [d]*)
+
+val select_from_where : t -> string list -> string -> string * string -> Table.t
+(**[select_from_where db col_lst table_name (col, valu)] is a table with columns
+   in [col_lst] from table [table_name] containing only the rows where column
+   [col] has value [valu]*)

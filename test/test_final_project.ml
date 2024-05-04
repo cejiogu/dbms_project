@@ -207,6 +207,146 @@ let tests_table =
               {ID, [NULL, 143]}\n\
               {Value, [NULL, 5.2343444]}\n"
              (Table.string_of_table @@ Table.remove "NOTINTABLE" t5_insert2) );
+         ( "Test alter table" >:: fun _ ->
+           assert_equal
+             (Table.make "test"
+                [ "testa"; "testb"; "testc"; "testd" ]
+                [ "Int"; "Float"; "Date"; "Bool" ])
+             (Table.alter_table_add
+                (Table.make "test"
+                   [ "testa"; "testb"; "testc" ]
+                   [ "Int"; "Float"; "Date" ])
+                "testd" "Bool");
+           assert_equal
+             (Table.make "test"
+                [ "testa"; "testb"; "testc"; "testb" ]
+                [ "Int"; "Float"; "Date"; "Float" ])
+             (Table.alter_table_add
+                (Table.make "test"
+                   [ "testa"; "testb"; "testc" ]
+                   [ "Int"; "Float"; "Date" ])
+                "testb" "Float") );
+       ]
+
+let empt_database = Database.empty "testa"
+
+let table_snk =
+  Table.insert_into
+    (Table.insert_into
+       (Table.insert_into
+          (Table.insert_into
+             (Table.make "sneakers"
+                [ "Brand"; "Model"; "Units"; "Price" ]
+                [ "String"; "String"; "Int"; "Float" ])
+             [ "Brand"; "Model"; "Units"; "Price" ]
+             [ "Nike"; "Air Force 1"; "10000000"; "110.00" ])
+          [ "Brand"; "Model"; "Units"; "Price" ]
+          [ "Nike"; "Air Jordan 1"; "120000"; "170.00" ])
+       [ "Brand"; "Model"; "Units"; "Price" ]
+       [ "Nike"; "Air Jordan 4"; "80000"; "210.00" ])
+    [ "Brand"; "Model"; "Units"; "Price" ]
+    [ "Nike"; "Air\n   Jordan 3"; "40000"; "200.00" ]
+
+let table_flights =
+  Table.insert_into
+    (Table.insert_into
+       (Table.insert_into
+          (Table.insert_into
+             (Table.make "flights"
+                [ "Airline"; "Origin"; "Destination"; "Duration" ]
+                [ "String"; "String"; "String"; "Float" ])
+             [ "Airline"; "Origin"; "Destination"; "Duration" ]
+             [ "Delta"; "NYC"; "BOS"; "1.0" ])
+          [ "Airline"; "Origin"; "Destination"; "Duration" ]
+          [ "United"; "NYC"; "LAX"; "6.0" ])
+       [ "Airline"; "Origin"; "Destination"; "Duration" ]
+       [ "American Airlines"; "BOS"; "MIA"; "2.9" ])
+    [ "Airline"; "Origin"; "Destination"; "Duration" ]
+    [ "Delta"; "NYC"; "LON"; "6.0" ]
+
+let table_flights_sub =
+  Table.insert_into
+    (Table.insert_into
+       (Table.make "flights"
+          [ "Airline"; "Origin"; "Destination" ]
+          [ "String"; "String"; "String" ])
+       [ "Airline"; "Origin"; "Destination" ]
+       [ "United"; "NYC"; "LAX" ])
+    [ "Airline"; "Origin"; "Destination" ]
+    [ "Delta"; "NYC"; "LON" ]
+
+let table_train =
+  Table.insert_into
+    (Table.make "trains"
+       [ "Company"; "Origin"; "Destination"; "Duration" ]
+       [ "String"; "String"; "String"; "Float" ])
+    [ "Company"; "Origin"; "Destination"; "Duration" ]
+    [ "Amtrak"; "NYC"; "BOS"; "3.5" ]
+
+let full_database =
+  Database.add
+    (Database.add (Database.add empt_database table_snk) table_flights)
+    table_train
+
+let tests_database =
+  "test Database"
+  >::: [
+         ( "Empty Database Name" >:: fun _ ->
+           assert_equal "testa" (Database.name empt_database) );
+         ( "Empty Database exists" >:: fun _ ->
+           assert_equal false (Database.table_exists "trains" empt_database) );
+         ( "Database exists" >:: fun _ ->
+           assert_equal true
+             (Database.table_exists "trains"
+                (Database.add empt_database table_train)) );
+         ( "Database exists (false after delete)" >:: fun _ ->
+           assert_equal false
+             (Database.table_exists "trains"
+                (Database.delete
+                   (Database.add empt_database table_train)
+                   table_train)) );
+         ( "Database get & insert table test" >:: fun _ ->
+           assert_equal
+             (Table.make "test" [ "cola"; "colb"; "colc" ]
+                [ "Int"; "Bool"; "Float" ])
+             ((Database.get_table
+                 (Database.insert_table empt_database "test"
+                    [ "cola"; "colb"; "colc" ] [ "Int"; "Bool"; "Float" ]))
+                "test") );
+         ( "Database get & insert table test" >:: fun _ ->
+           assert_equal
+             (Table.make "test" [ "cola"; "colb"; "colc" ]
+                [ "Int"; "Bool"; "Float" ])
+             ((Database.get_table
+                 (Database.insert_table empt_database "test"
+                    [ "cola"; "colb"; "colc" ] [ "Int"; "Bool"; "Float" ]))
+                "test") );
+         ( "Database select_from_where" >:: fun _ ->
+           assert_equal table_flights_sub
+             (Database.select_from_where full_database
+                [ "Airline"; "Origin"; "Destination" ]
+                "flights" ("Duration", "6.0"))
+             ~printer:(fun x -> Table.string_of_table x) );
+         ( "Database select_from_where first col" >:: fun _ ->
+           assert_equal
+             (Table.insert_into
+                (Table.insert_into
+                   (Table.make "flights" [ "Airline" ] [ "String" ])
+                   [ "Airline" ] [ "United" ])
+                [ "Airline" ] [ "Delta" ])
+             (Database.select_from_where full_database [ "Airline" ] "flights"
+                ("Duration", "6.0"))
+             ~printer:(fun x -> Table.string_of_table x) );
+         ( "Database select_from_where middle col" >:: fun _ ->
+           assert_equal
+             (Table.insert_into
+                (Table.insert_into
+                   (Table.make "flights" [ "Origin" ] [ "String" ])
+                   [ "Origin" ] [ "NYC" ])
+                [ "Origin" ] [ "NYC" ])
+             (Database.select_from_where full_database [ "Origin" ] "flights"
+                ("Duration", "6.0"))
+             ~printer:(fun x -> Table.string_of_table x) );
        ]
 
 let tests_printing =
@@ -241,4 +381,5 @@ let () =
            "ColumnTests" >::: [ tests_column ];
            "TableTests" >::: [ tests_table ];
            "PrintingTests" >::: [ tests_printing ];
+           "DatabaseTests" >::: [ tests_database ];
          ])
