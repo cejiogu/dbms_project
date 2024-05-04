@@ -1,13 +1,30 @@
-(* {
-    open Parser
-    open Ast
+{
+open Parser
 }
 
-let space = [' ']
-(* let empty_table = Table.empty_table  *)
+let white = [' ' '\t']+
+let digit = ['0'-'9']
+let int = '-'? digit+
+let letter = ['a'-'z' 'A'-'Z']
+let id = letter+
 
 rule read = 
-    parse 
-    | "CREATE" { CREATE (Ast.command) }
-    (* for future reference: | "CREATE" { TABLE (table_of_string (Lexing.lexeme lexbuf)) } *)
-    | eof { EOF } *)
+  parse
+  | white { read lexbuf }
+  | "CREATE" {CREATE}
+  | "TABLE" {TABLE}
+  | "SCHEMA" {SCHEMA}
+  | "SELECT" {SELECT}
+  | "FROM" {FROM}
+  | "INTEGER" | "INT" {INT}
+  (* | "VARCHAR" {VARCHAR} *)
+  | "STRING" {STRING}
+  | "BOOL" {BOOL}
+  | "FLOAT" {FLOAT}
+  | "DATE" {DATE}
+  | "(" { LPAREN }
+  | ")" { RPAREN }
+  | "," { COMMA }
+  | id { ID (Lexing.lexeme lexbuf) }
+  | int { INT_ACT (int_of_string (Lexing.lexeme lexbuf)) }
+  | eof { EOF }

@@ -10,6 +10,7 @@ type t = {
 let title t = t.name
 let columns t = t.columns
 
+
 (** [make_aux acc col_names col_types] Makes a list of columns from [col_names] 
         and [col_types] and adds them to [acc].
     @param acc The accumulator for the columns.
@@ -26,17 +27,12 @@ let rec make_aux (acc : column list) (col_names : string list)
     | [] -> List.rev acc
     | h :: t ->
         let h_col_types = List.hd col_types in
-        let num =
-          if h_col_types = "Int" then 0
-          else if h_col_types = "Bool" then 1
-          else if h_col_types = "Float" then 2
-          else if h_col_types = "String" then 3
-          else if h_col_types = "Date" then 4
-          else raise (InvalidQuery "You included a nonexistent type!")
-        in
-        let col = Column.empty num h in
-        let columns = col :: acc in
-        make_aux columns t @@ List.tl col_types
+        if List.mem h_col_types [ "Int"; "Bool"; "Float"; "String"; "Date" ]
+        then
+          let col = Column.empty h h_col_types in
+          let columns = col :: acc in
+          make_aux columns t @@ List.tl col_types
+        else raise (InvalidQuery "You included a nonexistent type!")
 
 let make (name : string) (column_names : string list)
     (column_types : string list) =
@@ -178,3 +174,10 @@ let rec select_from_aux (columns : column list) (names : string list) (acc : t)
 let select_from (tab : t) (names : string list) : t =
   let selected = select_from_aux tab.columns names (empty tab.name) in
   selected
+
+let prt_des t=
+  let des=List.map (fun col-> (Column.title col)^" : "^( Column.sqlstr_of_elm (Column.col_type col))) (columns t) in
+  "Table added to Database\nTable: "^ (title t)^"\nColumns:\n  "^(String.concat "\n  " des)
+
+let str_cols t=List.map (fun col-> (Column.title col)) (columns t)
+let str_coltyp t=List.map (fun col-> Column.string_of_elmtyp (Column.col_type col)) (columns t)

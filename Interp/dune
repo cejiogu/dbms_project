@@ -1,7 +1,8 @@
-; (library
-;  (name interp))
+(library
+ (name interp)
+ (libraries final_project))
 
-; (menhir
-;  (modules parser))
+(menhir
+ (modules parser))
 
-; (ocamllex lexer)
+(ocamllex lexer)

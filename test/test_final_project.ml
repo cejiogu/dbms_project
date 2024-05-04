@@ -2,11 +2,11 @@ open OUnit2
 include Final_project
 
 let tests_column =
-  let int_column = Column.empty 0 "Int" in
-  let bool_column = Column.empty 1 "Bool" in
-  let float_column = Column.empty 2 "Float" in
-  let string_column = Column.empty 3 "String" in
-  let date_column = Column.empty 4 "Date" in
+  let int_column = Column.empty "Int" "Int" in
+  let bool_column = Column.empty "Bool" "Bool" in
+  let float_column = Column.empty "Float" "Float" in
+  let string_column = Column.empty "String" "String" in
+  let date_column = Column.empty "Date" "Date" in
   "test Column"
   >::: [
          ( "Empty Column of different types" >:: fun _ ->
@@ -62,7 +62,8 @@ let tests_column =
                 (Column.make "transport" [ "bus"; "car" ]));
            (* testing elemlist_of_stringlist function *)
            assert_equal
-             (Column.elemlist_of_stringlist [ "bus"; "car" ] 3)
+             (Column.elemlist_of_stringlist [ "bus"; "car" ]
+                (Column.elem_of_string "String"))
              (Column.data (Column.make "transport" [ "bus"; "car" ])) );
          ( "Rename column" >:: fun _ ->
            assert_equal "{New_name, []}"
@@ -227,7 +228,7 @@ let tests_printing =
   in
   "test print functions"
   >::: [
-         ( "Print column" >:: fun _ ->
+         ( "Print\n   column" >:: fun _ ->
            assert_equal () (Column.print print_column) );
          ( "Testing print table" >:: fun _ ->
            assert_equal () (Table.print print_table) );

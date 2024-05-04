@@ -5,14 +5,7 @@ type elem
 type t
 (** The type representing a column within a table, which consists of a record
     holding the fields of [title] the string label of the column and [data] the
-    data entries of the column. [t] holds [elem_type] which is an int
-    corresponding to the the type of elem.
-    - `-1` for NULL
-    - `0` for Int
-    - `1` for Bool
-    - `2` for Float
-    - `3` for String
-    - `4` for Date. *)
+    data entries of the column. [t] holds [elemtype] which is the type of elem. *)
 
 val string_of_elem : elem -> string
 (** [string_of_elem elem] Converts an element of type [elem] to its string
@@ -28,11 +21,11 @@ val data : t -> elem list
 (** [data col] Retrieves the list of data entries from a column.
     @param col The column from which data is retrieved. *)
 
-val empty : int -> string -> t
-(** [empty elt n] Produces an empty column with the title [n], elemtype of [elt]
+val empty : string -> string -> t
+(** [empty n el] Produces an empty column with the title [n], elem of [el]
     and no data entries.
-    @param elt The int set to the [elemtype] of the column.
     @param n The string set to the [title] of the column.
+    @param el The elem set to the [elemtype] of the column.
     @return An empty column instance. *)
 
 val rename : t -> string -> t
@@ -56,7 +49,7 @@ val elem_of_string : string -> elem
     @param s The string to parse.
     @return The corresponding element. *)
 
-val elemlist_of_stringlist : string list -> int -> elem list
+val elemlist_of_stringlist : string list -> elem -> elem list
 (** [elemlist_of_stringlist str_lst elt] Converts a list of strings into a list
     of elements of type [elem].
     @param str_lst The list of strings to convert.
@@ -100,6 +93,10 @@ val print : t -> unit
 
 val make_raw : elem list -> string -> t
 
+val col_type: t->elem
+val elemtype_of_stringparse: string->string
+val sqlstr_of_elm: elem->string
+val string_of_elmtyp:elem->string
 (* FUNCTION CEMETERY
 
    val valid_data : elem list -> elem -> bool (** [valid_data data type_elem]
