@@ -3,6 +3,6 @@
  (inline_tests)
  (instrumentation
   (backend bisect_ppx))
- (preprocess
-  (pps ppx_inline_test))
+ ; (preprocess
+ ;  (pps ppx_inline_test))
  (libraries str csv))

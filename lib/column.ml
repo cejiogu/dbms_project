@@ -268,6 +268,7 @@ let filter_indicies c e =
     if el = e then i := x :: !i else ()
   done;
   !i
+
 (* FUNCTION CEMETERY
 
    let rec valid_data (data : elem list) (h_data : elem) : bool = match data

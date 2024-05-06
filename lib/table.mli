@@ -90,9 +90,20 @@ val select_from : t -> string list -> t
     @return *)
 
 val prt_des : t -> string
+(**[prt_des t] prints a description the table [t] for use after [t] has been
+   added to a databas*)
+
 val str_cols : t -> string list
+(**[str_cols t] is the list containing the names of each of the columns in table
+   [t]*)
+
 val str_coltyp : t -> string list
+(**[str_coltyp] is the list containing the names of each of the types of each of
+   the columns in table [t] *)
+
 val insert_col : t -> Column.t -> t
+(**[insert_col t c] is the table [t] with the column [c] added to the end of the
+   table*)
 
 val alter_table_add : t -> string -> string -> t
 (**[alter_table_add t col_name typ] is the table [t] with a column added which
