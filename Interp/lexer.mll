@@ -9,7 +9,7 @@ let float='-'? digit+ '.' digit*
 let letter = ['a'-'z' 'A'-'Z']
 let id = letter+
 (* let str=(letter|white)+ *)
-let date=digit digit digit digit '-' digit digit '-' digit digit
+let date = digit digit digit digit '-' digit digit '-' digit digit
 
 rule read = 
   parse

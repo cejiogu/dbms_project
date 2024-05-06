@@ -228,67 +228,70 @@ let tests_table =
                 "testb" "Float") );
        ]
 
-let empt_database = Database.empty "testa"
-
-let table_snk =
-  Table.insert_into
-    (Table.insert_into
-       (Table.insert_into
-          (Table.insert_into
-             (Table.make "sneakers"
-                [ "Brand"; "Model"; "Units"; "Price" ]
-                [ "String"; "String"; "Int"; "Float" ])
-             [ "Brand"; "Model"; "Units"; "Price" ]
-             [ "Nike"; "Air Force 1"; "10000000"; "110.00" ])
-          [ "Brand"; "Model"; "Units"; "Price" ]
-          [ "Nike"; "Air Jordan 1"; "120000"; "170.00" ])
-       [ "Brand"; "Model"; "Units"; "Price" ]
-       [ "Nike"; "Air Jordan 4"; "80000"; "210.00" ])
-    [ "Brand"; "Model"; "Units"; "Price" ]
-    [ "Nike"; "Air\n   Jordan 3"; "40000"; "200.00" ]
-
-let table_flights =
-  Table.insert_into
-    (Table.insert_into
-       (Table.insert_into
-          (Table.insert_into
-             (Table.make "flights"
-                [ "Airline"; "Origin"; "Destination"; "Duration" ]
-                [ "String"; "String"; "String"; "Float" ])
-             [ "Airline"; "Origin"; "Destination"; "Duration" ]
-             [ "Delta"; "NYC"; "BOS"; "1.0" ])
-          [ "Airline"; "Origin"; "Destination"; "Duration" ]
-          [ "United"; "NYC"; "LAX"; "6.0" ])
-       [ "Airline"; "Origin"; "Destination"; "Duration" ]
-       [ "American Airlines"; "BOS"; "MIA"; "2.9" ])
-    [ "Airline"; "Origin"; "Destination"; "Duration" ]
-    [ "Delta"; "NYC"; "LON"; "6.0" ]
-
-let table_flights_sub =
-  Table.insert_into
-    (Table.insert_into
-       (Table.make "flights"
-          [ "Airline"; "Origin"; "Destination" ]
-          [ "String"; "String"; "String" ])
-       [ "Airline"; "Origin"; "Destination" ]
-       [ "United"; "NYC"; "LAX" ])
-    [ "Airline"; "Origin"; "Destination" ]
-    [ "Delta"; "NYC"; "LON" ]
-
-let table_train =
-  Table.insert_into
-    (Table.make "trains"
-       [ "Company"; "Origin"; "Destination"; "Duration" ]
-       [ "String"; "String"; "String"; "Float" ])
-    [ "Company"; "Origin"; "Destination"; "Duration" ]
-    [ "Amtrak"; "NYC"; "BOS"; "3.5" ]
-
-let full_database =
-  Database.add
-    (Database.add (Database.add empt_database table_snk) table_flights)
-    table_train
-
 let tests_database =
+  let empt_database = Database.empty "testa" in
+  let table_snk =
+    Table.insert_into
+      (Table.insert_into
+         (Table.insert_into
+            (Table.insert_into
+               (Table.make "sneakers"
+                  [ "Brand"; "Model"; "Units"; "Price" ]
+                  [ "String"; "String"; "Int"; "Float" ])
+               [ "Brand"; "Model"; "Units"; "Price" ]
+               [ "Nike"; "Air Force 1"; "10000000"; "110.00" ])
+            [ "Brand"; "Model"; "Units"; "Price" ]
+            [ "Nike"; "Air Jordan 1"; "120000"; "170.00" ])
+         [ "Brand"; "Model"; "Units"; "Price" ]
+         [ "Nike"; "Air Jordan 4"; "80000"; "210.00" ])
+      [ "Brand"; "Model"; "Units"; "Price" ]
+      [ "Nike"; "Air\n   Jordan 3"; "40000"; "200.00" ]
+  in
+
+  let table_flights =
+    Table.insert_into
+      (Table.insert_into
+         (Table.insert_into
+            (Table.insert_into
+               (Table.make "flights"
+                  [ "Airline"; "Origin"; "Destination"; "Duration" ]
+                  [ "String"; "String"; "String"; "Float" ])
+               [ "Airline"; "Origin"; "Destination"; "Duration" ]
+               [ "Delta"; "NYC"; "BOS"; "1.0" ])
+            [ "Airline"; "Origin"; "Destination"; "Duration" ]
+            [ "United"; "NYC"; "LAX"; "6.0" ])
+         [ "Airline"; "Origin"; "Destination"; "Duration" ]
+         [ "American Airlines"; "BOS"; "MIA"; "2.9" ])
+      [ "Airline"; "Origin"; "Destination"; "Duration" ]
+      [ "Delta"; "NYC"; "LON"; "6.0" ]
+  in
+
+  let table_flights_sub =
+    Table.insert_into
+      (Table.insert_into
+         (Table.make "flights"
+            [ "Airline"; "Origin"; "Destination" ]
+            [ "String"; "String"; "String" ])
+         [ "Airline"; "Origin"; "Destination" ]
+         [ "United"; "NYC"; "LAX" ])
+      [ "Airline"; "Origin"; "Destination" ]
+      [ "Delta"; "NYC"; "LON" ]
+  in
+
+  let table_train =
+    Table.insert_into
+      (Table.make "trains"
+         [ "Company"; "Origin"; "Destination"; "Duration" ]
+         [ "String"; "String"; "String"; "Float" ])
+      [ "Company"; "Origin"; "Destination"; "Duration" ]
+      [ "Amtrak"; "NYC"; "BOS"; "3.5" ]
+  in
+
+  let full_database =
+    Database.add
+      (Database.add (Database.add empt_database table_snk) table_flights)
+      table_train
+  in
   "test Database"
   >::: [
          ( "Empty Database Name" >:: fun _ ->
@@ -380,6 +383,6 @@ let () =
     >::: [
            "ColumnTests" >::: [ tests_column ];
            "TableTests" >::: [ tests_table ];
-           "PrintingTests" >::: [ tests_printing ];
            "DatabaseTests" >::: [ tests_database ];
+           "PrintingTests" >::: [ tests_printing ];
          ])
