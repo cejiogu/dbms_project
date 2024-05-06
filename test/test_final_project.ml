@@ -226,6 +226,13 @@ let tests_table =
                    [ "testa"; "testb"; "testc" ]
                    [ "Int"; "Float"; "Date" ])
                 "testb" "Float") );
+         ( "Test insert_col" >:: fun _ ->
+           assert_equal
+             (Table.string_of_table
+                (Table.insert_col (Table.empty "test")
+                   (Column.make "testa" [ "testelma"; "testelmb" ])))
+             "Table: test\n{testa, [testelma, testelmb]}\n"
+             ~printer:(fun x -> x) );
        ]
 
 let empt_database = Database.empty "testa"
