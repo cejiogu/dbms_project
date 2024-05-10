@@ -272,11 +272,13 @@ let filter_indicies c e =
   done;
   !i
 
-let column_iterator (data : elem list) (f : elem -> elem -> bool) =
+let column_iterator (data : elem list) (f : elem -> elem -> bool)
+    (spec : string) =
   match data with
   | [] ->
       raise
-        (EmptyColumn "There is no max for this column, as this column is empty")
+        (EmptyColumn
+           ("There is no " ^ spec ^ " for this column, as this column is empty"))
   | h :: t ->
       let rec search (data : elem list) (key : elem) : elem =
         match data with
@@ -300,26 +302,26 @@ let select_aux (column : t) (specifier : string) =
       | Bool _ -> raise (InvalidQuery "Incompatible Datatype")
       | Int _ -> begin
           if specifier = "max" then
-            let max = column_iterator data ( > ) in
+            let max = column_iterator data ( > ) specifier in
             string_of_elem max
           else
-            let min = column_iterator data ( < ) in
+            let min = column_iterator data ( < ) specifier in
             string_of_elem min
         end
       | Float _ -> begin
           if specifier = "max" then
-            let max = column_iterator data ( > ) in
+            let max = column_iterator data ( > ) specifier in
             string_of_elem max
           else
-            let min = column_iterator data ( < ) in
+            let min = column_iterator data ( < ) specifier in
             string_of_elem min
         end
       | String _ -> begin
           if specifier = "max" then
-            let max = column_iterator data ( > ) in
+            let max = column_iterator data ( > ) specifier in
             string_of_elem max
           else
-            let min = column_iterator data ( < ) in
+            let min = column_iterator data ( < ) specifier in
             string_of_elem min
         end)
 
