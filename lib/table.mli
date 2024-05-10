@@ -103,6 +103,15 @@ val get_col : t -> string -> Column.t
    is the title of a column in table [t]*)
 
 val filtered_indx : t -> int list -> t
+(* val delete_from_where_aux : t -> string -> string -> t *)
+
+val truncate_table_aux : t -> t
+(** [truncate_table_aux table] is a helper function to remove all the data from
+    the table [table]
+    @param table The table to be manipulated
+    @return
+      A new table table, sharing the name of the original table but lacking any
+      data*)
 (* val col_size: t->column->int *)
 (*[get_size t col] is size of column [col] in table [t]. Requires: [col] is a
   column in table [t] *)

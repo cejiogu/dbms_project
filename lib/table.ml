@@ -221,6 +221,13 @@ let get_col t name =
   | [ a ] -> a
   | _ -> failwith "Column with given name not in table"
 
+(* let delete_from_where_aux (table : t) (column : string) (value : string) =
+   failwith "TODO" *)
+
+let truncate_table_aux (table : t) : t =
+  let new_table = { name = title table; columns = [] } in
+  new_table
+
 (* let get_col_data t titl=let c=select_from t (titl::[]) in match (columns c)
    with | [x] ->Column.data x |_-> failwith "Column not in table" *)
 
