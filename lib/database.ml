@@ -82,6 +82,7 @@ let select_from_where db col_list table_name (col, value) =
   let i = Column.filter_indicies c (Column.elem_of_string value) in
   let tab = Table.filtered_indx (Table.remove col cols) i in
   tab
+
 (* let d = delete db org_tab in add d tab *)
 
 (* let _ = for x=0 to (Table.col_size cols c) -1 do if List.nth (Column.data c)

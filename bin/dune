@@ -1,4 +1,4 @@
 (executable
  (name main)
  (public_name final_project)
- (libraries interp final_project unix))
+ (libraries interp final_project))

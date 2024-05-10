@@ -90,30 +90,63 @@ val select_from : t -> string list -> t
     @return *)
 
 val prt_des : t -> string
-(**[prt_des t] prints a description the table [t] for use after [t] has been
-   added to a databas*)
+(** [prt_des t] generates a description of the table [t] for display purposes. The description includes the table's name and the names and types of each column.
+
+    @param t The table whose description is returned.
+    @return A string representing the description of the table, including its name and a list of its columns with their respective types. *)
 
 val str_cols : t -> string list
-(**[str_cols t] is the list containing the names of each of the columns in table
-   [t]*)
+(** [str_cols t] retrieves the names of all columns in the table [t].
+
+    @param t The table from which column names are retrieved.
+    @return A list containing the names of each column in [t]. *)
 
 val str_coltyp : t -> string list
-(**[str_coltyp] is the list containing the names of each of the types of each of
-   the columns in table [t] *)
+(** [str_coltyp t] retrieves a list of the types of each column in the table [t], formatted as strings. This is useful for schema inspections and data type validations.
+
+    @param t The table whose column types are being retrieved.
+    @return A list of strings, each representing the type of one of the columns in [t].
+    @example [str_coltyp my_table] might return ["INT", "STRING"] if 'my_table' has an 'INT' type column and a 'STRING' type column. *)
 
 val insert_col : t -> Column.t -> t
-(**[insert_col t c] is the table [t] with the column [c] added to the end of the
-   table*)
+(** [insert_col t c] adds a new column [c] to the end of the table [t].
+
+    @param t The table to which the column added.
+    @param c The column we are adding to [t].
+    @return A new table instance with the column [c] added to it. *)
 
 val alter_table_add : t -> string -> string -> t
-(**[alter_table_add t col_name typ] is the table [t] with a column added which
-   has title [col_name] and column type [typ]*)
+(** [alter_table_add t col_name typ] adds a new column to the table [t] with the specified name [col_name] and data type [typ]. It mimics the functionality of SQL's ALTER TABLE ... ADD COLUMN statement.
+
+    @param t The table to alter.
+    @param col_name The name of the column to add.
+    @param typ The data type of the new column, as a string.
+    @return The altered table with the new column added.
+    @notes This function checks if the type [typ] is valid and fails with an InvalidQuery exception if not. *)
 
 val get_col : t -> string -> Column.t
-(**[get_col t name] is column with title [name] in table [t]. Requires: [name]
-   is the title of a column in table [t]*)
+(** [get_col t name] retrieves a column with the title [name] from the table [t].
+
+    @param t The table used to retrive the column.
+    @param name The name of the column to retrieve.
+    @return The column with the specified name from the table [t].
+    @raise InvalidQuery if a column with the specified [name] does not exist in the table [t]. *)
 
 val filtered_indx : t -> int list -> t
-(* val col_size: t->column->int *)
-(*[get_size t col] is size of column [col] in table [t]. Requires: [col] is a
-  column in table [t] *)
+(** [filtered_indx t indices] creates a new table from [t] containing only the rows whose indices are specified in [indices].
+
+    @param t The original table from which rows are being filtered.
+    @param indices A list of indices representing the rows to include in the new table.
+    @return A new table containing only the rows from [t] that are specified in [indices]. 
+    An InvalidQuery exception is raised if any index is out of range. *)
+
+
+val inner_join : t -> t -> string -> t
+(** [inner_join t1 t2 key] performs an inner join on [t1] and [t2] based on the [key] column. 
+
+    @param t1 The first table involved in the join.
+    @param t2 The second table involved in the join.
+    @param key The column name on which the join is based. This column must exist in both tables and contain matching data for a join to occur.
+    @return A new table instance that contains the combined columns and rows of [t1] and [t2] where their [key] column values match.
+    @raise InvalidQuery if the [key] does not exist in either table or if there are discrepancies in the data types of the key column in both tables.
+    @notes The returned table's name is a concatenation of the names of [table1] and [table2] with the prefix 'Joined_'. *)

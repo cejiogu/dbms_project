@@ -221,6 +221,25 @@ let get_col t name =
   | [ a ] -> a
   | _ -> failwith "Column with given name not in table"
 
+let inner_join (table1 : t) (table2 : t) (key : string) : t =
+  let col1 = get_col table1 key in
+  let col2 = get_col table2 key in
+  let data1 = Column.data col1 in
+  let data2 = Column.data col2 in
+  let common_data = List.filter (fun x -> List.mem x data2) data1 in
+  let index_list1 =
+    List.concat
+      (List.map (fun elem -> Column.filter_indicies col1 elem) common_data)
+  in
+  let index_list2 =
+    List.concat
+      (List.map (fun elem -> Column.filter_indicies col2 elem) common_data)
+  in
+  let filtered_table1 = filtered_indx table1 index_list1 in
+  let filtered_table2 = filtered_indx table2 index_list2 in
+  let new_columns = filtered_table1.columns @ filtered_table2.columns in
+  { name = "Joined_" ^ table1.name ^ "_" ^ table2.name; columns = new_columns }
+
 (* let get_col_data t titl=let c=select_from t (titl::[]) in match (columns c)
    with | [x] ->Column.data x |_-> failwith "Column not in table" *)
 
