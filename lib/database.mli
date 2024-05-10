@@ -46,29 +46,40 @@ val get_table : t -> string -> Table.t
     @param db The database from which the table is being retrieved.
     @param name The title of the table being retrieved.
     @return The table from the database with the name [name].
-    @raise InvalidQuery if a table titled [name] does not exist in database [db]. *)
+    @raise InvalidQuery
+      if a table titled [name] does not exist in database [db]. *)
 
 val schema : Table.t list -> unit
 (** [schema t] Prints the names of all the names in a tables in [t].
     @param t The table whose names are to be printed. *)
 
 val delete : t -> Table.t -> t
-(** [delete db t] is the Database [db] with table [t] removed. Requires: [t] is a
-   Table in Database [db]
-   @param db The Database we remove the specified table from.
-   @param t The table we wish to remove from [db]. 
-   @return [db] with without [t]. *)
+(** [delete db t] is the Database [db] with table [t] removed. Requires: [t] is
+    a Table in Database [db]
+    @param db The Database we remove the specified table from.
+    @param t The table we wish to remove from [db].
+    @return [db] with without [t]. *)
 
 val add : t -> Table.t -> t
-(** [add db t] is the Database [db] with table [t] added. Requires: Table [t] is not alrady in Database [d].
+(** [add db t] is the database [db] with table [t] added. Requires: Table [t] is
+    not already in database [d].
     @param db
-    @param t 
-    @return  *)
+    @param t
+    @return *)
 
 val select_from_where : t -> string list -> string -> string * string -> Table.t
-(** [select_from_where db col_lst table_name (col, valu)] is a table with columns
-   in [col_lst] from table [table_name] containing only the rows where column
-   [col] has value [valu]*)
+(** [select_from_where db col_lst table_name (col, valu)] is a table with
+    columns in [col_lst] from table [table_name] containing only the rows where
+    column [col] has value [valu]*)
+
+val replace_table : t -> Table.t -> t
+(** [replace_tables db tab] is a new database with the table [tab] replacing the
+    preexisting table in [db] with the same name
+    @param db The database in which the table [tab] will reside
+    @param tab
+      The table to replace the preexisting table in the database [db] of the
+      same name
+    @return A new, updated database including the new table [tab]*)
 
 val truncate_table : t -> string -> t
 (** [truncate_table db table] is a database [db] that includes a table [tab] in
