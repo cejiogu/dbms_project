@@ -1,3 +1,6 @@
+exception EmptyColumn of string
+exception InvalidQuery of string
+
 type elem =
   | NULL
   | Int of int
@@ -268,6 +271,61 @@ let filter_indicies c e =
     if el = e then i := x :: !i else ()
   done;
   !i
+
+let column_iterator (data : elem list) (f : elem -> elem -> bool) =
+  match data with
+  | [] ->
+      raise
+        (EmptyColumn "There is no max for this column, as this column is empty")
+  | h :: t ->
+      let rec search (data : elem list) (key : elem) : elem =
+        match data with
+        | [] -> key
+        | current :: rest ->
+            if f current key then search rest current else search rest key
+      in
+      search t h
+
+let select_aux (column : t) (specifier : string) =
+  match column with
+  | { elemtype; title; data } -> (
+      let ignore (input : 'a) =
+        let _ = input in
+        ()
+      in
+      ignore title;
+      match elemtype with
+      | NULL -> raise (InvalidQuery "Incompatible Datatype")
+      | Date _ -> raise (InvalidQuery "Incompatible Datatype")
+      | Bool _ -> raise (InvalidQuery "Incompatible Datatype")
+      | Int _ -> begin
+          if specifier = "max" then
+            let max = column_iterator data ( > ) in
+            string_of_elem max
+          else if specifier = "min" then
+            let min = column_iterator data ( < ) in
+            string_of_elem min
+          else raise (InvalidQuery "Improper specifier")
+        end
+      | Float _ -> begin
+          if specifier = "max" then
+            let max = column_iterator data ( > ) in
+            string_of_elem max
+          else if specifier = "min" then
+            let min = column_iterator data ( < ) in
+            string_of_elem min
+          else raise (InvalidQuery "Improper specifier")
+        end
+      | String _ -> begin
+          if specifier = "max" then
+            let max = column_iterator data ( > ) in
+            string_of_elem max
+          else if specifier = "min" then
+            let min = column_iterator data ( < ) in
+            string_of_elem min
+          else raise (InvalidQuery "Improper specifier")
+        end)
+
 (* FUNCTION CEMETERY
 
    let rec valid_data (data : elem list) (h_data : elem) : bool = match data
