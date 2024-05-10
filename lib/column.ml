@@ -302,28 +302,25 @@ let select_aux (column : t) (specifier : string) =
           if specifier = "max" then
             let max = column_iterator data ( > ) in
             string_of_elem max
-          else if specifier = "min" then
+          else
             let min = column_iterator data ( < ) in
             string_of_elem min
-          else raise (InvalidQuery "Improper specifier")
         end
       | Float _ -> begin
           if specifier = "max" then
             let max = column_iterator data ( > ) in
             string_of_elem max
-          else if specifier = "min" then
+          else
             let min = column_iterator data ( < ) in
             string_of_elem min
-          else raise (InvalidQuery "Improper specifier")
         end
       | String _ -> begin
           if specifier = "max" then
             let max = column_iterator data ( > ) in
             string_of_elem max
-          else if specifier = "min" then
+          else
             let min = column_iterator data ( < ) in
             string_of_elem min
-          else raise (InvalidQuery "Improper specifier")
         end)
 
 (* FUNCTION CEMETERY
