@@ -22,6 +22,8 @@ let main () =
       \  -ALTER TABLE <table_name> ADD <column_name> <column_type>\n\
       \  -INSERT INTO <table_name> (<col_name1>,<col_name1>,...) VALUES \
        (<value1>, <value2>,..)\n\
+      \  -SELECT MIN(<col_name>) FROM <table_name>;\n\
+      \  -SELECT MAX(<col_name>) FROM <table_name>;\n\
       \  -SELECT (<col_name1>,<col_name1>,...) FROM <table_name> WHERE \
        <column_name> = <value>\n\n\
        The following are valid column types:\n\
@@ -99,11 +101,36 @@ let main () =
                d := Database.add db (Table.insert_into tab col_names rw_values);
                print_endline ("Row added to " ^ Table.title tab);
                Printf.printf "[";
-               List.iter (fun x -> Printf.printf "%s, " x) col_names;
+               if List.length col_names > 1 then
+                 List.iter (fun x -> Printf.printf "%s, " x) col_names
+               else Printf.printf "%s" (List.nth col_names 0);
                Printf.printf "]\n";
                Printf.printf "[";
-               List.iter (fun x -> Printf.printf "%s, " x) rw_values;
+               if List.length rw_values > 1 then
+                 List.iter (fun x -> Printf.printf "%s, " x) rw_values
+               else Printf.printf "%s" (List.nth rw_values 0);
                Printf.printf "]\n"
+           | Ast.SelectMin (col_name, table_name) ->
+               if Database.table_exists table_name db then
+                 let t = Database.select_max_min db table_name col_name "min" in
+                 print_endline t
+               else
+                 Printf.printf "TABLE %s is not in DB %s\n%!" table_name
+                   (Database.name db)
+           | Ast.SelectMax (col_name, table_name) ->
+               if Database.table_exists table_name db then
+                 let t = Database.select_max_min db table_name col_name "max" in
+                 print_endline t
+               else
+                 Printf.printf "TABLE %s is not in DB %s\n%!" table_name
+                   (Database.name db)
+           | Ast.Truncate table_name ->
+               if Database.table_exists table_name db then
+                 let new_database = Database.truncate_table db table_name in
+                 d := new_database
+               else
+                 Printf.printf "TABLE %s is not in DB %s\n%!" table_name
+                   (Database.name db)
            (* | _->Printf.printf "Not a command\n" *)
          with Parser.Error -> Printf.printf "Parse error");
       (* | Failure msg -> Printf.printf "Error:%s\n" msg); *)

@@ -48,7 +48,7 @@ let rec schema (tables : Table.t list) : unit =
   match tables with
   | [] -> ()
   | h :: t ->
-      let () = print_endline (Table.title h) in
+      print_endline (Table.title h);
       schema t
 
 let rec tab_names acc l cnt =
@@ -101,7 +101,8 @@ let truncate_table (db : t) (table : string) : t =
   let new_db = { name = name db; tables = new_tables } in
   new_db
 
-let select_max_min (db : t) (tab : string) (col : string) (specifier : string) =
+let select_max_min (db : t) (tab : string) (col : string) (specifier : string) :
+    string =
   if specifier <> "max" || specifier <> "min" then
     raise
       (InvalidQuery
