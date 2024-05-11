@@ -81,13 +81,12 @@ let select_from_where db col_list table_name (col, value) =
   let tab = Table.filtered_indx (Table.remove col cols) i in
   tab
 
-let rec replace_table_aux (db : Table.t list) (tab : Table.t) : Table.t list =
+let rec replace_table (db : Table.t list) (tab : Table.t) : Table.t list =
   match db with
   | [] -> db
   | (head : Table.t) :: (tail : Table.t list) ->
-      if Table.title head = Table.title tab then
-        tab :: replace_table_aux tail tab
-      else head :: replace_table_aux tail tab
+      if Table.title head = Table.title tab then tab :: replace_table tail tab
+      else head :: replace_table tail tab
 
 (* let delete_from_where (db : t) (tab : string) (col : string) (value : string)
    : t = try begin let table = get_table db tab in (* Raises "InvalidQuery"
@@ -96,66 +95,23 @@ let rec replace_table_aux (db : Table.t list) (tab : Table.t) : Table.t list =
    db.tables new_table in { name = db.name; tables = new_tables } end with
    InvalidQuery error -> raise (InvalidQuery error) *)
 
-let replace_table (db : t) (tab : Table.t) : t =
-  if table_exists (Table.title tab) db then
-    match db with
-    | { name; tables } ->
-        let new_tables = replace_table_aux tables tab in
-        let new_db = { name; tables = new_tables } in
-        new_db
-  else
-    raise
-      (InvalidQuery
-         ("Table " ^ Table.title tab ^ " does not exist in database " ^ name db))
-
 let truncate_table (db : t) (table : string) : t =
   let truncated_tab = get_table db table |> Table.truncate_table_aux in
-  let new_tables = replace_table_aux db.tables truncated_tab in
+  let new_tables = replace_table db.tables truncated_tab in
   let new_db = { name = name db; tables = new_tables } in
   new_db
 
 let select_max_min (db : t) (tab : string) (col : string) (specifier : string) :
     string =
-  let table = get_table db tab in
-  let column = Table.get_col table col in
-  let value = Column.select_aux column specifier in
-  value
-
-let inner_join (table1 : t) (table2 : t) (key : string) : t =
-  (* Retrieve a column safely, returning an option *)
-  let safe_get_col table key =
-    List.find_opt (fun col -> Column.title col = key) (columns table)
-  in
-
-  match (safe_get_col table1 key, safe_get_col table2 key) with
-  | Some col1, Some col2 ->
-      let data1 = Column.data col1 in
-      let data2 = Column.data col2 in
-      let common_data = List.filter (fun x -> List.mem x data2) data1 in
-      let index_list1 =
-        List.concat (List.map (Column.filter_indicies col1) common_data)
-      in
-      let index_list2 =
-        List.concat (List.map (Column.filter_indicies col2) common_data)
-      in
-
-      let filtered_table1 = filtered_indx table1 index_list1 in
-      let filtered_table2 = filtered_indx table2 index_list2 in
-
-      (* Select only non-key columns from table2 to avoid duplication *)
-      let non_key_columns_table2 =
-        List.filter (fun col -> Column.title col <> key) filtered_table2.columns
-      in
-      (* Join columns making sure key column from table2 isn't included *)
-      let new_columns = filtered_table1.columns @ non_key_columns_table2 in
-
-      {
-        name = "Joined_" ^ table1.name ^ "_" ^ table2.name;
-        columns = new_columns;
-      }
-  | _ ->
-      raise
-        (InvalidQuery ("Column " ^ key ^ " not found in one or both tables"))
+  if specifier <> "max" || specifier <> "min" then
+    raise
+      (InvalidQuery
+         "Improper specifier. The specifier must be either 'min' or 'max'")
+  else
+    let table = get_table db tab in
+    let column = Table.get_col table col in
+    let value = Column.select_aux column specifier in
+    value
 
 (* let d = delete db org_tab in add d tab *)
 

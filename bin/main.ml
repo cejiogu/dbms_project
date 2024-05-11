@@ -168,6 +168,25 @@ let main () =
                  Printf.printf "Table %s is not in database %s\n%!" table_name
                    (Database.name db);
                loop db ()
+           | Ast.InnerJoin (table_name, table_name2, key) ->
+               if
+                 Database.table_exists table_name db
+                 && Database.table_exists table_name2 db
+               then
+                 try
+                   let t1 = Database.get_table db table_name in
+                   let t2 = Database.get_table db table_name2 in
+                   let new_database =
+                     Database.add db (Table.inner_join t1 t2 key)
+                   in
+                   Printf.printf "All data from table %s have been removed"
+                     table_name;
+                   loop new_database ()
+                 with Failure error -> Printf.printf "Runtime Error: %s" error
+               else
+                 Printf.printf "Table %s or %s is not in database %s\n%!"
+                   table_name table_name2 (Database.name db);
+               loop db ()
          with Parser.Error ->
            Printf.printf "Parse error: Please enter an appropriate command\n");
       loop db ()
