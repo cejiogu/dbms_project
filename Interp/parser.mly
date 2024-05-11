@@ -5,7 +5,6 @@ open Final_project
 
 %token <int> INT_ACT
 %token <string> ID
-// %token <string> STR
 %token <float> FLOAT_ACT
 %token <string> DATE_ACT
 %token CREATE
@@ -73,7 +72,6 @@ col_type:
 	| FLOAT {"FLOAT"}
 	| BOOL {"BOOL"}
 	| DATE {"DATE"}
-	// | VARCHAR LPAREN len=INT_ACT RPAREN {"VARCHAR("^ string_of_int len^")"}
 	;
 
 row_vals:

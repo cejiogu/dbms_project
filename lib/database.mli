@@ -1,8 +1,5 @@
 exception InvalidQuery of string
 
-(* type table = Table.t *)
-(** The type representing a table within a database. *)
-
 type t
 (** The type representing a database, which consists of a name and a list of
     tables. *)

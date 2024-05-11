@@ -73,7 +73,6 @@ let main () =
                Table.print
                  (Table.select_from (Database.get_table db (snd a)) (fst a));
                loop db ()
-           (*Can we make a better DB insert func that just takes in a table?*)
            | Ast.AlterTable (table_name, col_name, col_type) ->
                if Database.table_exists table_name db then (
                  let updated_table =

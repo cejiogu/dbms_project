@@ -8,7 +8,6 @@ let int = '-'? digit+
 let float='-'? digit+ '.' digit*
 let letter = ['a'-'z' 'A'-'Z']
 let id = letter+
-(* let str=(letter|white)+ *)
 let date = digit digit digit digit '-' digit digit '-' digit digit
 
 rule read = 
@@ -26,7 +25,6 @@ rule read =
   | "ALTER" {ALTER}
   | "ADD" {ADD}
   | "INTEGER" | "INT" {INT}
-  (* | "VARCHAR" {VARCHAR} *)
   | "STRING" {STRING}
   | "BOOL" {BOOL}
   | "FLOAT" {FLOAT}

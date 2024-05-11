@@ -2,7 +2,7 @@ type elem
 (** The type representing the data contained within a column. Variants include
     integers, booleans, floats, strings, and dates. *)
 
-type t 
+type t
 (** The type representing a column within a table, which consists of a record
     holding the fields of [title] the string label of the column and [data] the
     data entries of the column. [t] holds [elemtype] which is the type of elem. *)
@@ -136,23 +136,3 @@ val select_aux : t -> string -> string
     @raise InvalidQuery
       if the datatype of the column is NULL, Date, or Bool, or if a string other
       than "max" or "min" is passed in as the specifier*)
-
-(* FUNCTION CEMETERY
-
-   val valid_data : elem list -> elem -> bool (** [valid_data data type_elem]
-   Verifies that all data entries in a list match a specified type. @param data
-   The list of data entries to check. @param type_elem The type element used to
-   check the data list elem type. @return [true] if all entries match the type;
-   otherwise, [false]. *)
-
-   val valid_column : t -> bool (** [valid_column col] Checks if a column's data
-   entries are consistent and valid. @param col The column to validate. @return
-   [true] if the column is valid; otherwise, [false]. *) *)
-
-(* MISCELLANEOUS CEMETERY
-
-   val all_numbers : string -> bool (** [all_numbers s] Checks if a given string
-   consists entirely of digits. @param s The string to check. *)
-
-   val valid_date : elem -> bool (** [valid_date d] Determines if a given
-   element represents a valid date. @param d The element to validate. *) *)

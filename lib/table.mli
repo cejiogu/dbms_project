@@ -1,8 +1,5 @@
 exception InvalidQuery of string
 
-(* type column *)
-(** The type representing a single column in a table. *)
-
 type t
 (** The type representing a table, which consists of a name [name] and a list of
     columns [columns]. *)

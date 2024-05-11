@@ -1,7 +1,5 @@
 exception InvalidQuery of string
 
-(* type column = Column.t *)
-
 type t = {
   name : string;
   columns : Column.t list;
