@@ -73,7 +73,7 @@ val select_from_where : t -> string list -> string -> string * string -> Table.t
     column [col] has value [valu]*)
 
 val replace_table : t -> Table.t -> t
-(** [replace_tables db tab] is a new database with the table [tab] replacing the
+(** [replace_table db tab] is a new database with the table [tab] replacing the
     preexisting table in [db] with the same name
     @param db The database in which the table [tab] will reside
     @param tab
