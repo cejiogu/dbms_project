@@ -38,6 +38,9 @@ rule read =
   | "MIN" {MIN}
   | "MAX" {MAX}
   | "TRUNCATE" {TRUNCATE}
+  | "INNER" { INNER }
+  | "JOIN" { JOIN }
+  | "ON" { ON }
   | id { ID (Lexing.lexeme lexbuf) }
   (* | str {STR (Lexing.lexeme lexbuf) } *)
   | int { INT_ACT (int_of_string (Lexing.lexeme lexbuf)) }
