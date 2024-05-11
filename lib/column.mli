@@ -121,6 +121,22 @@ val filter_indicies : t -> elem -> int list
 (**[filter_indicies c e] is the list containing the indicies of [c] which have a
    data element equal to [e]*)
 
+val select_aux : t -> string -> string
+(** [select_aux column specifier] Searches through the column [column] to find
+    the the value that best fulfills the specifier. For example, if
+    [select_aux column "max"] is passed on the specified column, the function
+    will return the greatest value from the column. If [select_aux column "min"]
+    is passed on the specified column, the function will return the least value
+    from the column.
+    @param column The column from which the value is retrieved
+    @param specifier Keyword that specifies which value to be searched for
+    @return
+      The value, represented as a string, that best fulfills the specifier in
+      column [column]
+    @raise InvalidQuery
+      if the datatype of the column is NULL, Date, or Bool, or if a string other
+      than "max" or "min" is passed in as the specifier*)
+
 (* FUNCTION CEMETERY
 
    val valid_data : elem list -> elem -> bool (** [valid_data data type_elem]

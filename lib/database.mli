@@ -69,3 +69,29 @@ val select_from_where : t -> string list -> string -> string * string -> Table.t
 (** [select_from_where db col_lst table_name (col, valu)] is a table with columns
    in [col_lst] from table [table_name] containing only the rows where column
    [col] has value [valu]*)
+
+val truncate_table : t -> string -> t
+(** [truncate_table db table] is a database [db] that includes a table [tab] in
+    which all the data in that table is removed
+    @param db The name of the database in which table [table] resides
+    @param table The name of the table from whom all the data is being removed
+    @return An updated database, except with the updated table*)
+
+val select_max_min : t -> string -> string -> string -> string
+(** [select_max_min db tab col specifier] Searches through the column [col] of
+    hte table [tab] of the database [db] to find the value that best fulfills
+    the specifier [specifier]. For example, if "max" is passed as the specifier
+    on a given column, table, and database, the function will return the
+    greatest value from the aforementioned column. If "min" is passed as the
+    specifier on a given column, table, and database, the function will return
+    the least value from the aforementioned column.
+    @param db The database in which the table being searched resides
+    @param tab The table from which the column being searched resides
+    @param col
+      The column from which the maximum or minimum value being searched for
+      resides
+    @param specifier The keyword that specifies the value to be searched for
+    @return The value, represented as a string, that best fulfills the specifier
+    @raise InvalidQuery
+      if the datatype of the column is NULL, Date, or Bool, or if a string other
+      than "max" or "min" is passed in as the specifier *)

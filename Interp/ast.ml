@@ -7,3 +7,6 @@ type expr =
   | AlterTable of (string * string * string)
   | SelectFromWhere of (string list * string * (string * string))
   | InsertInto of (string * string list * string list)
+  | SelectMax of (string * string)
+  | SelectMin of (string * string)
+  | Truncate of string

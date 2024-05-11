@@ -69,6 +69,74 @@ let tests_column =
            assert_equal "{New_name, []}"
              (Column.string_of_column @@ Column.rename float_column "New_name")
          );
+         ( "Select the maximum value, the first value, of an integer column"
+         >:: fun _ ->
+           assert_equal "3"
+             (Column.select_aux
+                (Column.make "Integers" [ "3"; "2"; "1" ])
+                "max") );
+         ( "Select the maximum value, the final value, of an integer column"
+         >:: fun _ ->
+           assert_equal "3"
+             (Column.select_aux
+                (Column.make "Integers" [ "1"; "2"; "3" ])
+                "max") );
+         ( "Select the maximum value, the first value, of a float column"
+         >:: fun _ ->
+           assert_equal "3."
+             (Column.select_aux
+                (Column.make "Floats" [ "3.0"; "2.0"; "1.0" ])
+                "max") );
+         ( "Select the maximum value, the final value, of a float column"
+         >:: fun _ ->
+           assert_equal "3."
+             (Column.select_aux
+                (Column.make "Floats" [ "1.0"; "2.0"; "3.0" ])
+                "max") );
+         ( "Select the maximum value, the first value, of a string column"
+         >:: fun _ ->
+           assert_equal "c"
+             (Column.select_aux (Column.make "Strings" [ "c"; "b"; "a" ]) "max")
+         );
+         ( "Select the maximum value, the final value, of a string column"
+         >:: fun _ ->
+           assert_equal "c"
+             (Column.select_aux (Column.make "Strings" [ "a"; "b"; "c" ]) "max")
+         );
+         ( "Select the minimum value, the first value, of an integer column"
+         >:: fun _ ->
+           assert_equal "1"
+             (Column.select_aux
+                (Column.make "Integers" [ "1"; "2"; "3" ])
+                "min") );
+         ( "Select the minimum value, the final value, of an integer column"
+         >:: fun _ ->
+           assert_equal "1"
+             (Column.select_aux
+                (Column.make "Integers" [ "3"; "2"; "1" ])
+                "min") );
+         ( "Select the minimum value, the first value, of a float column"
+         >:: fun _ ->
+           assert_equal "1."
+             (Column.select_aux
+                (Column.make "Floats" [ "1.0"; "2.0"; "3.0" ])
+                "min") );
+         ( "Select the minimum value, the final value, of a float column"
+         >:: fun _ ->
+           assert_equal "1."
+             (Column.select_aux
+                (Column.make "Floats" [ "3.0"; "2.0"; "1.0" ])
+                "min") );
+         ( "Select the minimum value, the first value, of a string column"
+         >:: fun _ ->
+           assert_equal "a"
+             (Column.select_aux (Column.make "Strings" [ "a"; "b"; "c" ]) "min")
+         );
+         ( "Select the minimum value, the final value, of a string column"
+         >:: fun _ ->
+           assert_equal "a"
+             (Column.select_aux (Column.make "Strings" [ "c"; "b"; "a" ]) "min")
+         );
        ]
 
 let tests_table =
@@ -357,6 +425,18 @@ let tests_database =
              (Database.select_from_where full_database [ "Origin" ] "flights"
                 ("Duration", "6.0"))
              ~printer:(fun x -> Table.string_of_table x) );
+         ( "Database truncate table last table" >:: fun _ ->
+           assert_equal
+             (Table.make "sneakers" [] [])
+             (Database.get_table
+                (Database.truncate_table full_database "sneakers")
+                "sneakers") );
+         ( "Database truncate table first table" >:: fun _ ->
+           assert_equal
+             (Table.make "trains" [] [])
+             (Database.get_table
+                (Database.truncate_table full_database "trains")
+                "trains") );
        ]
 
 let tests_equal_function =

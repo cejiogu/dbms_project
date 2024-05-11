@@ -90,10 +90,14 @@ val select_from : t -> string list -> t
     @return *)
 
 val prt_des : t -> string
-(** [prt_des t] generates a description of the table [t] for display purposes. The description includes the table's name and the names and types of each column.
+(** [prt_des t] generates a description of the table [t] for display purposes.
+    The description includes the table's name and the names and types of each
+    column.
 
     @param t The table whose description is returned.
-    @return A string representing the description of the table, including its name and a list of its columns with their respective types. *)
+    @return
+      A string representing the description of the table, including its name and
+      a list of its columns with their respective types. *)
 
 val str_cols : t -> string list
 (** [str_cols t] retrieves the names of all columns in the table [t].
@@ -125,15 +129,28 @@ val alter_table_add : t -> string -> string -> t
     @notes This function checks if the type [typ] is valid and fails with an InvalidQuery exception if not. *)
 
 val get_col : t -> string -> Column.t
-(** [get_col t name] retrieves a column with the title [name] from the table [t].
+(** [get_col t name] retrieves a column with the title [name] from the table
+    [t].
 
     @param t The table used to retrive the column.
     @param name The name of the column to retrieve.
     @return The column with the specified name from the table [t].
-    @raise InvalidQuery if a column with the specified [name] does not exist in the table [t]. *)
+    @raise InvalidQuery
+      if a column with the specified [name] does not exist in the table [t]. *)
 
 val filtered_indx : t -> int list -> t
-(** [filtered_indx t indices] creates a new table from [t] containing only the rows whose indices are specified in [indices].
+(* val delete_from_where_aux : t -> string -> string -> t *)
+
+val truncate_table_aux : t -> t
+(** [truncate_table_aux table] is a helper function to remove all the data from
+    the table [table]
+    @param table The table to be manipulated
+    @return
+      A new table table, sharing the name of the original table but lacking any
+      data*)
+
+(** [filtered_indx t indices] creates a new table from [t] containing only the
+    rows whose indices are specified in [indices].
 
     @param t The original table from which rows are being filtered.
     @param indices A list of indices representing the rows to include in the new table.

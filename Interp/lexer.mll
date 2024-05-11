@@ -35,6 +35,9 @@ rule read =
   | "(" { LPAREN }
   | ")" { RPAREN }
   | "," { COMMA }
+  | "MIN" {MIN}
+  | "MAX" {MAX}
+  | "TRUNCATE" {TRUNCATE}
   | id { ID (Lexing.lexeme lexbuf) }
   (* | str {STR (Lexing.lexeme lexbuf) } *)
   | int { INT_ACT (int_of_string (Lexing.lexeme lexbuf)) }

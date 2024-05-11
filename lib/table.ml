@@ -125,7 +125,7 @@ let rec print_aux (cols : Column.t list) (acc : string list list) :
    with characters other than the whitespace (' '), whereas Csv.print allows the
    option to delineate columns with vertical bars ('|'). *)
 let print (tab : t) : unit =
-  print_endline tab.name;
+  print_endline ("TABLE " ^ tab.name ^ ":");
   let conversion = print_aux tab.columns [] in
   let transposition = Csv.transpose conversion in
   let () = Csv.print_readable transposition in
@@ -237,6 +237,13 @@ let equal (table1 : t) (table2 : t) : bool =
              = Column.sqlstr_of_elm (Column.col_type col2)
           && Column.data col1 = Column.data col2)
         cols1 cols2
+
+(* let delete_from_where_aux (table : t) (column : string) (value : string) =
+   failwith "TODO" *)
+
+let truncate_table_aux (table : t) : t =
+  let new_table = { name = title table; columns = [] } in
+  new_table
 
 let inner_join (table1 : t) (table2 : t) (key : string) : t =
   (* Retrieve a column safely, returning an option *)

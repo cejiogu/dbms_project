@@ -3,8 +3,6 @@
 group:
   - name: Ori Wachman
     netid: ow34
-  - name: Anmol Singh
-    netid: as3252
   - name: Chimdi Ejiogu
     netid: ce248
   - name: Ilan Klimberg
@@ -14,7 +12,7 @@ pm:
   name: Evan Williams
   netid: emw236
 # Set to false if you don't want your gallery entry to be public.
-publish: false
+publish: falseW
 # Pithy title
 title: "The Cyber Savant SQL System"
 # OK if this is a Cornell Github link, but public gallery viewers won't be able to see it.
@@ -26,5 +24,4 @@ desc: >
   Our project is a Databse Management System. It supports standard SQL queries,
   such as WHERE, SELECT, GROUP BY and FROM commands. The interface 
   allows the user to create, drop and manage tables and has functionality to
-  insert, update and delete rows. The database will be stored as a file which 
-  is updated during execution so it survives server failures.
+  insert, update and delete rows.

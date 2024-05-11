@@ -28,6 +28,9 @@ open Final_project
 %token LPAREN
 %token RPAREN
 %token COMMA
+%token MIN
+%token MAX
+%token TRUNCATE
 %token EOF
 
 
@@ -42,6 +45,9 @@ prog:
 	| ALTER TABLE id=ID ADD nm=ID typ=col_type EOF {AlterTable (id,nm,typ)}
 	| INSERT INTO tab_name=ID LPAREN col_nm=col_nm_def RPAREN VALUES LPAREN val_lst=row_vals RPAREN EOF {InsertInto (tab_name,col_nm,val_lst)}
 	| SELECT LPAREN col_nm=col_nm_def RPAREN FROM id=ID WHERE col=ID EQUALS e_valu=data EOF {SelectFromWhere (col_nm,id,(col,e_valu))}
+	| SELECT MIN LPAREN col_nm=ID RPAREN FROM tbl_nm=ID EOF {SelectMin (col_nm, tbl_nm)}
+	| SELECT MAX LPAREN col_nm=ID RPAREN FROM tbl_nm=ID EOF {SelectMax (col_nm, tbl_nm)}
+	| TRUNCATE TABLE tbl_nm=ID {Truncate (tbl_nm)}
 	;
 
 col_nm_def:
