@@ -2,7 +2,7 @@ type elem
 (** The type representing the data contained within a column. Variants include
     integers, booleans, floats, strings, and dates. *)
 
-type t
+type t 
 (** The type representing a column within a table, which consists of a record
     holding the fields of [title] the string label of the column and [data] the
     data entries of the column. [t] holds [elemtype] which is the type of elem. *)

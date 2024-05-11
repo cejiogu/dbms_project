@@ -219,26 +219,60 @@ let get_col t name =
   let f = List.filter (fun x -> Column.title x = name) (columns t) in
   match f with
   | [ a ] -> a
-  | _ -> failwith "Column with given name not in table"
+  | _ -> raise (InvalidQuery ("Column " ^ name ^ " not found in table"))
+
+(* Compares two tables for equality based on their name, columns, and column
+   data. *)
+let equal (table1 : t) (table2 : t) : bool =
+  if table1.name <> table2.name then false
+  else
+    let cols1 = table1.columns in
+    let cols2 = table2.columns in
+    if List.length cols1 <> List.length cols2 then false
+    else
+      List.for_all2
+        (fun col1 col2 ->
+          Column.title col1 = Column.title col2
+          && Column.sqlstr_of_elm (Column.col_type col1)
+             = Column.sqlstr_of_elm (Column.col_type col2)
+          && Column.data col1 = Column.data col2)
+        cols1 cols2
 
 let inner_join (table1 : t) (table2 : t) (key : string) : t =
-  let col1 = get_col table1 key in
-  let col2 = get_col table2 key in
-  let data1 = Column.data col1 in
-  let data2 = Column.data col2 in
-  let common_data = List.filter (fun x -> List.mem x data2) data1 in
-  let index_list1 =
-    List.concat
-      (List.map (fun elem -> Column.filter_indicies col1 elem) common_data)
+  (* Retrieve a column safely, returning an option *)
+  let safe_get_col table key =
+    List.find_opt (fun col -> Column.title col = key) (columns table)
   in
-  let index_list2 =
-    List.concat
-      (List.map (fun elem -> Column.filter_indicies col2 elem) common_data)
-  in
-  let filtered_table1 = filtered_indx table1 index_list1 in
-  let filtered_table2 = filtered_indx table2 index_list2 in
-  let new_columns = filtered_table1.columns @ filtered_table2.columns in
-  { name = "Joined_" ^ table1.name ^ "_" ^ table2.name; columns = new_columns }
+
+  match (safe_get_col table1 key, safe_get_col table2 key) with
+  | Some col1, Some col2 ->
+      let data1 = Column.data col1 in
+      let data2 = Column.data col2 in
+      let common_data = List.filter (fun x -> List.mem x data2) data1 in
+      let index_list1 =
+        List.concat (List.map (Column.filter_indicies col1) common_data)
+      in
+      let index_list2 =
+        List.concat (List.map (Column.filter_indicies col2) common_data)
+      in
+
+      let filtered_table1 = filtered_indx table1 index_list1 in
+      let filtered_table2 = filtered_indx table2 index_list2 in
+
+      (* Select only non-key columns from table2 to avoid duplication *)
+      let non_key_columns_table2 =
+        List.filter (fun col -> Column.title col <> key) filtered_table2.columns
+      in
+      (* Join columns making sure key column from table2 isn't included *)
+      let new_columns = filtered_table1.columns @ non_key_columns_table2 in
+
+      {
+        name = "Joined_" ^ table1.name ^ "_" ^ table2.name;
+        columns = new_columns;
+      }
+  | _ ->
+      raise
+        (InvalidQuery ("Column " ^ key ^ " not found in one or both tables"))
 
 (* let get_col_data t titl=let c=select_from t (titl::[]) in match (columns c)
    with | [x] ->Column.data x |_-> failwith "Column not in table" *)

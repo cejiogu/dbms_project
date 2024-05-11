@@ -139,7 +139,18 @@ val filtered_indx : t -> int list -> t
     @param indices A list of indices representing the rows to include in the new table.
     @return A new table containing only the rows from [t] that are specified in [indices]. 
     An InvalidQuery exception is raised if any index is out of range. *)
+        
+val equal : t -> t -> bool
+(** [equal t1 t2] checks if two tables are equal.
 
+    @param t1 The first table to compare.
+    @param t2 The second table to compare.
+    @return [true] if both tables have the same structural and data equality, [false] otherwise.
+    
+    Equality is defined by:
+    - identical table names
+    - same number of columns where columns appear in the same order
+    - columns must have the same name, data type, and contain the same data in the same order *)
 
 val inner_join : t -> t -> string -> t
 (** [inner_join t1 t2 key] performs an inner join on [t1] and [t2] based on the [key] column. 

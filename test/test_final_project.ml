@@ -359,6 +359,140 @@ let tests_database =
              ~printer:(fun x -> Table.string_of_table x) );
        ]
 
+let tests_equal_function =
+  let open Final_project in
+  (* Setup test tables *)
+  let table1 = Table.make "TestTable" [ "ID"; "Name" ] [ "Int"; "String" ] in
+  let table1 = Table.insert_into table1 [ "ID"; "Name" ] [ "1"; "Alice" ] in
+  let table1 = Table.insert_into table1 [ "ID"; "Name" ] [ "2"; "Bob" ] in
+
+  let table2 = Table.make "TestTable" [ "ID"; "Name" ] [ "Int"; "String" ] in
+  let table2 = Table.insert_into table2 [ "ID"; "Name" ] [ "1"; "Alice" ] in
+  let table2 = Table.insert_into table2 [ "ID"; "Name" ] [ "2"; "Bob" ] in
+
+  let table3 = Table.make "TestTable" [ "ID"; "Name" ] [ "Int"; "String" ] in
+  let table3 = Table.insert_into table3 [ "ID"; "Name" ] [ "1"; "Alice" ] in
+
+  let table4 =
+    Table.make "DifferentTestTable" [ "ID"; "Name" ] [ "Int"; "String" ]
+  in
+
+  let table5 = Table.make "TestTable" [ "ID"; "Age" ] [ "Int"; "Int" ] in
+
+  let table6 = Table.make "TestTable" [ "ID"; "Name" ] [ "Int"; "String" ] in
+  let table6 = Table.insert_into table6 [ "ID"; "Name" ] [ "1"; "Alice" ] in
+  let table6 = Table.insert_into table6 [ "ID"; "Name" ] [ "2"; "Bob" ] in
+  let table6 = Table.insert_into table6 [ "ID"; "Name" ] [ "3"; "Charlie" ] in
+
+  (* Test for complete equality *)
+  "test Table equality"
+  >::: [
+         ( "Equal Tables" >:: fun _ ->
+           assert_bool "Tables should be equal" (Table.equal table1 table2) );
+         ( "Unequal Tables - Less Data" >:: fun _ ->
+           assert_bool "Tables should not be equal"
+             (not (Table.equal table1 table3)) );
+         ( "Same Table Reference" >:: fun _ ->
+           assert_bool "Tables should be equal" (Table.equal table1 table1) );
+         ( "Different names" >:: fun _ ->
+           assert_bool "Tables with different names should not be equal"
+             (not (Table.equal table1 table4)) );
+         ( "Different columns" >:: fun _ ->
+           assert_bool "Tables with different columns should not be equal"
+             (not (Table.equal table1 table5)) );
+         ( "Different data" >:: fun _ ->
+           assert_bool "Tables with different data should not be equal"
+             (not (Table.equal table1 table6)) );
+       ]
+
+let tests_inner_join =
+  let setup_tables () =
+    (* Create the first table with employees *)
+    let table1 = Table.make "Employees" [ "ID"; "Name" ] [ "Int"; "String" ] in
+    let table1 = Table.insert_into table1 [ "ID"; "Name" ] [ "1"; "Alice" ] in
+    let table1 = Table.insert_into table1 [ "ID"; "Name" ] [ "2"; "Bob" ] in
+    let table1 = Table.insert_into table1 [ "ID"; "Name" ] [ "3"; "Charlie" ] in
+
+    (* Create the second table with departments *)
+    let table2 =
+      Table.make "Departments" [ "ID"; "Dept" ] [ "Int"; "String" ]
+    in
+    let table2 = Table.insert_into table2 [ "ID"; "Dept" ] [ "2"; "HR" ] in
+    let table2 =
+      Table.insert_into table2 [ "ID"; "Dept" ] [ "3"; "Engineering" ]
+    in
+    let table2 =
+      Table.insert_into table2 [ "ID"; "Dept" ] [ "4"; "Marketing" ]
+    in
+    (table1, table2)
+  in
+
+  "test Inner Join"
+  >::: [
+         ( "Normal Case" >:: fun _ ->
+           let table1, table2 = setup_tables () in
+           let result_table = Table.inner_join table1 table2 "ID" in
+           let expected_columns = [ "ID"; "Name"; "Dept" ] in
+           let expected_types = [ "Int"; "String"; "String" ] in
+           let expected_table =
+             Table.make "Joined_Employees_Departments" expected_columns
+               expected_types
+           in
+           let expected_table =
+             List.fold_left
+               (fun acc (id, name, dept) ->
+                 Table.insert_into acc [ "ID"; "Name"; "Dept" ]
+                   [ id; name; dept ])
+               expected_table
+               [ ("3", "Charlie", "Engineering"); ("2", "Bob", "HR") ]
+           in
+           assert_equal ~cmp:Table.equal ~printer:Table.string_of_table
+             expected_table result_table );
+         ( "No Match Case" >:: fun _ ->
+           let table1 =
+             Table.make "Employees" [ "ID"; "Name" ] [ "Int"; "String" ]
+           in
+           let table1 =
+             Table.insert_into table1 [ "ID"; "Name" ] [ "1"; "Alice" ]
+           in
+           let table1 =
+             Table.insert_into table1 [ "ID"; "Name" ] [ "2"; "Bob" ]
+           in
+
+           let table2 =
+             Table.make "Departments" [ "ID"; "Dept" ] [ "Int"; "String" ]
+           in
+           let table2 =
+             Table.insert_into table2 [ "ID"; "Dept" ] [ "3"; "HR" ]
+           in
+           let table2 =
+             Table.insert_into table2 [ "ID"; "Dept" ] [ "4"; "Engineering" ]
+           in
+           let result_table = Table.inner_join table1 table2 "ID" in
+           assert_equal
+             "Table: Joined_Employees_Departments\n\
+              {ID, []}\n\
+              {Name, []}\n\
+              {Dept, []}\n"
+             (Table.string_of_table result_table) );
+         ( "Nonexistent Column" >:: fun _ ->
+           let table1, table2 = setup_tables () in
+           let run_test () = Table.inner_join table1 table2 "Nonexistent" in
+           assert_raises
+             (Table.InvalidQuery
+                "Column Nonexistent not found in one or both tables") run_test
+         );
+         ( "Empty Tables" >:: fun _ ->
+           let empty_table1 = Table.empty "Empty1" in
+           let empty_table2 = Table.empty "Empty2" in
+           let result_table () =
+             Table.inner_join empty_table1 empty_table2 "ID"
+           in
+           assert_raises
+             (Table.InvalidQuery "Column ID not found in one or both tables")
+             result_table );
+       ]
+
 let tests_printing =
   let print_column = Column.make "Print Column" [ "1"; "2"; "3"; "4" ] in
   let print_table =
@@ -391,5 +525,7 @@ let () =
            "ColumnTests" >::: [ tests_column ];
            "TableTests" >::: [ tests_table ];
            "DatabaseTests" >::: [ tests_database ];
+           "Table Equality Tests" >::: [ tests_equal_function ];
+           "tests inner_join of tables" >::: [ tests_inner_join ];
            "PrintingTests" >::: [ tests_printing ];
          ])
