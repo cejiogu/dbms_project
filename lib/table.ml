@@ -23,7 +23,7 @@ let rec make_aux (acc : Column.t list) (col_names : string list)
     raise (InvalidQuery "Column names and values must have the same length")
   else
     match col_names with
-    | [] -> List.rev acc
+    | [] -> acc
     | h :: t ->
         let h_col_types = List.hd col_types in
         if List.mem h_col_types [ "Int"; "Bool"; "Float"; "String"; "Date" ]
@@ -153,7 +153,7 @@ let rec select_from_aux (columns : Column.t list) (names : string list)
     (acc : t) : t =
   match names with
   | [] ->
-      let output : t = { name = acc.name; columns = List.rev acc.columns } in
+      let output : t = { name = acc.name; columns = acc.columns } in
       output
   | (h : string) :: (t : string list) -> (
       match exists_opt h columns with
@@ -191,23 +191,20 @@ let str_coltyp t =
     (fun col -> Column.string_of_elmtyp (Column.col_type col))
     (columns t)
 
-let alter_table_add t col_name typ =
-  let rec names_lp acc cnt l =
-    if cnt <= List.length t.columns - 1 then
-      Column.title (List.nth l cnt) :: names_lp acc (cnt + 1) l
-    else acc
-  in
-  let names = names_lp [] 0 t.columns @ (col_name :: []) in
-  let rec types_lp acc cnt l =
-    if cnt <= List.length t.columns - 1 then
-      Column.string_of_elmtyp (Column.col_type (List.nth l cnt))
-      :: types_lp acc (cnt + 1) l
-    else acc
-  in
-  let types = types_lp [] 0 t.columns @ (typ :: []) in
-  make t.name names types
-
 let insert_col t c = { name = title t; columns = columns t @ (c :: []) }
+
+let alter_table_add_aux (t : t) (col_name : string) (typ : string) : t =
+  let new_column = Column.empty col_name typ in
+  let (new_table : t) = insert_col t new_column in
+  new_table
+
+let alter_table_add (t : t) (col_name : string) (typ : string) : t =
+  match exists_opt col_name t.columns with
+  | Some _ ->
+      t (* If the column already exists in the table, function does nothing*)
+  | None ->
+      let new_table = alter_table_add_aux t col_name typ in
+      new_table
 
 let filtered_indx t indx =
   {
@@ -237,9 +234,6 @@ let equal (table1 : t) (table2 : t) : bool =
              = Column.sqlstr_of_elm (Column.col_type col2)
           && Column.data col1 = Column.data col2)
         cols1 cols2
-
-(* let delete_from_where_aux (table : t) (column : string) (value : string) =
-   failwith "TODO" *)
 
 let truncate_table_aux (table : t) : t =
   let new_table = { name = title table; columns = [] } in
