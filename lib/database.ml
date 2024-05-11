@@ -81,12 +81,13 @@ let select_from_where db col_list table_name (col, value) =
   let tab = Table.filtered_indx (Table.remove col cols) i in
   tab
 
-let rec replace_table (db : Table.t list) (tab : Table.t) : Table.t list =
+let rec replace_table_aux (db : Table.t list) (tab : Table.t) : Table.t list =
   match db with
   | [] -> db
   | (head : Table.t) :: (tail : Table.t list) ->
-      if Table.title head = Table.title tab then tab :: replace_table tail tab
-      else head :: replace_table tail tab
+      if Table.title head = Table.title tab then
+        tab :: replace_table_aux tail tab
+      else head :: replace_table_aux tail tab
 
 (* let delete_from_where (db : t) (tab : string) (col : string) (value : string)
    : t = try begin let table = get_table db tab in (* Raises "InvalidQuery"
@@ -95,23 +96,30 @@ let rec replace_table (db : Table.t list) (tab : Table.t) : Table.t list =
    db.tables new_table in { name = db.name; tables = new_tables } end with
    InvalidQuery error -> raise (InvalidQuery error) *)
 
+let replace_table (db : t) (tab : Table.t) : t =
+  if table_exists (Table.title tab) db then
+    match db with
+    | { name; tables } ->
+        let new_tables = replace_table_aux tables tab in
+        let new_db = { name; tables = new_tables } in
+        new_db
+  else
+    raise
+      (InvalidQuery
+         ("Table " ^ Table.title tab ^ " does not exist in database " ^ name db))
+
 let truncate_table (db : t) (table : string) : t =
   let truncated_tab = get_table db table |> Table.truncate_table_aux in
-  let new_tables = replace_table db.tables truncated_tab in
+  let new_tables = replace_table_aux db.tables truncated_tab in
   let new_db = { name = name db; tables = new_tables } in
   new_db
 
 let select_max_min (db : t) (tab : string) (col : string) (specifier : string) :
     string =
-  if specifier <> "max" || specifier <> "min" then
-    raise
-      (InvalidQuery
-         "Improper specifier. The specifier must be either 'min' or 'max'")
-  else
-    let table = get_table db tab in
-    let column = Table.get_col table col in
-    let value = Column.select_aux column specifier in
-    value
+  let table = get_table db tab in
+  let column = Table.get_col table col in
+  let value = Column.select_aux column specifier in
+  value
 
 let inner_join (table1 : t) (table2 : t) (key : string) : t =
   (* Retrieve a column safely, returning an option *)
