@@ -26,7 +26,7 @@ let insert_table (db : t) (name : string) (column_names : string list)
   if table_exists name db then db
   else
     let new_table = Table.make name column_names column_types in
-    { db with tables = new_table :: db.tables }
+    { db with tables = db.tables @ [ new_table ] }
 
 (** [get_table_aux tables name] Retrieves a table of title [name] from [tables]
     @param tables
@@ -109,7 +109,7 @@ let truncate_table (db : t) (table : string) : t =
 
 let select_max_min (db : t) (tab : string) (col : string) (specifier : string) :
     string =
-  if specifier <> "max" || specifier <> "min" then
+  if specifier <> "max" && specifier <> "min" then
     raise
       (InvalidQuery
          "Improper specifier. The specifier must be either 'min' or 'max'")
