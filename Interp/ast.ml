@@ -10,3 +10,4 @@ type expr =
   | SelectMax of (string * string)
   | SelectMin of (string * string)
   | Truncate of string
+  | InnerJoin of (string * string * string)

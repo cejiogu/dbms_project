@@ -131,6 +131,7 @@ let main () =
                else
                  Printf.printf "TABLE %s is not in DB %s\n%!" table_name
                    (Database.name db)
+           (* | Ast.InnerJoin (t1, t2, key) -> d := Table.inner_join t1 t2 key *)
            (* | _->Printf.printf "Not a command\n" *)
          with Parser.Error -> Printf.printf "Parse error");
       (* | Failure msg -> Printf.printf "Error:%s\n" msg); *)

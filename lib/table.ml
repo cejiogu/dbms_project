@@ -245,42 +245,6 @@ let truncate_table_aux (table : t) : t =
   let new_table = { name = title table; columns = [] } in
   new_table
 
-let inner_join (table1 : t) (table2 : t) (key : string) : t =
-  (* Retrieve a column safely, returning an option *)
-  let safe_get_col table key =
-    List.find_opt (fun col -> Column.title col = key) (columns table)
-  in
-
-  match (safe_get_col table1 key, safe_get_col table2 key) with
-  | Some col1, Some col2 ->
-      let data1 = Column.data col1 in
-      let data2 = Column.data col2 in
-      let common_data = List.filter (fun x -> List.mem x data2) data1 in
-      let index_list1 =
-        List.concat (List.map (Column.filter_indicies col1) common_data)
-      in
-      let index_list2 =
-        List.concat (List.map (Column.filter_indicies col2) common_data)
-      in
-
-      let filtered_table1 = filtered_indx table1 index_list1 in
-      let filtered_table2 = filtered_indx table2 index_list2 in
-
-      (* Select only non-key columns from table2 to avoid duplication *)
-      let non_key_columns_table2 =
-        List.filter (fun col -> Column.title col <> key) filtered_table2.columns
-      in
-      (* Join columns making sure key column from table2 isn't included *)
-      let new_columns = filtered_table1.columns @ non_key_columns_table2 in
-
-      {
-        name = "Joined_" ^ table1.name ^ "_" ^ table2.name;
-        columns = new_columns;
-      }
-  | _ ->
-      raise
-        (InvalidQuery ("Column " ^ key ^ " not found in one or both tables"))
-
 (* let get_col_data t titl=let c=select_from t (titl::[]) in match (columns c)
    with | [x] ->Column.data x |_-> failwith "Column not in table" *)
 

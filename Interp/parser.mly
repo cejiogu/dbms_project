@@ -31,6 +31,8 @@ open Final_project
 %token MIN
 %token MAX
 %token TRUNCATE
+%token ON
+%token INNER JOIN
 %token EOF
 
 
@@ -48,6 +50,7 @@ prog:
 	| SELECT MIN LPAREN col_nm=ID RPAREN FROM tbl_nm=ID EOF {SelectMin (col_nm, tbl_nm)}
 	| SELECT MAX LPAREN col_nm=ID RPAREN FROM tbl_nm=ID EOF {SelectMax (col_nm, tbl_nm)}
 	| TRUNCATE TABLE tbl_nm=ID {Truncate (tbl_nm)}
+	| INNER JOIN tbl_nm1=ID tbl_nm2=ID ON key=ID { InnerJoin (tbl_nm1, tbl_nm2, key) } 
 	;
 
 col_nm_def:
