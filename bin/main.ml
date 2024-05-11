@@ -25,7 +25,7 @@ let main () =
       \  -SELECT MIN(<col_name>) FROM <table_name>\n\
       \  -SELECT MAX(<col_name>) FROM <table_name>\n\
       \  -TRUNCATE TABLE <table_name>\n\
-      \  -SELECT (<col_name1>,<col_name1>,...) FROM <table_name> WHERE \
+      \  -SELECT (<col_name1>,<col_name2>,...) FROM <table_name> WHERE \
        <column_name> = <value>\n\n\
        The following are valid column types:\n\
       \  -INT\n\
