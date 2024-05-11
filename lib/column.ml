@@ -210,7 +210,7 @@ let stringlist_of_column col = col.title :: stringlist_of_data col.data
     @return The updated column with the new element added. *)
 let add_elem_to_column elem col =
   if elem = NULL || equal col.elemtype elem then
-    { elemtype = col.elemtype; title = col.title; data = elem :: col.data }
+    { elemtype = col.elemtype; title = col.title; data = col.data @ [ elem ] }
   else failwith "All elements must be of the same type"
 
 let add str_elem col = add_elem_to_column (elem_of_string str_elem) col
