@@ -159,10 +159,10 @@ let main () =
                if Database.table_exists table_name db then
                  try
                    let new_database = Database.truncate_table db table_name in
-                   d := new_database;
+                   ();
                    Printf.printf "All data from table %s have been removed"
                      table_name;
-                   loop db ()
+                   loop new_database ()
                  with Failure error -> Printf.printf "Runtime Error: %s" error
                else
                  Printf.printf "Table %s is not in database %s\n%!" table_name
