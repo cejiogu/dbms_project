@@ -280,8 +280,3 @@ let inner_join (table1 : t) (table2 : t) (key : string) : t =
   | _ ->
       raise
         (InvalidQuery ("Column " ^ key ^ " not found in one or both tables"))
-
-(* let get_col_data t titl=let c=select_from t (titl::[]) in match (columns c)
-   with | [x] ->Column.data x |_-> failwith "Column not in table" *)
-
-(* let col_size t col=Column.col_size (get_col_data t (Column.title col)) *)

@@ -118,16 +118,3 @@ let select_max_min (db : t) (tab : string) (col : string) (specifier : string) :
     let column = Table.get_col table col in
     let value = Column.select_aux column specifier in
     value
-
-(* let d = delete db org_tab in add d tab *)
-
-(* let _ = for x=0 to (Table.col_size cols c) -1 do if List.nth (Column.data c)
-   x=valu then indx := x :: !indx else () done in print_endline (List.length
-   !indx) *)
-(*for each column in col_list, create a new column which contains all of the
-  elements at the indicies from indx list, add the column to a new table*)
-(* let _= for a=0 to (List.length cols) do for b=0 to (List.length (List.nth
-   cols a)) *)
-
-(*return the table*)
-(*return the database with the table updated*)

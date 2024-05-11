@@ -42,7 +42,6 @@ rule read =
   | "JOIN" { JOIN }
   | "ON" { ON }
   | id { ID (Lexing.lexeme lexbuf) }
-  (* | str {STR (Lexing.lexeme lexbuf) } *)
   | int { INT_ACT (int_of_string (Lexing.lexeme lexbuf)) }
   | float { FLOAT_ACT (float_of_string (Lexing.lexeme lexbuf)) }
   | date {DATE_ACT (Lexing.lexeme lexbuf)}
