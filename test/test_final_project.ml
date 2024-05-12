@@ -160,13 +160,14 @@ let tests_table =
     Table.insert_into t2_insert1 [ "Name"; "Occupation" ] [ "Bob"; "Doctor" ]
   in
 
-  (* Table3: *)
+  (* Table3: Column titles, but no data*)
   let t3 =
     Table.make "MixedTable"
       [ "ID"; "Name"; "Birthday" ]
       [ "Int"; "String"; "Date" ]
   in
 
+  (* Table3-Insert1: First record/row*)
   let t3_insert1 =
     Table.insert_into t3
       [ "ID"; "Name"; "Birthday" ]
@@ -196,6 +197,19 @@ let tests_table =
   let t5_insert2 =
     Table.insert_into t5_insert1 [ "ID"; "Value" ] [ "NULL"; "NULL" ]
   in
+  print_string
+    (Table.string_of_table
+       (Table.make "test"
+          [ "testa"; "testb"; "testc" ]
+          [ "Int"; "Float"; "Date" ]));
+  print_string
+    (Table.string_of_table
+       (Table.alter_table_add
+          (Table.make "test"
+             [ "testa"; "testb"; "testc" ]
+             [ "Int"; "Float"; "Date" ])
+          "testb" "Float"));
+  (* print_string (Table.string_of_table t5_insert2); *)
   "test Table"
   >::: [
          ( "Empty Table" >:: fun _ ->
@@ -207,7 +221,7 @@ let tests_table =
            assert_equal "Table: IntegerTable\n{ID, [1]}\n{Value, [100]}\n"
              (Table.string_of_table t1_insert1);
            assert_equal
-             "Table: IntegerTable\n{ID, [2, 1]}\n{Value, [200, 100]}\n"
+             "Table: IntegerTable\n{ID, [1, 2]}\n{Value, [100, 200]}\n"
              (Table.string_of_table t1_insert2) );
          ( "Make table with only Strings (table2)" >:: fun _ ->
            assert_equal "Table: StringTable\n{Name, []}\n{Occupation, []}\n"
@@ -217,8 +231,8 @@ let tests_table =
              (Table.string_of_table t2_insert1);
            assert_equal
              "Table: StringTable\n\
-              {Name, [Bob, Alice]}\n\
-              {Occupation, [Doctor, Engineer]}\n"
+              {Name, [Alice, Bob]}\n\
+              {Occupation, [Engineer, Doctor]}\n"
              (Table.string_of_table t2_insert2) );
          ( "Make table with Int, String, and Date Columns (table3)" >:: fun _ ->
            assert_equal
@@ -232,9 +246,9 @@ let tests_table =
              (Table.string_of_table t3_insert1);
            assert_equal
              "Table: MixedTable\n\
-              {ID, [2, 1]}\n\
-              {Name, [Dana, Charlie]}\n\
-              {Birthday, [1985-05-23, 1990-01-01]}\n"
+              {ID, [1, 2]}\n\
+              {Name, [Charlie, Dana]}\n\
+              {Birthday, [1990-01-01, 1985-05-23]}\n"
              (Table.string_of_table t3_insert2) );
          ( "Make table with Float, and Bool Columns (table4)" >:: fun _ ->
            assert_equal "Table: FloatsBools\n{ID, []}\n{Has_Name, []}\n"
@@ -242,7 +256,7 @@ let tests_table =
            assert_equal "Table: FloatsBools\n{ID, [1.2]}\n{Has_Name, [true]}\n"
              (Table.string_of_table t4_insert1);
            assert_equal
-             "Table: FloatsBools\n{ID, [0., 1.2]}\n{Has_Name, [false, true]}\n"
+             "Table: FloatsBools\n{ID, [1.2, 0.]}\n{Has_Name, [true, false]}\n"
              (Table.string_of_table t4_insert2) );
          ( "Tests adding NULL (table5)" >:: fun _ ->
            assert_equal "Table: NULL_add_table\n{ID, []}\n{Value, []}\n"
@@ -252,28 +266,28 @@ let tests_table =
              (Table.string_of_table t5_insert1);
            assert_equal
              "Table: NULL_add_table\n\
-              {ID, [NULL, 143]}\n\
-              {Value, [NULL, 5.2343444]}\n"
+              {ID, [143, NULL]}\n\
+              {Value, [5.2343444, NULL]}\n"
              (Table.string_of_table t5_insert2) );
          ( "Rename ID column in (table5)" >:: fun _ ->
            assert_equal
              "Table: NULL_add_table\n\
-              {New_Name, [NULL, 143]}\n\
-              {Value, [NULL, 5.2343444]}\n"
+              {New_Name, [143, NULL]}\n\
+              {Value, [5.2343444, NULL]}\n"
              (Table.string_of_table
              @@ Table.rename_column "ID" "New_Name" t5_insert2) );
          ( "Testing remove column" >:: fun _ ->
            assert_equal
              "Table: NULL_add_table\n\
-              {ID, [NULL, 143]}\n\
-              {Value, [NULL, 5.2343444]}\n"
+              {ID, [143, NULL]}\n\
+              {Value, [5.2343444, NULL]}\n"
              (Table.string_of_table t5_insert2);
-           assert_equal "Table: NULL_add_table\n{Value, [NULL, 5.2343444]}\n"
+           assert_equal "Table: NULL_add_table\n{Value, [5.2343444, NULL]}\n"
              (Table.string_of_table @@ Table.remove "ID" t5_insert2);
            assert_equal
              "Table: NULL_add_table\n\
-              {ID, [NULL, 143]}\n\
-              {Value, [NULL, 5.2343444]}\n"
+              {ID, [143, NULL]}\n\
+              {Value, [5.2343444, NULL]}\n"
              (Table.string_of_table @@ Table.remove "NOTINTABLE" t5_insert2) );
          ( "Test alter table" >:: fun _ ->
            assert_equal
@@ -286,9 +300,11 @@ let tests_table =
                    [ "Int"; "Float"; "Date" ])
                 "testd" "Bool");
            assert_equal
+             (* Shows that adding duplicate columns does not work (it shouldn't;
+                can never access second column)*)
              (Table.make "test"
-                [ "testa"; "testb"; "testc"; "testb" ]
-                [ "Int"; "Float"; "Date"; "Float" ])
+                [ "testa"; "testb"; "testc" ]
+                [ "Int"; "Float"; "Date" ])
              (Table.alter_table_add
                 (Table.make "test"
                    [ "testa"; "testb"; "testc" ]

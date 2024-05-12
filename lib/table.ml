@@ -21,7 +21,7 @@ let rec make_aux (acc : Column.t list) (col_names : string list)
     raise (InvalidQuery "Column names and values must have the same length")
   else
     match col_names with
-    | [] -> acc
+    | [] -> List.rev acc
     | h :: t ->
         let h_col_types = List.hd col_types in
         if List.mem h_col_types [ "Int"; "Bool"; "Float"; "String"; "Date" ]
