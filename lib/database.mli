@@ -65,7 +65,7 @@ val add : t -> Table.t -> t
     @return *)
 
 val select_from_where : t -> string list -> string -> string * string -> Table.t
-(** [select_from_where db col_lst table_name (col, valu)] is a table with
+(** [select_from_where db col_lst table_name (col, value)] is a table with
     columns in [col_lst] from table [table_name] containing only the rows where
     column [col] has value [valu]*)
 
