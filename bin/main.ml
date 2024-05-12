@@ -33,7 +33,8 @@ let main () =
       \  -STRING\n\
       \  -DATE (Note date value format: YYYY-MM-DD)\n\
       \  -FLOAT\n\n\
-      \      \n\
+      \ Note: The database, as well as any columns and tables, must be titled \
+       in strictly alphabetical characters\n\n\n\
        Let's begin!\n\n"
   in
   let () = print_endline "Enter the name of your database: " in
@@ -198,6 +199,9 @@ let main () =
              loop db ()
          | Database.InvalidQuery error ->
              Printf.printf "Invalid Query error: %s" error;
+             loop db ()
+         | Failure error ->
+             Printf.printf "Failure: %s" error;
              loop db ()
          | Parser.Error ->
              Printf.printf "Parse error: Please enter an appropriate command\n");
