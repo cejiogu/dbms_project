@@ -96,7 +96,7 @@ let main () =
                    Database.select_from_where db col_names table_name
                      (col_nam, elem_value)
                  in
-                 print_endline (Table.string_of_table t);
+                 Table.print t;
                  loop db ())
                else
                  Printf.printf "TABLE %s is not in DB %s\n" table_name
@@ -159,7 +159,7 @@ let main () =
                  try
                    let new_database = Database.truncate_table db table_name in
                    ();
-                   Printf.printf "All data from table %s have been removed"
+                   Printf.printf "All data from table %s have been removed!\n"
                      table_name;
                    loop new_database ()
                  with Failure error -> Printf.printf "Runtime Error: %s" error
@@ -186,8 +186,21 @@ let main () =
                  Printf.printf "Table %s or %s is not in database %s\n%!"
                    table_name table_name2 (Database.name db);
                loop db ()
-         with Parser.Error ->
-           Printf.printf "Parse error: Please enter an appropriate command\n");
+         with
+         | Column.InvalidQuery error ->
+             Printf.printf "Invalid Query error: %s" error;
+             loop db ()
+         | Column.EmptyColumn error ->
+             Printf.printf "Empty Column error: %s" error;
+             loop db ()
+         | Table.InvalidQuery error ->
+             Printf.printf "Invalid Query error: %s" error;
+             loop db ()
+         | Database.InvalidQuery error ->
+             Printf.printf "Invalid Query error: %s" error;
+             loop db ()
+         | Parser.Error ->
+             Printf.printf "Parse error: Please enter an appropriate command\n");
       loop db ()
     in
     loop database ()
