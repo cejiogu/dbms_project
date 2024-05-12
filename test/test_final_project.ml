@@ -197,19 +197,6 @@ let tests_table =
   let t5_insert2 =
     Table.insert_into t5_insert1 [ "ID"; "Value" ] [ "NULL"; "NULL" ]
   in
-  print_string
-    (Table.string_of_table
-       (Table.make "test"
-          [ "testa"; "testb"; "testc" ]
-          [ "Int"; "Float"; "Date" ]));
-  print_string
-    (Table.string_of_table
-       (Table.alter_table_add
-          (Table.make "test"
-             [ "testa"; "testb"; "testc" ]
-             [ "Int"; "Float"; "Date" ])
-          "testb" "Float"));
-  (* print_string (Table.string_of_table t5_insert2); *)
   "test Table"
   >::: [
          ( "Empty Table" >:: fun _ ->
