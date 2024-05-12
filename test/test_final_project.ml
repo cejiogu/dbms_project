@@ -405,7 +405,7 @@ let tests_database =
          ( "Database select_from_where" >:: fun _ ->
            assert_equal table_flights_sub
              (Database.select_from_where full_database
-                [ "Airline"; "Origin"; "Destination" ]
+                [ "Destination"; "Origin"; "Airline" ]
                 "flights" ("Duration", "6.0"))
              ~printer:(fun x -> Table.string_of_table x) );
          ( "Database select_from_where first col" >:: fun _ ->

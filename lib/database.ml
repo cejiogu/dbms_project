@@ -82,7 +82,7 @@ let select_from_where (db : t) (s_cols : string list) (table_name : string)
   let selected_columns =
     let rec find_columns (col_names : string list) (acc : Column.t list) =
       match col_names with
-      | [] -> acc
+      | [] -> List.rev acc
       | (h : string) :: (t : string list) ->
           let og_col = Table.get_col tab h in
           let filtered_col = Column.filter_indx og_col indices in
