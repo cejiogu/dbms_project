@@ -70,14 +70,38 @@ let delete db t =
 
 (*^CATCH FAILURE in main*)
 
-let select_from_where db col_list table_name (col, value) =
-  let org_tab = get_table db table_name in
-  let cols = Table.select_from org_tab (col :: col_list) in
-  let (c : Column.t) = (Table.get_col cols col : Column.t) in
-  (*how can we avoid using Column.elem here? Do we need to?*)
-  let i = Column.filter_indicies c (Column.elem_of_string value) in
-  let tab = Table.filtered_indx (Table.remove col cols) i in
-  tab
+let select_from_where (db : t) (s_cols : string list) (table_name : string)
+    ((col, value) : string * string) =
+  let tab = get_table db table_name in
+  (* Table that we are searching throughout *)
+  let indices =
+    Column.filter_indicies (Table.get_col tab col) (Column.elem_of_string value)
+  in
+  (* Indices of all rows in the column in the conditional where value is found
+     []*)
+  let selected_columns =
+    let rec find_columns (col_names : string list) (acc : Column.t list) =
+      match col_names with
+      | [] -> acc
+      | (h : string) :: (t : string list) ->
+          let og_col = Table.get_col tab h in
+          let filtered_col = Column.filter_indx og_col indices in
+          let new_acc = acc @ [ filtered_col ] in
+          find_columns t new_acc
+    in
+    find_columns s_cols []
+  in
+  let output =
+    let rec iterate (table : Table.t) (acc : Column.t list) =
+      match acc with
+      | [] -> table
+      | (h : Column.t) :: (t : Column.t list) ->
+          let new_tab = Table.insert_col table h in
+          iterate new_tab t
+    in
+    iterate (Table.empty table_name) selected_columns
+  in
+  output
 
 let rec replace_table_aux (db : Table.t list) (tab : Table.t) : Table.t list =
   match db with
