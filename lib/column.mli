@@ -1,3 +1,6 @@
+exception EmptyColumn of string
+exception InvalidQuery of string
+
 type elem
 (** The type representing the data contained within a column. Variants include
     integers, booleans, floats, strings, and dates. *)
@@ -114,7 +117,7 @@ val string_of_elmtyp : elem -> string
    string_of_elemtyp 6-> Int)*)
 
 val filter_indx : t -> int list -> t
-(**[filter_indx c indx_lst] is the column [c] containing only the indecies in
+(**[filter_indx c indx_lst] is the column [c] containing only the indices in
    [indx_lst]*)
 
 val filter_indicies : t -> elem -> int list
@@ -136,3 +139,10 @@ val select_aux : t -> string -> string
     @raise InvalidQuery
       if the datatype of the column is NULL, Date, or Bool, or if a string other
       than "max" or "min" is passed in as the specifier*)
+
+val nth : t -> int -> elem
+(** [nth column value location] is the elem located at the index [location] in
+    the column [column]
+    @param column The column being searched
+    @param location The specific index to be searched
+    @return The value at the index [location] in column [column]*)

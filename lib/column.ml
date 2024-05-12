@@ -324,3 +324,8 @@ let select_aux (column : t) (specifier : string) =
             let min = column_iterator data ( < ) specifier in
             string_of_elem min
         end)
+
+let nth (column : t) (location : int) : elem =
+  let data = column.data in
+  let element = List.nth data location in
+  element
