@@ -67,7 +67,6 @@ let delete db t =
   else
     raise
       (Failure ("TABLE " ^ Table.title t ^ " is NOT in Database " ^ name db))
-
 (*^CATCH FAILURE in main*)
 
 let select_from_where (db : t) (s_cols : string list) (table_name : string)

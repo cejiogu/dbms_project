@@ -41,24 +41,20 @@ let elem_of_string (s : string) : elem =
     let data_type = int_of_string_opt s in
     match data_type with
     | Some int -> Int int
-    | None -> begin
+    | None -> (
         let data_type = float_of_string_opt s in
         match data_type with
         | Some float -> Float float
-        | None -> begin
+        | None -> (
             let data_type = bool_of_string_opt s in
             match data_type with
             | Some bool -> Bool bool
-            | None -> begin
+            | None -> (
                 let data_type = date_of_string s in
                 match data_type with
                 | Some (Date (y, m, d)) -> Date (y, m, d)
                 | None -> String s
-                | _ ->
-                    failwith "You should be getting NULL. This is impossible!"
-              end
-          end
-      end
+                | _ -> failwith "This is impossible!")))
 
 let elemtype_of_stringtype str =
   match str with
@@ -288,6 +284,14 @@ let column_iterator (data : elem list) (f : elem -> elem -> bool)
       in
       search t h
 
+let specifier_aux specifier data =
+  if specifier = "max" then
+    let max = column_iterator data ( > ) specifier in
+    string_of_elem max
+  else
+    let min = column_iterator data ( < ) specifier in
+    string_of_elem min
+
 let select_aux (column : t) (specifier : string) =
   match column with
   | { elemtype; title; data } -> (
@@ -300,30 +304,9 @@ let select_aux (column : t) (specifier : string) =
       | NULL -> raise (InvalidQuery "Incompatible Datatype")
       | Date _ -> raise (InvalidQuery "Incompatible Datatype")
       | Bool _ -> raise (InvalidQuery "Incompatible Datatype")
-      | Int _ -> begin
-          if specifier = "max" then
-            let max = column_iterator data ( > ) specifier in
-            string_of_elem max
-          else
-            let min = column_iterator data ( < ) specifier in
-            string_of_elem min
-        end
-      | Float _ -> begin
-          if specifier = "max" then
-            let max = column_iterator data ( > ) specifier in
-            string_of_elem max
-          else
-            let min = column_iterator data ( < ) specifier in
-            string_of_elem min
-        end
-      | String _ -> begin
-          if specifier = "max" then
-            let max = column_iterator data ( > ) specifier in
-            string_of_elem max
-          else
-            let min = column_iterator data ( < ) specifier in
-            string_of_elem min
-        end)
+      | Int _ -> specifier_aux specifier data
+      | Float _ -> specifier_aux specifier data
+      | String _ -> specifier_aux specifier data)
 
 let nth (column : t) (location : int) : elem =
   let data = column.data in
