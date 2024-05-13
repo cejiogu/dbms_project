@@ -22,6 +22,6 @@ demo-video-url: ""
 # Write a short, attention-grabbing description of your project.
 desc: >
   Our project is a Databse Management System. It supports standard SQL queries,
-  such as WHERE, SELECT, GROUP BY and FROM commands. The interface 
-  allows the user to create, drop and manage tables and has functionality to
-  insert, update and delete rows.
+  such as WHERE, SELECT, TRUNCATE and MAX/MIN commands. The interface 
+  allows the user to create and manage tables and has functionality to
+  insert and delete rows.
