@@ -31,8 +31,6 @@ let date_of_string (s : string) : elem option =
     let month = Str.matched_group 2 s |> int_of_string in
     let day = Str.matched_group 3 s |> int_of_string in
     Some (Date (year, month, day))
-    (* let d = Date (year, month, day) in if valid_date d then d else failwith
-       "NOT A VALID DATE!" *)
   else None
 
 let elem_of_string (s : string) : elem =
@@ -219,8 +217,6 @@ let rec print_data data =
   | h :: t ->
       print_endline @@ string_of_elem h;
       print_data t
-
-(* let print col = print_endline @@ "\n" ^ col.title; print_data col.data *)
 
 let print col =
   print_endline col.title;

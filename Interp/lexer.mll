@@ -6,7 +6,7 @@ let white = [' ' '\t']+
 let digit = ['0'-'9']
 let int = '-'? digit+
 let float='-'? digit+ '.' digit*
-let letter = ['a'-'z' 'A'-'Z']
+let letter = ['a'-'z' 'A'-'Z' '_']
 let id = letter+
 let date = digit digit digit digit '-' digit digit '-' digit digit
 
