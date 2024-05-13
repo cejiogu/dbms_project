@@ -33,7 +33,7 @@ let print_instructions () =
     \  -DATE (Note date value format: YYYY-MM-DD)\n\
     \  -FLOAT\n\n\
     \ Note: The database, as well as any columns and tables, must be titled in \
-     strictly alphabetical characters\n\n\n\
+     strictly alphabetical characters, and even may not white spaces. \n\n\n\
      Let's begin!\n\n"
 
 let print_intro () : Database.t =
