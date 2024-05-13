@@ -1,4 +1,5 @@
-(* @author Ori Wachman (ow34), Chimdi Ejiogu (ce248), Ilan Klimberg (idk7)*)
+(** @author Ori Wachman (ow34), Chimdi Ejiogu (ce248), Ilan Klimberg (idk7)*)
+
 open Interp
 open Final_project
 
@@ -81,7 +82,6 @@ let insert_into_output_aux (input : string list) : unit =
     | _ -> failwith "Unreachable"
   else Printf.printf "%s" (List.nth input 0);
   Printf.printf "]\n"
-(* Printf.printf "[" *)
 
 let insert_into_output (db : Database.t) loop (table_name : string)
     (col_names : string list) (rw_values : string list) : unit =
@@ -160,8 +160,10 @@ let inner_join_output (db : Database.t) loop (table_name : string)
     try
       let t1 = Database.get_table db table_name in
       let t2 = Database.get_table db table_name2 in
-      let new_database = Database.add db (Table.inner_join t1 t2 key) in
-      Printf.printf "All data from table %s have been removed" table_name;
+      let new_table = Table.inner_join t1 t2 key in
+      let new_database = Database.add db new_table in
+      Printf.printf "%s and %s have been joined, and are now in %s\n" table_name
+        table_name2 (Table.title new_table);
       loop new_database ()
     with Failure error -> Printf.printf "Runtime Error: %s" error
   else
