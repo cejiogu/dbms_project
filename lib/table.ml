@@ -48,8 +48,10 @@ let empty (t_name : string) : t =
     returns the index of the first occurrence.
     @param value The value to search for within [lst].
     @param lst The list to be searched.
-    @return [Some index] where [index] is the zero-based position of [value] in [lst] if found; otherwise, [None].
-    @note This function performs a linear search from the beginning of [lst], returning the index of the first match. *)
+    @return [Some index] where [index] is the zero-based position of [value] in
+     [lst] if found; otherwise, [None].
+    @note This function performs a linear search from the beginning of [lst],
+      returning the index of the first match. *)
 let find_index_opt value lst =
   let rec aux index = function
     | [] -> None
