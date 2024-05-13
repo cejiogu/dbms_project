@@ -69,27 +69,22 @@ let delete db t =
       (Failure ("TABLE " ^ Table.title t ^ " is NOT in Database " ^ name db))
 (*^CATCH FAILURE in main*)
 
+let rec find_columns_aux tab indices col_names acc =
+  match col_names with
+  | [] -> List.rev acc
+  | (h : string) :: (t : string list) ->
+      let og_col = Table.get_col tab h in
+      let filtered_col = Column.filter_indx og_col indices in
+      let new_acc = acc @ [ filtered_col ] in
+      find_columns_aux tab indices t new_acc
+
 let select_from_where (db : t) (s_cols : string list) (table_name : string)
     ((col, value) : string * string) =
   let tab = get_table db table_name in
-  (* Table that we are searching throughout *)
   let indices =
     Column.filter_indicies (Table.get_col tab col) (Column.elem_of_string value)
   in
-  (* Indices of all rows in the column in the conditional where value is found
-     []*)
-  let selected_columns =
-    let rec find_columns (col_names : string list) (acc : Column.t list) =
-      match col_names with
-      | [] -> List.rev acc
-      | (h : string) :: (t : string list) ->
-          let og_col = Table.get_col tab h in
-          let filtered_col = Column.filter_indx og_col indices in
-          let new_acc = acc @ [ filtered_col ] in
-          find_columns t new_acc
-    in
-    find_columns s_cols []
-  in
+  let selected_columns = find_columns_aux tab indices s_cols [] in
   let output =
     let rec iterate (table : Table.t) (acc : Column.t list) =
       match acc with
