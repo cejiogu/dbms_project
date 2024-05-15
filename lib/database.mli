@@ -1,4 +1,6 @@
 exception InvalidQuery of string
+(** [InvalidQuery s] is raised when an operation cannot be applied, accompanied
+    by explanatory error message [s]*)
 
 type t
 (** The type representing a database, which consists of a name and a list of
