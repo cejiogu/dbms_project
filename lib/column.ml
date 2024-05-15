@@ -9,6 +9,11 @@ type elem =
   | String of string
   | Date of int * int * int
 
+(** Abstraction Function: [{n, [d]}] represents the column with [n] being the
+    name of the column and with [d] being the list of elements stored within the
+    column. If [d] is [[]] then the column is empty. Representation Invariant:
+    the column must have a name, and therefore [n] cannot be [""] *)
+
 type t = {
   elemtype : elem;
   title : string;

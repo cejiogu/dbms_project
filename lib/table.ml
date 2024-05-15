@@ -1,5 +1,10 @@
 exception InvalidQuery of string
 
+(** Abstraction Function: [{n, [d]}] represents the table with [n] being the
+    name of the table and with [d] being the list of columns stored within the
+    table. If [d] is [[]] then the table is empty. Representation Invariant: the
+    table must have a name, and therefore [n] cannot be [""] *)
+
 type t = {
   name : string;
   columns : Column.t list;
