@@ -1,5 +1,10 @@
 exception EmptyColumn of string
+(** [EmptyColumn s] is raised when an operation cannot be applied to an empty
+    column, accompanied by explanatory error message [s]*)
+
 exception InvalidQuery of string
+(** [InvalidQuery s] is raised when an operation cannot be applied, accompanied
+    by explanatory error message [s]*)
 
 type elem
 (** The type representing the data contained within a column. Variants include

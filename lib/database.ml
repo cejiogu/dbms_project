@@ -1,5 +1,10 @@
 exception InvalidQuery of string
 
+(** Abstraction Function: [{n, [d]}] represents the database with [n] being the
+    name of the database and with [d] being the list of tables stored within the
+    database. If [d] is [[]] then the database is empty. Representation
+    Invariant: the database must have a name, and therefore [n] cannot be [""] *)
+
 type t = {
   name : string;
   tables : Table.t list;
