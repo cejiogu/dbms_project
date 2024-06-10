@@ -1,45 +1,36 @@
 # [Final Project](https://github.com/cejiogu/final_project)
-
-## By
-
-- [Chimdi Ejiogu (ce248)](https://github.com/cejiogu/)
-- [Ori Wachman (ow34)](https://github.com/cejiogu/)
-- [Anmol Singh (as3252)](https://github.com/cejiogu/)
-- [Ilan Klimberg (idk7)](https://github.coecis.cornell.edu/idk7)
+By: [Chimdi Ejiogu](https://github.com/cejiogu/), [Ori Wachman](https://github.com/cejiogu/), [Ilan Klimberg](https://github.coecis.cornell.edu/idk7)
 
 ### Introduction
+This application is a Database Management System that allows the user to SQL to create and manage their own database. The program, primarily built in OCaml, utilizes a command-line interface (CLI), relying on the terminal to guide the user in how to use the application and to receive the inputs of the client.
 
-Names: Ori Wachman (ow34)
-       Anmol Singh (as3252)
-       Ilan Klimberg (idk7)
 
 ### Features and Functionality
+In this program, the user can:
+- Create empty tables in their database
+- Request a schema of their database
+- Select specific columns from specific tables in their database
+- Insert columns into already-existing tables in their database
+- Insert values into already-existing tables in their database
+- Select the maximum value in a column in a table in their database
+- Select the minimum value in a column in a table in their database
+- "Truncate" a given table in their database, thereby removing all data in the specified table
+- Perform an inner join between two already-existing tables
+- Select specific values from specified columns of a table
 
-### Development
 
 ### Installation and Use
 
 To install this application, consult the INSTALL.md file in the application's root directory. After having installed the application, you may then use the application. To use this application, the client must first build the application. 
 
-#### Building and Running Application
+#### Building Application
 
-The following steps outline how to build the applicaiton.
+The following steps outline how to build the application
 
 1) Run the command ``` make c ``` in the terminal
 2) Run the command ``` make b ``` in the terminal
 
 After building the application, the client must then run the application by running the command ``` make e ``` in the terminal.
 
-#### Initializing the Database
-
-After running the application, the client will be prompted to initialize their database by assigning it a name, which the client can do by typing in the name that they would want to assign to their database, and then pressing the "Enter" key.
-
-#### Creating a Table in the Database
-
-After initializing the database, the client can then insert a table into the database by typing the command ```CREATE TABLE ``` , followed by the titles of the columns that they would want their table to have. The user can create multiple tables within their database by following the above instruction.
-
-#### Exiting the Program
-
-To exit the application, the client, whenever prompted to enter an SQL command, must enter "quit" or "exit" into their terminal.
-
-### Feedback
+#### Using Application
+To make use of the functionalities of the application, apply any of the commands printed to the terminal.
